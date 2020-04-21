@@ -85,14 +85,12 @@ class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
 
     public Object leaveGame(RoutingContext ctx) {
         LOGGER.info("leaveGame");
-        // replace this throw with a return null to make the tests succeed.
-        throw new AlhambraException("Not yet implemented");
+        return null;
     }
 
     public Object setReady(RoutingContext ctx) {
         LOGGER.info("setReady");
-        // replace this "computation" with a return null to make the tests succeed.
-        return Integer.parseInt("ten");
+        return null;
     }
 
     public Object setNotReady(RoutingContext ctx) {
