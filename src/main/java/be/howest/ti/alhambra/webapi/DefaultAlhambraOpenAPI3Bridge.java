@@ -1,5 +1,6 @@
 package be.howest.ti.alhambra.webapi;
 
+import be.howest.ti.alhambra.logic.AlhambraController;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
@@ -8,6 +9,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAlhambraOpenAPI3Bridge.class);
+    private static final AlhambraController controller = new AlhambraController();
 
 
     public boolean verifyAdminToken(String token) {
@@ -22,7 +24,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getBuildings(RoutingContext ctx) {
         LOGGER.info("getBuildings");
-        return null;
+        return controller.getBuildings();
     }
 
     public Object getAvailableBuildLocations(RoutingContext ctx) {
