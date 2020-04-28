@@ -20,7 +20,7 @@ public class Building {
     }
 
     private int randomCost(){
-        return 0;
+        return  random.nextInt(9) + 1; // nextInt is from 0 to bound, the +1 makes it goes from 1 incl to 10 excl
     }
 
     private Map<String, Boolean> generateWalls(){
