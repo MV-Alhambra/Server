@@ -9,7 +9,7 @@ public class Building {
 
 
     Random random = new Random(); //so you can reuse it and need to make a new object each time
-
+    List<BuildingType> allTypes = Arrays.asList(BuildingType.values()); //so you can reuse it and need to make a new object each time
 
     public Building(){
         this.type = randomType();
@@ -18,13 +18,16 @@ public class Building {
     }
 
     private BuildingType randomType() {
-        List<BuildingType> allTypes = Arrays.asList(BuildingType.values());
         int randomBuildingIndex = random.nextInt(allTypes.size());
         return allTypes.get(randomBuildingIndex);
     }
 
     private int randomCost(){
-        return  random.nextInt(9) + 1; // nextInt is from 0 to bound, the +1 makes it goes from 1 incl to 10 excl
+        int baseNumber = allTypes.indexOf(type);
+        int min = baseNumber + 2;
+        int max = min + 6;
+
+        return  random.nextInt(max) + min; // nextInt is from 0 to bound, the +min makes it goes from min incl to max excl
     }
 
     private Map<WindDirection, Boolean> generateWalls(){
