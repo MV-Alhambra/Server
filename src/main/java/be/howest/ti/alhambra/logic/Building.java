@@ -1,48 +1,52 @@
 package be.howest.ti.alhambra.logic;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Building {
-    private final String type;
+    private final BuildingType type;
     private final int cost;
-    private final Map<String, Boolean> walls;
+    private final Map<WindDirection, Boolean> walls;
 
 
     Random random = new Random(); //so you can reuse it and need to make a new object each time
 
 
     public Building(){
-        this.type = "iets";
+        this.type = randomType();
         this.cost = randomCost();
         this.walls = generateWalls();
+    }
+
+    private BuildingType randomType() {
+        List<BuildingType> allTypes = Arrays.asList(BuildingType.values());
+        int randomBuildingIndex = random.nextInt(allTypes.size());
+        return allTypes.get(randomBuildingIndex);
     }
 
     private int randomCost(){
         return  random.nextInt(9) + 1; // nextInt is from 0 to bound, the +1 makes it goes from 1 incl to 10 excl
     }
 
-    private Map<String, Boolean> generateWalls(){
+    private Map<WindDirection, Boolean> generateWalls(){
 
-        Map<String, Boolean> wallsGenerate = new HashMap<>();
+        Map<WindDirection, Boolean> wallsGenerate = new HashMap<>();
         int currentWalls = 0;
 
         for (WindDirection direction  : WindDirection.values()) {  //this makes it so there are no more then 3 walls
             boolean wall = random.nextBoolean();
             if (wall && (currentWalls < 3)){
                 currentWalls ++;
-                wallsGenerate.put(direction.toString(), true);
+                wallsGenerate.put(direction, true);
             }
             else {
-                wallsGenerate.put(direction.toString(), false);
+                wallsGenerate.put(direction, false);
             }
 
         }
         return wallsGenerate;
     }
 
-    public String getType() {
+    public BuildingType getType() {
         return type;
     }
 
@@ -50,7 +54,7 @@ public class Building {
         return cost;
     }
 
-    public Map<String, Boolean> getWalls() {
+    public Map<WindDirection, Boolean> getWalls() {
         return walls;
     }
 }
