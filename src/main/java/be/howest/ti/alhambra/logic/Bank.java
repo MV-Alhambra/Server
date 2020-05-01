@@ -61,4 +61,17 @@ public class Bank {
     public Coin[] getCoins() {
         return coins;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bank bank = (Bank) o;
+        return Arrays.equals(coins, bank.coins);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(coins);
+    }
 }

@@ -46,4 +46,21 @@ class JsonTest {
         assertEquals(location, Json.decodeValue(Json.encode(location), Location.class));
     }
 
+    @Test
+    void bank(){
+        // Create a bank ...
+        Bank bank = new Bank();
+
+        // Turn it into a JsonObject
+        JsonObject bankAsJsonObject = JsonObject.mapFrom(bank);
+        // Assert that this object has the expected properties
+        assertTrue(bankAsJsonObject.containsKey("coins"));
+
+        // Assert that you can convert it back to the same bank.
+        assertEquals(bank, bankAsJsonObject.mapTo(Bank.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(bank, Json.decodeValue(Json.encode(bank), Bank.class));
+
+    }
 }
