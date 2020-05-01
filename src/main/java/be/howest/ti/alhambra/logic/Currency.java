@@ -2,7 +2,7 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Currency {
+public enum  Currency {
 
     BLUE, GREEN, ORANGE, YELLOW;
 
