@@ -1,21 +1,23 @@
 package be.howest.ti.alhambra.logic;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.*;
 
 public class Building {
-    private final BuildingType type;
+    private final String type;
     private final int cost;
-    private final Map<WindDirection, Boolean> walls;
+    private final Map<String, Boolean> walls;
 
 
-
-    public Building(){
+    @JsonCreator
+    public Building()
+        {
         this.type = null;
-        this.cost = 0;
+        this.cost = -1;
         this.walls = null;
     }
 
-    public BuildingType getType() {
+    public String getType() {
         return type;
     }
 
@@ -23,7 +25,22 @@ public class Building {
         return cost;
     }
 
-    public Map<WindDirection, Boolean> getWalls() {
+    public Map<String, Boolean> getWalls() {
         return walls;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Building building = (Building) o;
+        return cost == building.cost &&
+                Objects.equals(type, building.type) &&
+                Objects.equals(walls, building.walls);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, cost, walls);
     }
 }
