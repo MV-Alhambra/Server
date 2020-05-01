@@ -1,23 +1,47 @@
 package be.howest.ti.alhambra.logic;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Bank {
     private final Coin[] coins;
 
+    @JsonCreator
     public Bank() {
         this(new Coin[4]);
     }
 
-    public Bank(Coin[] coins) {
+    @JsonCreator
+    public Bank(@JsonProperty("coins") Coin[] coins) {
         if (coins.length != 4) {
             throw new IllegalArgumentException("Only arrays of length 4 allowed");
         }
         this.coins = coins;
     }
 
-    public void grabCoins() {
+    public void removeCoins(Coin[] coins) {
+        if (coins.length > 4) {
+            throw new IllegalArgumentException("Can only remove upto 4 coins");
+        }
+        for (Coin coin : coins) {
+            for (int i = 0; i < this.coins.length; i++) {
+                if (coin.equals(this.coins[i])) {
+                    this.coins[i] = null;
+                    i = this.coins.length;//prevent multiple coins from being removed
+                } else if (i == this.coins.length - 1) {
+                    throw new IllegalArgumentException("Couldn't find the coin in the bank");
+                }
+            }
+        }
+    }
 
+    public void addCoins(Coin[] coins) {
+        for (Coin coin : coins) {
+            addCoin(coin);
+        }
     }
 
     public void addCoin(Coin coin) {
@@ -30,11 +54,8 @@ public class Bank {
         throw new IllegalStateException("The bank is full");
     }
 
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "coins=" + Arrays.toString(coins) +
-                '}';
+    public int countEmptyCoins() {
+        return (int) Arrays.stream(coins).filter(Objects::isNull).count();
     }
 
     public Coin[] getCoins() {
