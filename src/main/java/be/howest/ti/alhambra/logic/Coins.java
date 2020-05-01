@@ -43,7 +43,8 @@ public class Coins {
         return coinsBag.contains(coin);
     }
 
-    public List<Coin> getCoins() {
+    @JsonGetter("coins")
+    public List<Coin> getCoinsBag() {
         return coinsBag;
     }
 

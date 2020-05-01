@@ -19,13 +19,13 @@ public class CoinsTest {
 
         coins.addCoins(new Coin[]{coin1});
         //test adding coin
-        assertEquals(listCoins, coins.getCoins());
+        assertEquals(listCoins, coins.getCoinsBag());
         //test contains method
         assertTrue(coins.containsCoin(coin1));
 
         coins.removeCoins(new Coin[]{coin1});
         //test remove coin
-        assertEquals(Collections.emptyList(), coins.getCoins());
+        assertEquals(Collections.emptyList(), coins.getCoinsBag());
         //test adding coins
         coins.addCoins(new Coin[]{coin1,coin1,coin2});
 
@@ -34,11 +34,11 @@ public class CoinsTest {
         listCoins2.add(coin1);
         listCoins2.add(coin2);
 
-        assertEquals(listCoins2, coins.getCoins());
+        assertEquals(listCoins2, coins.getCoinsBag());
 
         coins.removeCoins(new Coin[]{coin1,coin2});
         //test remove coins
-        assertEquals(listCoins, coins.getCoins());
+        assertEquals(listCoins, coins.getCoinsBag());
         //test error on removing coin that doesnt exist
         assertThrows(IllegalArgumentException.class,()->coins.removeCoins(new Coin[]{coin2}));
 

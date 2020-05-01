@@ -56,7 +56,8 @@ public class Bank {
         return (int) Arrays.stream(bankCoins).filter(Objects::isNull).count();
     }
 
-    public Coin[] getBank() {
+    @JsonGetter("bank")
+    public Coin[] getBankCoins() {
         return bankCoins;
     }
 
