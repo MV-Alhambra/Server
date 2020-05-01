@@ -1,13 +1,10 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Arrays;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.*;
+import java.util.*;
 
 public class Bank {
-    private final Coin[] bank;
+    private final Coin[] bankCoins;
 
     @JsonCreator
     public Bank() {
@@ -19,7 +16,7 @@ public class Bank {
         if (bank.length != 4) {
             throw new IllegalArgumentException("Only arrays of length 4 allowed");
         }
-        this.bank = bank;
+        this.bankCoins = bank;
     }
 
     public void removeCoins(Coin[] coins) {
@@ -27,11 +24,12 @@ public class Bank {
             throw new IllegalArgumentException("Can only remove upto 4 coins");
         }
         for (Coin coin : coins) {
-            for (int i = 0; i < this.bank.length; i++) {
-                if (coin.equals(this.bank[i])) {
-                    this.bank[i] = null;
-                    i = this.bank.length;//prevent multiple coins from being removed
-                } else if (i == this.bank.length - 1) {
+            boolean flag = true;
+            for (int i = 0; i < this.bankCoins.length && flag; i++) {
+                if (coin.equals(this.bankCoins[i])) {
+                    this.bankCoins[i] = null;
+                    flag = false;
+                } else if (i == this.bankCoins.length - 1) {
                     throw new IllegalArgumentException("Couldn't find the coin in the bank");
                 }
             }
@@ -45,9 +43,9 @@ public class Bank {
     }
 
     public void addCoin(Coin coin) {
-        for (int i = 0; i < bank.length; i++) {
-            if (bank[i] == null) {
-                bank[i] = coin;
+        for (int i = 0; i < bankCoins.length; i++) {
+            if (bankCoins[i] == null) {
+                bankCoins[i] = coin;
                 return;
             }
         }
@@ -55,11 +53,11 @@ public class Bank {
     }
 
     public int countEmptyCoins() {
-        return (int) Arrays.stream(bank).filter(Objects::isNull).count();
+        return (int) Arrays.stream(bankCoins).filter(Objects::isNull).count();
     }
 
     public Coin[] getBank() {
-        return bank;
+        return bankCoins;
     }
 
     @Override
@@ -67,11 +65,11 @@ public class Bank {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bank bank = (Bank) o;
-        return Arrays.equals(this.bank, bank.bank);
+        return Arrays.equals(this.bankCoins, bank.bankCoins);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(bank);
+        return Arrays.hashCode(bankCoins);
     }
 }

@@ -1,16 +1,18 @@
 package be.howest.ti.alhambra.logic;
 
+import com.fasterxml.jackson.annotation.*;
 import java.util.*;
 
 public class Coins {
 
-    private final List<Coin> coins;
+    private final List<Coin> coinsBag;
 
-
-    public Coins(List<Coin> coins) {
-        this.coins = coins;
+    @JsonCreator
+    public Coins(@JsonProperty("coins") List<Coin> coins) {
+        this.coinsBag = coins;
     }
 
+    @JsonCreator
     public Coins() {
         this(new ArrayList<>());
     }
@@ -22,7 +24,7 @@ public class Coins {
     }
 
     private void addCoin(Coin coin) {
-        coins.add(coin);
+        coinsBag.add(coin);
     }
 
     public void removeCoins(Coin[] coins) {
@@ -32,17 +34,17 @@ public class Coins {
     }
 
     private void removeCoin(Coin coin) {
-        if (!coins.remove(coin)) {
+        if (!coinsBag.remove(coin)) {
             throw new IllegalArgumentException("Couldn't find the coin in the coins bag, coin: " + coin.toString());
         }
     }
 
     public boolean containsCoin(Coin coin) {
-        return coins.contains(coin);
+        return coinsBag.contains(coin);
     }
 
     public List<Coin> getCoins() {
-        return coins;
+        return coinsBag;
     }
 
     @Override
@@ -50,11 +52,11 @@ public class Coins {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coins coins1 = (Coins) o;
-        return Objects.equals(coins, coins1.coins);
+        return Objects.equals(coinsBag, coins1.coinsBag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coins);
+        return Objects.hash(coinsBag);
     }
 }
