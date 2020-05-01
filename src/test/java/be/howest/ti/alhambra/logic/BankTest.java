@@ -10,7 +10,7 @@ public class BankTest {
     void bankCoins() {
         Bank bank = new Bank();
 
-        assertArrayEquals(new Coin[4], bank.getCoins());
+        assertArrayEquals(new Coin[4], bank.getBank());
 
         bank.addCoin(new Coin(Currency.GREEN, 5));
         Coin[] temp = new Coin[4];
@@ -18,7 +18,7 @@ public class BankTest {
         //check if  add coins works and countEmptyCoins works
         assertEquals(3, bank.countEmptyCoins());
 
-        assertArrayEquals(temp, bank.getCoins());
+        assertArrayEquals(temp, bank.getBank());
         bank.addCoin(new Coin(Currency.GREEN, 5));
         bank.addCoin(new Coin(Currency.GREEN, 5));
         bank.addCoin(new Coin(Currency.GREEN, 5));
@@ -43,6 +43,6 @@ public class BankTest {
         bank.addCoins(temp3);
 
         Coin[] temp4 = {new Coin(Currency.GREEN, 5), new Coin(Currency.GREEN, 7), null, new Coin(Currency.GREEN, 5)};
-        assertArrayEquals(temp4,bank.getCoins());
+        assertArrayEquals(temp4,bank.getBank());
     }
 }
