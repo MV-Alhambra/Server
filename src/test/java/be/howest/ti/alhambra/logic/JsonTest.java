@@ -54,7 +54,7 @@ class JsonTest {
         // Turn it into a JsonObject
         JsonObject bankAsJsonObject = JsonObject.mapFrom(bank);
         // Assert that this object has the expected properties
-        assertTrue(bankAsJsonObject.containsKey("coins"));
+        assertTrue(bankAsJsonObject.containsKey("bank"));
 
         // Assert that you can convert it back to the same bank.
         assertEquals(bank, bankAsJsonObject.mapTo(Bank.class));

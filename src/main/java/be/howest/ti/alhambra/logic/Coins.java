@@ -2,6 +2,7 @@ package be.howest.ti.alhambra.logic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Coins {
 
@@ -44,5 +45,18 @@ public class Coins {
 
     public List<Coin> getCoins() {
         return coins;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coins coins1 = (Coins) o;
+        return Objects.equals(coins, coins1.coins);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coins);
     }
 }
