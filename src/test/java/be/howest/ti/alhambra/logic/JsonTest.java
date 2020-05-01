@@ -49,7 +49,7 @@ class JsonTest {
     @Test
     void building() {
         // Create a building ...
-        Building building = new Building();
+        Building building = new Building(BuildingType.valueOf("PAVILION"), 5, null);
 
         // Turn it into a JsonObject
         JsonObject buildingAsJsonObject = JsonObject.mapFrom(building);
@@ -64,6 +64,12 @@ class JsonTest {
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(building, Json.decodeValue(Json.encode(building), Building.class));
+    }
+
+    @Test
+    void buildingType() {
+        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
+        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
     }
 
 }

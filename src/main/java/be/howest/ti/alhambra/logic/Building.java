@@ -1,23 +1,30 @@
 package be.howest.ti.alhambra.logic;
+
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
 public class Building {
-    private final String type;
+    private final BuildingType type;
     private final int cost;
     private final Map<String, Boolean> walls;
 
 
     @JsonCreator
-    public Building()
+    public Building(
+        @JsonProperty("type") BuildingType type,
+        @JsonProperty("cost") int cost,
+        @JsonProperty("walls")  Map<String, Boolean> walls
+        )
         {
-        this.type = null;
-        this.cost = -1;
-        this.walls = null;
+        this.type = type;
+        this.cost = cost;
+        this.walls = walls;
     }
 
-    public String getType() {
+    public BuildingType getType() {
         return type;
     }
 
