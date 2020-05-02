@@ -118,7 +118,7 @@ class JsonTest {
         JsonObject reserveAsJsonObject = JsonObject.mapFrom(reserve);
 
         // Assert that this object has the expected properties
-        assertTrue(reserveAsJsonObject.containsKey("buildings"));
+        assertTrue(reserveAsJsonObject.containsKey("reserve"));
 
         // Assert that you can convert it back to the same coins.
         assertEquals(reserve, reserveAsJsonObject.mapTo(Reserve.class));
