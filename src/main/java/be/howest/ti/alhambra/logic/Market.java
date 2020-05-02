@@ -4,15 +4,14 @@ import java.util.Map;
 
 public class Market
 {
-    //Replace String with Building
-    private Map<Currency,String> market;
+    private Map<Currency,Building> market;
 
-    public void addBuilding(Currency currency, String building)
+    public void addBuilding(Currency currency, Building building)
     {
         market.put(currency, building);
     }
 
-    public String getBuilding (Currency currency)
+    public Building getBuilding (Currency currency)
     {
         return market.get(currency);
     }
