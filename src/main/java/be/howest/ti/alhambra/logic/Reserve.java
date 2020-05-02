@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Reserve {
-    private final List<Building> buildings; //Temporarily with String values instead of real buildings
+    private final List<Building> buildings;
 
     @JsonCreator
-    public Reserve(@JsonProperty("reserve") List<Building> reserve){
-        this.buildings = reserve;
+    public Reserve(@JsonProperty("buildings") List<Building> buildings){
+        this.buildings = buildings;
     }
 
     public List<Building> getBuildings() {
