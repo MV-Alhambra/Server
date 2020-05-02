@@ -1,6 +1,7 @@
 package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class Reserve {
     public Reserve(){
         this(new ArrayList<>());
     }
-
+    @JsonGetter("buildings")
     public List<Building> getBuildings() {
         return buildings;
     }
@@ -32,12 +33,7 @@ public class Reserve {
         if (!buildings.remove(building)) {
             throw new IllegalArgumentException("Couldn't find the building in your reserve");
         }
-        else{
-            buildings.remove(building);
-        }
     }
-
-
 
     @Override
     public boolean equals(Object o) {
