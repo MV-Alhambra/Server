@@ -9,13 +9,13 @@ public class City {
     private int mapSize;
 
     @JsonCreator
-    public City(@JsonProperty("city") Building[][] buildings, int mapSize) {
+    public City(@JsonProperty("city") Building[][] buildings) {
         this.buildings = buildings;
-        this.mapSize = mapSize;
+        this.mapSize = buildings.length;
     }
 
     public City() {
-        this(City.defaultCity, 3);
+        this(City.defaultCity);
     }
 
     @JsonGetter("city")
@@ -31,9 +31,10 @@ public class City {
         } else {
             buildings[location.getCol()][location.getRow()] = building;
         }
+        checkMapSize();
     }
 
-    public void removeBuilding(Location location){
+    public void removeBuilding(Location location) {
         location = Location.convertLocationToStaticLocation(location, mapSize);
 
         if (buildings[location.getCol()][location.getRow()] == null) {
@@ -41,6 +42,29 @@ public class City {
         } else {
             buildings[location.getCol()][location.getRow()] = null;
         }
+    }
 
+    private void checkMapSize() {
+        for (int row = 0; row < buildings.length; row++) {
+            for (int col = 0; col < buildings.length; col++) {
+                if (buildings[col][row] != null && ((row == 0 || row == mapSize) || (col == 0 || col == mapSize))) {
+                    updateMapSize();
+                    return;// stop/exit
+                }
+            }
+        }
+    }
+
+    private void updateMapSize() {
+        mapSize += 2;
+
+        Building[][] newBuildings = new Building[mapSize][mapSize];
+
+        for (int row = 0; row < buildings.length; row++) {
+            for (int col = 0; col < buildings.length; col++) {
+                newBuildings[col + 2][row + 2] = buildings[col][row];
+            }
+        }
+        buildings = newBuildings;
     }
 }
