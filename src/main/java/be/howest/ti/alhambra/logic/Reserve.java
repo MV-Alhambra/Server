@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class Reserve {
-    private final List<String> reserve; //Temporarily with String values instead of real buildings
+    private final List<Building> buildings; //Temporarily with String values instead of real buildings
 
     @JsonCreator
-    public Reserve(@JsonProperty("reserve") List<String> reserve){
-        this.reserve = reserve;
+    public Reserve(@JsonProperty("reserve") List<Building> reserve){
+        this.buildings = reserve;
     }
 
-    public List<String> getReserve() {
-        return reserve;
+    public List<Building> getBuildings() {
+        return buildings;
     }
 
     @Override
@@ -23,11 +23,11 @@ public class Reserve {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reserve reserve1 = (Reserve) o;
-        return Objects.equals(reserve, reserve1.reserve);
+        return Objects.equals(buildings, reserve1.buildings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reserve);
+        return Objects.hash(buildings);
     }
 }
