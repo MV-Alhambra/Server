@@ -2,6 +2,7 @@ package be.howest.ti.alhambra.logic;
 
 import org.junit.jupiter.api.Test;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,18 @@ public class ReserveTest {
         assertEquals(building2, reserve.getBuildings().get(1));
         assertEquals(building3, reserve.getBuildings().get(2));
 
-        assertTrue(reserve.equals(reserve2));
+        assertEquals(reserve, reserve2);
+    }
+    void testEqualsAndHashcode(){
+        Building building1 = new Building(BuildingType.valueOf("PAVILION"), 5, null);
+        List<Building> buildings = new ArrayList<>();
+        buildings.add(building1);
+
+        Reserve reserve = new Reserve(buildings);
+        Reserve reserve2 = new Reserve(buildings);
+
+        assertTrue(reserve.equals(reserve2) && reserve2.equals(reserve));
+        assertEquals(reserve.hashCode(), reserve2.hashCode());
     }
 
 }
