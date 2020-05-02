@@ -10,8 +10,8 @@ public class Reserve {
     private final List<Building> buildings; //Temporarily with String values instead of real buildings
 
     @JsonCreator
-    public Reserve(@JsonProperty("reserve") List<Building> reserve){
-        this.buildings = reserve;
+    public Reserve(@JsonProperty("buildings") List<Building> buildings){
+        this.buildings = buildings;
     }
 
     public List<Building> getBuildings() {
