@@ -54,7 +54,7 @@ class JsonTest {
         // Turn it into a JsonObject
         JsonObject bankAsJsonObject = JsonObject.mapFrom(bank);
         // Assert that this object has the expected properties
-        assertTrue(bankAsJsonObject.containsKey("coins"));
+        assertTrue(bankAsJsonObject.containsKey("bank"));
 
         // Assert that you can convert it back to the same bank.
         assertEquals(bank, bankAsJsonObject.mapTo(Bank.class));
@@ -88,6 +88,25 @@ class JsonTest {
     void buildingType() {
         assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
         assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
+    }
+
+    @Test
+    void coins(){
+        // Create a coins ...
+        Coins coins = new Coins();
+
+        // Turn it into a JsonObject
+        JsonObject coinsAsJsonObject = JsonObject.mapFrom(coins);
+
+        // Assert that this object has the expected properties
+        assertTrue(coinsAsJsonObject.containsKey("coins"));
+
+        // Assert that you can convert it back to the same coins.
+        assertEquals(coins, coinsAsJsonObject.mapTo(Coins.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(coins, Json.decodeValue(Json.encode(coins), Coins.class));
+
     }
 
 }
