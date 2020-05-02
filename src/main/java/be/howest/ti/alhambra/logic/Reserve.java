@@ -20,7 +20,7 @@ public class Reserve {
     public Reserve(){
         this(new ArrayList<>());
     }
-    @JsonGetter("buildings")
+    @JsonGetter("reserve")
     public List<Building> getBuildings() {
         return buildings;
     }
