@@ -16,12 +16,13 @@ public class ReserveTest {
         Building building2 = new Building(BuildingType.valueOf("CHAMBERS"), 9, null);
         Building building3 = new Building(BuildingType.valueOf("GARDEN"), 11, null);
         List<Building> buildings = new ArrayList<>();
-        buildings.add(building1);
-        buildings.add(building2);
-        buildings.add(building3);
 
         Reserve reserve = new Reserve(buildings);
         Reserve reserve2 = new Reserve(buildings);
+
+        reserve.addBuilding(building1);
+        reserve.addBuilding(building2);
+        reserve.addBuilding(building3);
 
         assertEquals(building1, reserve.getBuildings().get(0));
         assertEquals(building2, reserve.getBuildings().get(1));
