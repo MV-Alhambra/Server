@@ -10,12 +10,12 @@ import java.util.Objects;
 
 public class Market
 {
-    private final Map<Currency,Building> market;
+    private final Map<Currency,Building> buildingMarket;
 
     @JsonCreator
     public Market(@JsonProperty("market") Map<Currency,Building> market)
     {
-        this.market = market;
+        this.buildingMarket = market;
     }
 
     @JsonCreator
@@ -26,28 +26,28 @@ public class Market
 
     public void addBuilding(Currency currency, Building building)
     {
-        market.put(currency, building);
+        buildingMarket.put(currency, building);
     }
 
     public Building getBuilding (Currency currency)
     {
-        return market.get(currency);
+        return buildingMarket.get(currency);
     }
 
     @JsonGetter("market")
     public Map<Currency,Building> getMarket()
     {
-        return market;
+        return buildingMarket;
     }
 
     public void removeBuilding(Currency currency)
     {
-        market.remove(currency);
+        buildingMarket.remove(currency);
     }
 
     public boolean containsBuilding(Currency currency)
     {
-        return market.containsKey(currency);
+        return buildingMarket.containsKey(currency);
     }
 
     @Override
@@ -56,12 +56,12 @@ public class Market
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Market market1 = (Market) o;
-        return Objects.equals(market, market1.market);
+        return Objects.equals(buildingMarket, market1.buildingMarket);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(market);
+        return Objects.hash(buildingMarket);
     }
 }
