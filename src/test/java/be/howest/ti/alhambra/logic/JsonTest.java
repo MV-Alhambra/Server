@@ -109,4 +109,23 @@ class JsonTest {
 
     }
 
+    @Test
+    void reserve(){
+        // Create reserve
+        Reserve reserve = new Reserve();
+
+        // Turn it into a JsonObject
+        JsonObject reserveAsJsonObject = JsonObject.mapFrom(reserve);
+
+        // Assert that this object has the expected properties
+        assertTrue(reserveAsJsonObject.containsKey("reserve"));
+
+        // Assert that you can convert it back to the same coins.
+        assertEquals(reserve, reserveAsJsonObject.mapTo(Reserve.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
+
+    }
+
 }
