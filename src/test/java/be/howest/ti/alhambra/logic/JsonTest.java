@@ -47,7 +47,7 @@ class JsonTest {
     }
 
     @Test
-    void bank(){
+    void bank() {
         // Create a bank ...
         Bank bank = new Bank();
 
@@ -63,7 +63,7 @@ class JsonTest {
         assertEquals(bank, Json.decodeValue(Json.encode(bank), Bank.class));
 
     }
-    
+
     @Test
     void building() {
         // Create a building ...
@@ -86,12 +86,12 @@ class JsonTest {
 
     @Test
     void buildingType() {
-        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
-        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
+        assertEquals("pavilion", BuildingType.valueOf("PAVILION").toString());
+        assertEquals("chambers", BuildingType.valueOf("CHAMBERS").toString());
     }
 
     @Test
-    void coins(){
+    void coins() {
         // Create a coins ...
         Coins coins = new Coins();
 

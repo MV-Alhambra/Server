@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 public class Building {
+
     private final BuildingType type;
     private final int cost;
     private final Map<String, Boolean> walls;
@@ -14,14 +15,17 @@ public class Building {
 
     @JsonCreator
     public Building(
-        @JsonProperty("type") BuildingType type,
-        @JsonProperty("cost") int cost,
-        @JsonProperty("walls")  Map<String, Boolean> walls
-        )
-        {
+            @JsonProperty("type") BuildingType type,
+            @JsonProperty("cost") int cost,
+            @JsonProperty("walls") Map<String, Boolean> walls
+    ) {
         this.type = type;
         this.cost = cost;
         this.walls = walls;
+    }
+
+    public Building(BuildingType type, int cost) { //chaining
+        this(type, cost,getDefaultWalls());
     }
 
     public BuildingType getType() {
@@ -34,6 +38,15 @@ public class Building {
 
     public Map<String, Boolean> getWalls() {
         return walls;
+    }
+
+    public static Map<String, Boolean> getDefaultWalls() {
+        Map<String, Boolean> tempWalls = new HashMap<>();
+        tempWalls.put("north", false);
+        tempWalls.put("east", false);
+        tempWalls.put("south", false);
+        tempWalls.put("west", false);
+        return tempWalls;
     }
 
     @Override
