@@ -12,7 +12,7 @@ public class Reserve {
     private final List<Building> buildings;
 
     @JsonCreator
-    public Reserve(@JsonProperty("buildings") List<Building> buildings){
+    public Reserve(@JsonProperty("reserve") List<Building> buildings){
         this.buildings = buildings;
     }
 
