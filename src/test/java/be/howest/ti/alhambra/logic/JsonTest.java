@@ -4,6 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonTest {
@@ -109,4 +112,22 @@ class JsonTest {
 
     }
 
+    @Test
+    void market()
+    {
+        // Create a market ...
+        Market market = new Market();
+
+        // Turn it into a JsonObject
+        JsonObject marketAsJsonObject = JsonObject.mapFrom(market);
+
+        // Assert that this object has the expected properties
+        assertTrue(marketAsJsonObject.containsKey("market"));
+
+        // Assert that you can convert it back to the same market.
+        assertEquals(market, marketAsJsonObject.mapTo(Market.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(market, Json.decodeValue(Json.encode(market), Market.class));
+    }
 }
