@@ -1,6 +1,7 @@
 package be.howest.ti.alhambra.logic.exceptions;
 
 import be.howest.ti.alhambra.logic.Building;
+import be.howest.ti.alhambra.logic.Location;
 import com.fasterxml.jackson.annotation.*;
 
 public class City {
@@ -20,5 +21,9 @@ public class City {
     @JsonGetter("city")
     public Building[][] getBuildings() {
         return buildings;
+    }
+
+    public void placeBuilding(Building building, Location location){
+
     }
 }
