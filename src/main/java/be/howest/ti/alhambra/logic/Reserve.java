@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class Reserve {
-    private final List<String> reserve; //Temporarily with String values instead of real buildings
+    private final List<Building> reserve; //Temporarily with String values instead of real buildings
 
     @JsonCreator
-    public Reserve(@JsonProperty("reserve") List<String> reserve){
+    public Reserve(@JsonProperty("reserve") List<Building> reserve){
         this.reserve = reserve;
     }
 
-    public List<String> getReserve() {
+    public List<Building> getReserve() {
         return reserve;
     }
 
