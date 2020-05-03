@@ -34,9 +34,7 @@ public class Coins {
     }
 
     private void removeCoin(Coin coin) {
-        if (!coinsBag.remove(coin)) {
-            throw new IllegalArgumentException("Couldn't find the coin in the coins bag, coin: " + coin.toString());
-        }
+        if (!coinsBag.remove(coin)) throw new IllegalArgumentException("Couldn't find the coin in the coins bag, coin: " + coin.toString());
     }
 
     public boolean containsCoin(Coin coin) {

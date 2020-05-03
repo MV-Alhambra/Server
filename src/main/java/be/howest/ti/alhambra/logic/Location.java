@@ -39,4 +39,12 @@ public class Location {
         Location location = (Location) o;
         return col == location.col && row == location.row;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "col=" + col +
+                ", row=" + row +
+                '}';
+    }
 }
