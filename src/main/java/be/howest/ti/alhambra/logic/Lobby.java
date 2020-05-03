@@ -16,6 +16,18 @@ public class Lobby {
         this.playersReady = new LinkedHashMap<>();
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public Map<String, Boolean> getPlayersReady() {
+        return playersReady;
+    }
+
     public void addPlayer(String name){
         if (playerCount() < 6) {
             if (playersReady.containsKey(name)) {
@@ -51,6 +63,13 @@ public class Lobby {
         return amountReady;
     }
 
-    
+    public void startGame(){
+        if (amountReady() == playerCount()){
+            this.started = true;
+        }
+        else {
+            throw new IllegalStateException("All players need to be ready to start game");
+        }
+    }
 
 }

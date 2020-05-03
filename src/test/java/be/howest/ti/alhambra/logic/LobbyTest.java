@@ -57,4 +57,24 @@ class LobbyTest {
 
     }
 
+    @Test
+    void startGame() {
+        Lobby lobby = new Lobby("game021-005");
+        lobby.addPlayer("Joe");
+        lobby.addPlayer("Carol");
+        lobby.addPlayer("Jef");
+        lobby.readyUpPlayer("Joe");
+        lobby.readyUpPlayer("Carol");
+
+        // checks if all players are ready to start
+        assertThrows(IllegalStateException.class, lobby::startGame);
+
+        // starting game
+        lobby.readyUpPlayer("Jef");
+        lobby.startGame();
+        assertTrue(lobby.isStarted());
+
+    }
+
+
 }
