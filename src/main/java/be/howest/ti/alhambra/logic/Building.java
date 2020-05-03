@@ -63,4 +63,13 @@ public class Building {
     public int hashCode() {
         return Objects.hash(type, cost, walls);
     }
+
+    @Override
+    public String toString() {
+        return "Building{" +
+                "type=" + type +
+                ", cost=" + cost +
+                ", walls=" + walls +
+                '}';
+    }
 }

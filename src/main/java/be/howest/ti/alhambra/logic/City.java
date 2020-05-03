@@ -2,6 +2,9 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class City {
 
     private static final Building[][] defaultCity = {{null, null, null}, {null, new Building(null, 0), null}, {null, null, null}};
@@ -66,5 +69,29 @@ public class City {
             }
         }
         buildings = newBuildings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        City city = (City) o;
+        return mapSize == city.mapSize &&
+                Arrays.equals(buildings, city.buildings);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mapSize);
+        result = 31 * result + Arrays.hashCode(buildings);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "buildings=" + Arrays.deepToString(buildings) +
+                ", mapSize=" + mapSize +
+                '}';
     }
 }

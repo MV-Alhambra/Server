@@ -109,4 +109,27 @@ class JsonTest {
 
     }
 
+    @Test
+    void city(){
+        // Create a city ...
+        City city = new City();
+
+        // Turn it into a JsonObject
+        JsonObject cityAsJsonObject = JsonObject.mapFrom(city);
+
+        // Assert that this object has the expected properties
+        assertTrue(cityAsJsonObject.containsKey("city"));
+
+        // Assert that you can convert it back to the same city.
+        System.out.println("Original "+city);
+        System.out.println(cityAsJsonObject);
+        System.out.println("Converted "+cityAsJsonObject.mapTo(City.class));
+
+        assertEquals(city, cityAsJsonObject.mapTo(City.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
+
+    }
+
 }
