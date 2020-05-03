@@ -90,8 +90,9 @@ class JsonTest {
 
     @Test
     void buildingType() {
-        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion");
-        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers");
+        // TODO test doesnt belong here, change to other file
+        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
+        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
     }
 
     @Test
@@ -114,7 +115,27 @@ class JsonTest {
     }
 
     @Test
-    void market() {
+    void city(){
+        // Create a city ...
+        City city = new City();
+
+        // Turn it into a JsonObject
+        JsonObject cityAsJsonObject = JsonObject.mapFrom(city);
+
+        // Assert that this object has the expected properties
+        assertTrue(cityAsJsonObject.containsKey("city"));
+
+        // Assert that you can convert it back to the same city.
+        assertEquals(city, cityAsJsonObject.mapTo(City.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
+
+    }
+    
+    @Test
+    void market()
+    {
         // Create a market ...
         Market market = new Market();
 
@@ -147,7 +168,6 @@ class JsonTest {
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
-
     }
 
     @Test
@@ -173,5 +193,27 @@ class JsonTest {
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(player, Json.decodeValue(Json.encode(player), Player.class));
+        
+    }
+    
+    @Test
+    void lobby(){
+        // Create lobby
+        Lobby lobby = new Lobby("game21-002");
+
+        // Turn it into a JsonObject
+        JsonObject reserveAsJsonObject = JsonObject.mapFrom(lobby);
+
+        // Assert that this object has the expected properties
+        assertTrue(reserveAsJsonObject.containsKey("gameId"));
+        assertTrue(reserveAsJsonObject.containsKey("started"));
+        assertTrue(reserveAsJsonObject.containsKey("playersReady"));
+
+        // Assert that you can convert it back to the same lobby.
+        assertEquals(lobby, reserveAsJsonObject.mapTo(Lobby.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(lobby, Json.decodeValue(Json.encode(lobby), Lobby.class));
+
     }
 }
