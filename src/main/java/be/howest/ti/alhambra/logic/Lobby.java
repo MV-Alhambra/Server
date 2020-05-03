@@ -24,6 +24,9 @@ public class Lobby {
                 playersReady.put(name, false);
             }
         }
+        else {
+            throw new IllegalStateException("The lobby is full");
+        }
     }
 
     public int playerCount() {

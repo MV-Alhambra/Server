@@ -9,11 +9,19 @@ class LobbyTest {
 
     @Test
     void playerCount() {
+        // checks lobby size
         Lobby lobby = new Lobby("game021-005");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
         assertEquals(3, lobby.playerCount());
+
+        // checks limit of lobby size (6)
+        lobby.addPlayer("Howard");
+        lobby.addPlayer("Travis");
+        lobby.addPlayer("John");
+        assertThrows(IllegalStateException.class, () -> lobby.addPlayer("Dillon"));
+
     }
 
     @Test
