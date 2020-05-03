@@ -1,16 +1,21 @@
 package be.howest.ti.alhambra.logic;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Lobby {
     private boolean started;
     private final String gameId;
     private Map<String, Boolean> playersReady;
 
-    
-    public Lobby(String gameId) {
+    @JsonCreator
+    public Lobby(
+           @JsonProperty("gameId") String gameId) {
         this.started = false;
         this.gameId = gameId;
         this.playersReady = new LinkedHashMap<>();
@@ -72,4 +77,18 @@ public class Lobby {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lobby lobby = (Lobby) o;
+        return started == lobby.started &&
+                Objects.equals(gameId, lobby.gameId) &&
+                Objects.equals(playersReady, lobby.playersReady);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(started, gameId, playersReady);
+    }
 }
