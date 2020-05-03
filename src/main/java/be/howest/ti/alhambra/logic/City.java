@@ -7,23 +7,23 @@ import java.util.Objects;
 
 public class City {
 
-    private static final Building[][] DEFAULT_CITY = {{null, null, null}, {null, new Building(null, 0), null}, {null, null, null}};
     private Building[][] buildings;
     private int mapSize;
 
     public City() {
-        this(City.DEFAULT_CITY);
+        this(City.getDefaultCity());
     }
 
     @JsonCreator
     public City(@JsonProperty("city") Building[][] buildings) {
-        System.out.println(Arrays.deepToString(buildings));
         this.buildings = buildings;
         this.mapSize = buildings.length;
     }
 
-    public Building[][] getDefaultCity() {
-        return DEFAULT_CITY;
+    public static Building[][] getDefaultCity() {
+       Building[][] defaultCity = new Building[3][3];
+       defaultCity[1][1] = new Building(null, 0);
+       return defaultCity;
     }
 
     @JsonGetter("city")

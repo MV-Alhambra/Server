@@ -17,9 +17,7 @@ public class CityTest {
         tempBuildings[2][2] = new Building(null,0);
         tempBuildings[1][2] = building;
         //auto tests if expanding works
-        System.out.println(Arrays.deepToString(city1.getBuildings()));
         city1.placeBuilding(building,new Location(0,-1));
-        System.out.println(Arrays.deepToString(city1.getBuildings()));
         //tests if the building was actually placed and on the right place
         assertArrayEquals(tempBuildings,city1.getBuildings());
         //tests if it throws error when placing building on a building
