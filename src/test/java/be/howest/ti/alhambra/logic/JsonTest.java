@@ -141,11 +141,28 @@ class JsonTest {
         // Assert that this object has the expected properties
         assertTrue(reserveAsJsonObject.containsKey("reserve"));
 
-        // Assert that you can convert it back to the same coins.
+        // Assert that you can convert it back to the same reserve.
         assertEquals(reserve, reserveAsJsonObject.mapTo(Reserve.class));
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
 
+    }
+    @Test
+    void player(){
+        // Create player
+        Player player = new Player("Player1");
+
+        // Turn it into a JsonObject
+        JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
+
+        // Assert that this object has the expected properties
+        assertTrue(playerAsJsonObject.containsKey("player"));
+
+        // Assert that you can convert it back to the same player.
+        assertEquals(player, playerAsJsonObject.mapTo(Player.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(player, Json.decodeValue(Json.encode(player), Player.class));
     }
 }
