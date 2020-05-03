@@ -33,4 +33,24 @@ public class Lobby {
         return playersReady.size();
     }
 
+    public void readyUpPlayer(String name){
+        playersReady.replace(name, true);
+    }
+
+    public void unreadyPlayer(String name){
+        playersReady.replace(name, false);
+    }
+
+    public int amountReady(){
+        int amountReady = 0;
+        for (boolean player : playersReady.values()) {
+            if (player){
+                amountReady ++;
+            }
+        }
+        return amountReady;
+    }
+
+    
+
 }
