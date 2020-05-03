@@ -1,12 +1,23 @@
 package be.howest.ti.alhambra.logic;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
+
 public class Player {
-    public static void main(String[] args) {
-        new Player().run();
+    private final String name;
+
+    @JsonCreator
+    public Player(@JsonProperty("player") String name){
+        this.name = name;
     }
 
-    void run() {
-
+    @JsonGetter("player")
+    public String getName() {
+        return name;
     }
+    
 
 }
