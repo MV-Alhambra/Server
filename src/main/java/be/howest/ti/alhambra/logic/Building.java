@@ -54,12 +54,7 @@ public class Building {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Building building = (Building) o;
-        System.out.println("@@@ The start of Comparing inside equals of Building @@@");
-        System.out.println("Cost is equal: " + (cost == building.cost) + " type is equal: "+  Objects.equals(type, building.type) + " Walls equal: " +Objects.equals(walls, building.walls) );
-        System.out.println("@@@ The end of Comparing inside equals of Building @@@");
-        return cost == building.cost &&
-                Objects.equals(type, building.type) &&
-                Objects.equals(walls, building.walls);
+        return cost == building.cost && Objects.equals(type, building.type) && Objects.equals(walls, building.walls);
     }
 
     @Override
