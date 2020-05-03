@@ -1,5 +1,6 @@
 package be.howest.ti.alhambra.logic;
 
+import com.fasterxml.jackson.core.Version;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ class JsonTest {
     }
 
     @Test
-    void bank(){
+    void bank() {
         // Create a bank ...
         Bank bank = new Bank();
 
@@ -66,7 +67,7 @@ class JsonTest {
         assertEquals(bank, Json.decodeValue(Json.encode(bank), Bank.class));
 
     }
-    
+
     @Test
     void building() {
         // Create a building ...
@@ -89,12 +90,12 @@ class JsonTest {
 
     @Test
     void buildingType() {
-        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
-        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
+        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion");
+        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers");
     }
 
     @Test
-    void coins(){
+    void coins() {
         // Create a coins ...
         Coins coins = new Coins();
 
@@ -113,8 +114,7 @@ class JsonTest {
     }
 
     @Test
-    void market()
-    {
+    void market() {
         // Create a market ...
         Market market = new Market();
 
@@ -130,8 +130,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(market, Json.decodeValue(Json.encode(market), Market.class));
     }
+
     @Test
-    void reserve(){
+    void reserve() {
         // Create reserve
         Reserve reserve = new Reserve();
 
@@ -148,14 +149,15 @@ class JsonTest {
         assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
 
     }
+
     @Test
-    void player(){
+    void player() {
         // Create player
         Player player = new Player("Henk");
 
         // Turn it into a JsonObject
         JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
-        //System.out.println(playerAsJsonObject);
+        System.out.println(playerAsJsonObject);
         // Assert that this object has the expected properties
         assertTrue(playerAsJsonObject.containsKey("name"));
         //assertTrue(playerAsJsonObject.containsKey("city")); temp
