@@ -151,13 +151,13 @@ class JsonTest {
     @Test
     void player(){
         // Create player
-        Player player = new Player("Player1");
+        Player player = new Player("p1");
 
         // Turn it into a JsonObject
         JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
 
         // Assert that this object has the expected properties
-        assertTrue(playerAsJsonObject.containsKey("player"));
+        assertTrue(playerAsJsonObject.containsKey("name"));
 
         // Assert that you can convert it back to the same player.
         assertEquals(player, playerAsJsonObject.mapTo(Player.class));

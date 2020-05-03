@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Player {
     private final String name;
 
     @JsonCreator
-    public Player(@JsonProperty("player") String name){
+    public Player(@JsonProperty("name") String name){
         this.name = name;
     }
 
@@ -19,6 +18,7 @@ public class Player {
     public String getName() {
         return name;
     }
+
 
     @Override
     public boolean equals(Object o) {
