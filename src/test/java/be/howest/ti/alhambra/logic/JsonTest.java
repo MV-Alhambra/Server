@@ -113,7 +113,9 @@ class JsonTest {
     void city(){
         // Create a city ...
         City city = new City();
+        City city2 = new City();
 
+        //assertEquals(city,city2);
         // Turn it into a JsonObject
         JsonObject cityAsJsonObject = JsonObject.mapFrom(city);
 
@@ -121,7 +123,11 @@ class JsonTest {
         assertTrue(cityAsJsonObject.containsKey("city"));
 
         // Assert that you can convert it back to the same city.
-        System.out.println("Original "+city);
+
+
+        assertArrayEquals(city.getBuildings(),cityAsJsonObject.mapTo(City.class).getBuildings());
+
+        System.out.println("Original  "+city);
         System.out.println(cityAsJsonObject);
         System.out.println("Converted "+cityAsJsonObject.mapTo(City.class));
 

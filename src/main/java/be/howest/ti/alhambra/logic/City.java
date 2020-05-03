@@ -76,6 +76,17 @@ public class City {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         City city = (City) o;
+        System.out.println("@@@ Comparing inside equals of city @@@");
+        System.out.println("mapSize is equal: "+ (mapSize == city.mapSize) + " buildings is equal: " + Arrays.equals(buildings, city.buildings));
+        System.out.println("buildings: " +Arrays.deepToString(buildings));
+        System.out.println("Compared to other buildings: " + Arrays.deepToString(city.buildings));
+        for(int i =0;i<buildings.length;i++){
+            System.out.println("Building[] is equal "+Arrays.equals(buildings[i], city.buildings[i]));
+            for (int j = 0;j<buildings[i].length;j++){
+                System.out.println("Cell is equal " + ( buildings[i][j] == null||buildings[i][j].equals(city.buildings[i][j])) + " Cell1: "+ buildings[i][j] + " Cell2: " + city.buildings[i][j] );
+            }
+        }
+        System.out.println("@@@ The end of Comparing inside equals of city @@@");
         return mapSize == city.mapSize &&
                 Arrays.equals(buildings, city.buildings);
     }
