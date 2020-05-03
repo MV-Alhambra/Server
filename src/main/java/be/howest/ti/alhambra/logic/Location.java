@@ -14,6 +14,11 @@ public class Location {
         this.row = row;
     }
 
+    public static Location convertLocationToStaticLocation(Location location, int mapSize) { //turns the dynamic location/location based around fountain into location based on top left
+        int mapRadius = (mapSize - 1) / 2;
+        return new Location(location.getCol() + mapRadius, location.getRow() + mapRadius);
+    }
+
     public int getCol() {
         return col;
     }
@@ -33,5 +38,13 @@ public class Location {
         if (o == null || getClass() != o.getClass()) return false;
         Location location = (Location) o;
         return col == location.col && row == location.row;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "col=" + col +
+                ", row=" + row +
+                '}';
     }
 }

@@ -50,7 +50,7 @@ class JsonTest {
     }
 
     @Test
-    void bank(){
+    void bank() {
         // Create a bank ...
         Bank bank = new Bank();
 
@@ -66,7 +66,7 @@ class JsonTest {
         assertEquals(bank, Json.decodeValue(Json.encode(bank), Bank.class));
 
     }
-    
+
     @Test
     void building() {
         // Create a building ...
@@ -89,12 +89,12 @@ class JsonTest {
 
     @Test
     void buildingType() {
-        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
-        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
+        assertEquals("pavilion", BuildingType.valueOf("PAVILION").toString());
+        assertEquals("chambers", BuildingType.valueOf("CHAMBERS").toString());
     }
 
     @Test
-    void coins(){
+    void coins() {
         // Create a coins ...
         Coins coins = new Coins();
 
@@ -113,6 +113,25 @@ class JsonTest {
     }
 
     @Test
+    void city(){
+        // Create a city ...
+        City city = new City();
+
+        // Turn it into a JsonObject
+        JsonObject cityAsJsonObject = JsonObject.mapFrom(city);
+
+        // Assert that this object has the expected properties
+        assertTrue(cityAsJsonObject.containsKey("city"));
+
+        // Assert that you can convert it back to the same city.
+        assertEquals(city, cityAsJsonObject.mapTo(City.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
+
+    }
+    
+    @Test
     void market()
     {
         // Create a market ...
@@ -130,6 +149,7 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(market, Json.decodeValue(Json.encode(market), Market.class));
     }
+    
     @Test
     void reserve(){
         // Create reserve

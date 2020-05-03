@@ -13,16 +13,13 @@ public class Bank {
 
     @JsonCreator
     public Bank(@JsonProperty("bank") Coin[] bank) {
-        if (bank.length != 4) {
-            throw new IllegalArgumentException("Only arrays of length 4 allowed");
-        }
+        if (bank.length != 4) throw new IllegalArgumentException("Only arrays of length 4 allowed");
         this.bankCoins = bank;
     }
 
     public void removeCoins(Coin[] coins) {
-        if (coins.length > 4) {
-            throw new IllegalArgumentException("Can only remove upto 4 coins");
-        }
+        if (coins.length > 4) throw new IllegalArgumentException("Can only remove upto 4 coins");
+
         for (Coin coin : coins) {
             boolean flag = true;
             for (int i = 0; i < this.bankCoins.length && flag; i++) {
