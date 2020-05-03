@@ -30,7 +30,7 @@ public class City {
         return buildings;
     }
 
-    public void placeBuilding(Building building, Location location) { // #todo add validation for building allowed to be placed
+    public void placeBuilding(Building building, Location location) { // #todo add validation for building allowed to be placed ivm walls,
         location = Location.convertLocationToStaticLocation(location, mapSize);
 
         if (buildings[location.getRow()][location.getCol()] != null) { // atm i only check if  the location is already used
@@ -41,7 +41,7 @@ public class City {
         checkMapSize();
     }
 
-    private void checkMapSize() {
+    private void checkMapSize() { //checks if the city needs to be expanded
         for (int row = 0; row < buildings.length; row++) {
             for (int col = 0; col < buildings.length; col++) {
                 if (buildings[col][row] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) {
@@ -52,7 +52,7 @@ public class City {
         }
     }
 
-    private void updateMapSize() {
+    private void updateMapSize() { //expands the city
         mapSize += 2;
 
         Building[][] newBuildings = new Building[mapSize][mapSize];
@@ -68,10 +68,10 @@ public class City {
     public void removeBuilding(Location location) {
         location = Location.convertLocationToStaticLocation(location, mapSize);
 
-        if (buildings[location.getCol()][location.getRow()] == null) {
+        if (buildings[location.getRow()][location.getCol()] == null) {
             throw new IllegalArgumentException("Location is already empty");
         } else {
-            buildings[location.getCol()][location.getRow()] = null;
+            buildings[location.getRow()][location.getCol()] = null;
         }
     }
 
