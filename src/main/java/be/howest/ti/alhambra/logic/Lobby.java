@@ -16,6 +16,18 @@ public class Lobby {
         this.playersReady = new LinkedHashMap<>();
     }
 
+    public void addPlayer(String name){
+        if (playerCount() < 6) {
+            if (playersReady.containsKey(name)) {
+                throw new IllegalArgumentException("Name already used");
+            } else {
+                playersReady.put(name, false);
+            }
+        }
+    }
 
+    public int playerCount() {
+        return playersReady.size();
+    }
 
 }
