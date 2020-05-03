@@ -4,6 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonTest {
@@ -127,5 +130,42 @@ class JsonTest {
         assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
 
     }
+    
+    @Test
+    void market()
+    {
+        // Create a market ...
+        Market market = new Market();
 
+        // Turn it into a JsonObject
+        JsonObject marketAsJsonObject = JsonObject.mapFrom(market);
+
+        // Assert that this object has the expected properties
+        assertTrue(marketAsJsonObject.containsKey("market"));
+
+        // Assert that you can convert it back to the same market.
+        assertEquals(market, marketAsJsonObject.mapTo(Market.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(market, Json.decodeValue(Json.encode(market), Market.class));
+    }
+    
+    @Test
+    void reserve(){
+        // Create reserve
+        Reserve reserve = new Reserve();
+
+        // Turn it into a JsonObject
+        JsonObject reserveAsJsonObject = JsonObject.mapFrom(reserve);
+
+        // Assert that this object has the expected properties
+        assertTrue(reserveAsJsonObject.containsKey("reserve"));
+
+        // Assert that you can convert it back to the same coins.
+        assertEquals(reserve, reserveAsJsonObject.mapTo(Reserve.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
+
+    }
 }
