@@ -69,11 +69,16 @@ public class Lobby {
     }
 
     public void startGame(){
-        if (amountReady() == playerCount()){
-            this.started = true;
+        if (playerCount() > 2){
+            if (amountReady() == playerCount()){
+                this.started = true;
+            }
+            else {
+                throw new IllegalStateException("All players need to be ready to start game");
+            }
         }
         else {
-            throw new IllegalStateException("All players need to be ready to start game");
+            throw new IllegalStateException("You must be with 2 players to start a game");
         }
     }
 

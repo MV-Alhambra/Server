@@ -61,6 +61,10 @@ class LobbyTest {
     void startGame() {
         Lobby lobby = new Lobby("game021-005");
         lobby.addPlayer("Joe");
+
+        //checks if the lobby is with more then 1 player
+        assertThrows(IllegalStateException.class, lobby::startGame);
+
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
         lobby.readyUpPlayer("Joe");
