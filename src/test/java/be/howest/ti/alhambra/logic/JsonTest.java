@@ -203,9 +203,10 @@ class JsonTest {
         JsonObject lobbyAsJsonObject = JsonObject.mapFrom(lobby);
 
         // Assert that this object has the expected properties
-        assertTrue(lobbyAsJsonObject.containsKey("gameId"));
+        assertTrue(lobbyAsJsonObject.containsKey("id"));
         assertTrue(lobbyAsJsonObject.containsKey("started"));
-        assertTrue(lobbyAsJsonObject.containsKey("playersReady"));
+        assertTrue(lobbyAsJsonObject.containsKey("players"));
+        assertTrue(lobbyAsJsonObject.containsKey("playerCount"));
 
         // Assert that you can convert it back to the same lobby.
         assertEquals(lobby, lobbyAsJsonObject.mapTo(Lobby.class));
