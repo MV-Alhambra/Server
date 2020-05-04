@@ -49,12 +49,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getGames(RoutingContext ctx) {
         LOGGER.info("getGames");
-        return null;
+        return controller.getLobbies();
     }
 
     public Object createGame(RoutingContext ctx) {
         LOGGER.info("createGame");
-        return null;
+        return controller.addLobby();
     }
 
     public Object clearGames(RoutingContext ctx) {
