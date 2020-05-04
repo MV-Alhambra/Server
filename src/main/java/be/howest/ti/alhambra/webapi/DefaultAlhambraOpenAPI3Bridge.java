@@ -39,7 +39,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getCurrencies(RoutingContext ctx) {
         LOGGER.info("getCurrencies");
-        return null;
+        return controller.getCurrencies();
     }
 
     public Object getScoringTable(RoutingContext ctx) {

@@ -66,6 +66,8 @@ public class Lobby {
             }
         }
         return amountReady;
+
+        //return  playersReady.values().stream().filter( status  )
     }
 
     public void startGame(){
@@ -95,5 +97,14 @@ public class Lobby {
     @Override
     public int hashCode() {
         return Objects.hash(started, gameId, playersReady);
+    }
+
+    @Override
+    public String toString() {
+        return "Lobby{" +
+                "started=" + started +
+                ", gameId='" + gameId + '\'' +
+                ", playersReady=" + playersReady +
+                '}';
     }
 }

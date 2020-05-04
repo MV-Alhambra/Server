@@ -7,5 +7,9 @@ public class AlhambraController {
         return new Building(null, -1, null);
     }
 
+    public Currency[] getCurrencies(){
+        return  Currency.values();
+    }
+
 
 }
