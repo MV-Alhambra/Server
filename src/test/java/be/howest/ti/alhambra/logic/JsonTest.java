@@ -91,8 +91,8 @@ class JsonTest {
     @Test
     void buildingType() {
         // TODO test doesnt belong here, change to other file
-        assertEquals(BuildingType.valueOf("PAVILION").toString(), "pavilion" );
-        assertEquals(BuildingType.valueOf("CHAMBERS").toString(), "chambers" );
+        assertEquals("pavilion", BuildingType.valueOf("PAVILION").toString() );
+        assertEquals("chambers" , BuildingType.valueOf("CHAMBERS").toString());
     }
 
     @Test
@@ -177,10 +177,10 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
-        System.out.println(playerAsJsonObject);
+
         // Assert that this object has the expected properties
         assertTrue(playerAsJsonObject.containsKey("name"));
-        //assertTrue(playerAsJsonObject.containsKey("city")); temp
+        assertTrue(playerAsJsonObject.containsKey("city"));
         assertTrue(playerAsJsonObject.containsKey("reserve"));
         assertTrue(playerAsJsonObject.containsKey("coins"));
         assertTrue(playerAsJsonObject.containsKey("buildings-in-hand"));
