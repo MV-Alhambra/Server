@@ -1,5 +1,6 @@
 package be.howest.ti.alhambra.logic;
 
+import com.fasterxml.jackson.core.Version;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
@@ -150,9 +151,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(market, Json.decodeValue(Json.encode(market), Market.class));
     }
-    
+
     @Test
-    void reserve(){
+    void reserve() {
         // Create reserve
         Reserve reserve = new Reserve();
 
@@ -162,14 +163,39 @@ class JsonTest {
         // Assert that this object has the expected properties
         assertTrue(reserveAsJsonObject.containsKey("reserve"));
 
-        // Assert that you can convert it back to the same coins.
+        // Assert that you can convert it back to the same reserve.
         assertEquals(reserve, reserveAsJsonObject.mapTo(Reserve.class));
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(reserve, Json.decodeValue(Json.encode(reserve), Reserve.class));
-
     }
 
+    @Test
+    void player() {
+        // Create player
+        Player player = new Player("Henk");
+
+        // Turn it into a JsonObject
+        JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
+        System.out.println(playerAsJsonObject);
+        // Assert that this object has the expected properties
+        assertTrue(playerAsJsonObject.containsKey("name"));
+        //assertTrue(playerAsJsonObject.containsKey("city")); temp
+        assertTrue(playerAsJsonObject.containsKey("reserve"));
+        assertTrue(playerAsJsonObject.containsKey("coins"));
+        assertTrue(playerAsJsonObject.containsKey("buildings-in-hand"));
+        assertTrue(playerAsJsonObject.containsKey("virtual-score"));
+        assertTrue(playerAsJsonObject.containsKey("score"));
+        assertFalse(playerAsJsonObject.containsKey("playerToken"));
+
+        // Assert that you can convert it back to the same player.
+        assertEquals(player, playerAsJsonObject.mapTo(Player.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(player, Json.decodeValue(Json.encode(player), Player.class));
+        
+    }
+    
     @Test
     void lobby(){
         // Create lobby

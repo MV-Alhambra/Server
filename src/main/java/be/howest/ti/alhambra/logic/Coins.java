@@ -12,7 +12,6 @@ public class Coins {
         this.coinsBag = coins;
     }
 
-    @JsonCreator
     public Coins() {
         this(new ArrayList<>());
     }
