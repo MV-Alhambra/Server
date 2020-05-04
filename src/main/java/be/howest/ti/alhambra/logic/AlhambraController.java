@@ -11,5 +11,6 @@ public class AlhambraController {
         return  Currency.values();
     }
 
+    public BuildingType[] getBuildingTypes(){ return BuildingType.values(); }
 
 }
