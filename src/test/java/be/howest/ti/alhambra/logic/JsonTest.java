@@ -201,7 +201,7 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject lobbyAsJsonObject = JsonObject.mapFrom(lobby);
-        System.out.println(lobbyAsJsonObject);
+
         // Assert that this object has the expected properties
         assertTrue(lobbyAsJsonObject.containsKey("id"));
         assertTrue(lobbyAsJsonObject.containsKey("started"));
