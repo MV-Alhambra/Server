@@ -9,7 +9,6 @@ public class Player {
     @JsonProperty("coins")
     private final Coins coins;
     private final Reserve reserve;
-    @JsonIgnore //temp since city doesnt exist yet
     private final City city;
     private final int score;
     private final int virtualScore;
@@ -19,16 +18,15 @@ public class Player {
 
 
     public Player(String name) {
-        this(name, new ArrayList<>(), new ArrayList<>(),/* new City(),*/ new ArrayList<>(), 0, 0);
+        this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0);
     }
 
     @JsonCreator
-    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve,/* @JsonProperty("city") City city, */@JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore) {
+    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore) {
         this.name = name;
         this.coins = new Coins(coins);
         this.reserve = new Reserve(reserve);
-        /*this.city = new City(city); */
-        this.city = new City();//temp
+        this.city = new City(city);
         this.buildingsInHand = buildingsInHand;
         this.score = score;
         this.virtualScore = virtualScore;
@@ -47,6 +45,11 @@ public class Player {
     @JsonProperty("reserve") //this method is solely used for JSON conversion
     public List<Building> reserveConvert(){
         return reserve.getBuildings();
+    }
+
+    @JsonProperty("city") //this method is solely used for JSON conversion
+    public Building[][] cityConvert(){
+        return city.getBuildings();
     }
 
     public Coins getCoins() {
