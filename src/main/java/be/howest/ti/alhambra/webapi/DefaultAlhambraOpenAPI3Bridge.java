@@ -64,7 +64,8 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object joinGame(RoutingContext ctx) {
         LOGGER.info("joinGame");
-        return null;
+        String gameId = ctx.request().getParam("gameId");
+        return controller.joinLobby(gameId, ctx.getBodyAsJson().getValue("playerName").toString());
     }
 
 
