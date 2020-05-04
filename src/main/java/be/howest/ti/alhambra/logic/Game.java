@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 public class Game {
-    private boolean started;
     private boolean ended;
     private String currentPlayer;
     private List<Player> players;
@@ -14,21 +13,16 @@ public class Game {
     private Market market;
 
     public Game() {
-        this(true, false, "", new ArrayList<>(), new Coin[4], new HashMap<>());
+        this(false, "", new ArrayList<>(), new Coin[4], new HashMap<>());
     }
 
     @JsonCreator
-    public Game(@JsonProperty("started") boolean started, @JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market) {
-        this.started = started;
+    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market) {
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
-    }
-
-    public boolean isStarted() {
-        return started;
     }
 
     public boolean isEnded() {
@@ -63,7 +57,7 @@ public class Game {
 
     @Override
     public int hashCode() {
-        return Objects.hash(started, ended, currentPlayer, players, bank, market);
+        return Objects.hash(ended, currentPlayer, players, bank, market);
     }
 
     @Override
@@ -71,8 +65,7 @@ public class Game {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return started == game.started &&
-                ended == game.ended &&
+        return  ended == game.ended &&
                 Objects.equals(currentPlayer, game.currentPlayer) &&
                 Objects.equals(players, game.players) &&
                 Objects.equals(bank, game.bank) &&
@@ -82,8 +75,7 @@ public class Game {
     @Override
     public String toString() {
         return "Game{" +
-                "started=" + started +
-                ", ended=" + ended +
+                "ended=" + ended +
                 ", CurrentPlayer='" + currentPlayer + '\'' +
                 ", players=" + players +
                 ", bank=" + bank +
