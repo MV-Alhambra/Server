@@ -68,15 +68,19 @@ public class Lobby {
         return playersReady.size();
     }
 
+    public void removePlayer(String name) {
+        if (!playersReady.containsKey(name)) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+        playersReady.remove(name);
+        playerCount = playerCount();
+    }
+
     public boolean readyUpPlayer(String name) {
-        if (playersReady.replace(name, true) == null)
-            throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+        if (playersReady.replace(name, true) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
         return true;
     }
 
     public boolean unreadyPlayer(String name) {
-        if (playersReady.replace(name, false) == null)
-            throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+        if (playersReady.replace(name, false) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
         return true;
     }
 
