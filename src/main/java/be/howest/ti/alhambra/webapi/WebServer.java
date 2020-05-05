@@ -61,7 +61,6 @@ public class WebServer extends AbstractVerticle {
                 JsonObject config = ar.result();
                 int port = config.getInteger("port", PORT_FALLBACK);
                 String spec = config.getString("openApi3Spec", OPEN_API3_FILE_FALLBACK);
-
                 LOGGER.info("Starting web server with config: port {0} (fallback: {1})", "" + port, "" + PORT_FALLBACK);
                 LOGGER.info("Starting web server with config: spec {0} (fallback: {1})", "" + spec, "" + OPEN_API3_FILE_FALLBACK);
 
