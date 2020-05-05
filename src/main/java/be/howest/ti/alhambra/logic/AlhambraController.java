@@ -44,5 +44,8 @@ public class AlhambraController {
       return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElseThrow(()-> new AlhambraEntityNotFoundException("Lobby ("+ gameId+") not found!"));
     }
 
+    public boolean readyUp(String gameId, String playerName){
+        return findLobby(gameId).readyUpPlayer(playerName);
+    }
 
 }

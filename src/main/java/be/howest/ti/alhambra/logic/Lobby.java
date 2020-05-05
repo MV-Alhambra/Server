@@ -1,13 +1,14 @@
 package be.howest.ti.alhambra.logic;
 
 
+import be.howest.ti.alhambra.logic.exceptions.AlhambraEntityNotFoundException;
+import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -53,12 +54,12 @@ public class Lobby {
     public void addPlayer(String name) {
         if (playerCount() < MAX_PLAYER_COUNT) {
             if (playersReady.containsKey(name)) {
-                throw new IllegalArgumentException("Name already used");
+                throw new AlhambraGameRuleException("Name already used");
             } else {
                 playersReady.put(name, false);
             }
         } else {
-            throw new IllegalStateException("The lobby is full");
+            throw new AlhambraGameRuleException("The lobby is full");
         }
         playerCount = playerCount();
     }
@@ -67,12 +68,14 @@ public class Lobby {
         return playersReady.size();
     }
 
-    public void readyUpPlayer(String name) {
-        playersReady.replace(name, true);
+    public boolean readyUpPlayer(String name) {
+        if (playersReady.replace(name, true) ==null)throw new AlhambraEntityNotFoundException("Couldn't find that player: "+name);
+        return true;
     }
 
-    public void unreadyPlayer(String name) {
-        playersReady.replace(name, false);
+    public boolean unreadyPlayer(String name) {
+        if (playersReady.replace(name, false) ==null)throw new AlhambraEntityNotFoundException("Couldn't find that player: "+name);
+        return true;
     }
 
     public void startGame() {
@@ -80,10 +83,10 @@ public class Lobby {
             if (amountReady() == playerCount()) {
                 this.started = true;
             } else {
-                throw new IllegalStateException("All players need to be ready to start game");
+                throw new AlhambraGameRuleException("All players need to be ready to start game");
             }
         } else {
-            throw new IllegalStateException("You must be with 2 players to start a game");
+            throw new AlhambraGameRuleException("You must be with 2 players to start a game");
         }
     }
 
