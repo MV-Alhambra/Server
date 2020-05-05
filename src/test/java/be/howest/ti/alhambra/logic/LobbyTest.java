@@ -1,5 +1,6 @@
 package be.howest.ti.alhambra.logic;
 
+import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ class LobbyTest {
         lobby.addPlayer("Howard");
         lobby.addPlayer("Travis");
         lobby.addPlayer("John");
-        assertThrows(IllegalStateException.class, () -> lobby.addPlayer("Dillon"));
+        assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Dillon"));
 
     }
 
@@ -32,7 +33,7 @@ class LobbyTest {
         lobby.addPlayer("Jef");
 
         //throw error if player name already exits
-        assertThrows(IllegalArgumentException.class, () -> lobby.addPlayer("Carol"));
+        assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Carol"));
     }
 
     @Test
@@ -63,7 +64,7 @@ class LobbyTest {
         lobby.addPlayer("Joe");
 
         //checks if the lobby is with more then 1 player
-        assertThrows(IllegalStateException.class, lobby::startGame);
+        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
 
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
@@ -71,7 +72,7 @@ class LobbyTest {
         lobby.readyUpPlayer("Carol");
 
         // checks if all players are ready to start
-        assertThrows(IllegalStateException.class, lobby::startGame);
+        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
 
         // starting game
         lobby.readyUpPlayer("Jef");
