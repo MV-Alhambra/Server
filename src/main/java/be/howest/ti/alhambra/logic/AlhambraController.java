@@ -40,6 +40,16 @@ public class AlhambraController {
         return "playerToken";
     }
 
+    public Boolean leaveLobby(String gameId,String name){
+        try {
+            findLobby(gameId).removePlayer(name);
+        }catch (AlhambraEntityNotFoundException exception){
+            //try leaving a game instead but that's for a different issue
+            throw exception;//temp since not implemented yet
+        }
+        return true;
+    }
+
     private Lobby findLobby(String gameId){
       return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElseThrow(()-> new AlhambraEntityNotFoundException("Lobby ("+ gameId+") not found!"));
     }

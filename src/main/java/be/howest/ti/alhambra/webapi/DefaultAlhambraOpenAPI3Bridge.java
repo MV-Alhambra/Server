@@ -64,28 +64,23 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object joinGame(RoutingContext ctx) {
         LOGGER.info("joinGame");
-        String gameId = ctx.request().getParam("gameId");
-        return controller.joinLobby(gameId, ctx.getBodyAsJson().getValue("playerName").toString());
+        return controller.joinLobby(getGameId(ctx), ctx.getBodyAsJson().getValue("playerName").toString());
     }
 
 
     public Object leaveGame(RoutingContext ctx) {
         LOGGER.info("leaveGame");
-        return null;
+        return controller.leaveLobby(getGameId(ctx),getPlayerName(ctx));
     }
 
     public Object setReady(RoutingContext ctx) {
         LOGGER.info("setReady");
-        String gameId = ctx.request().getParam("gameId");
-        String playerName = ctx.request().getParam("playerName");
-        return controller.readyUp(gameId,playerName);
+        return controller.readyUp(getGameId(ctx),getPlayerName(ctx));
     }
 
     public Object setNotReady(RoutingContext ctx) {
         LOGGER.info("setNotReady");
-        String gameId = ctx.request().getParam("gameId");
-        String playerName = ctx.request().getParam("playerName");
-        return controller.readyDown(gameId,playerName);
+        return controller.readyDown(getGameId(ctx),getPlayerName(ctx));
     }
 
     public Object takeMoney(RoutingContext ctx) {
@@ -112,6 +107,14 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
     public Object getGame(RoutingContext ctx) {
         LOGGER.info("getGame");
         return null;
+    }
+
+    private String getGameId(RoutingContext ctx){
+        return ctx.request().getParam("gameId");
+    }
+
+    private String getPlayerName(RoutingContext ctx){
+       return ctx.request().getParam("playerName");
     }
 
 }
