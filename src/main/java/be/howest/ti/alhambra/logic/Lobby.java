@@ -98,10 +98,10 @@ public class Lobby {
         return true;
     }
 
-    public void startGame() {
+    public Game startGame() {
         if (countPlayer() > MIN_PLAYER_COUNT) {
             if (readyCount == playerCount) {
-                //#todo
+               return new Game(playersReady.keySet());
             } else {
                 throw new AlhambraGameRuleException("All players need to be ready to start game");
             }

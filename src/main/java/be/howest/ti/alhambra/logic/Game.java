@@ -25,6 +25,17 @@ public class Game {
         this.market = new Market(market);
     }
 
+    public Game(Set<String> names) {
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
+    }
+
+    public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
+        List<Player> newPlayers = new ArrayList<>();
+        keySet.forEach(name-> newPlayers.add(new Player(name)));
+        return newPlayers;
+    }
+
+
     public boolean isEnded() {
         return ended;
     }
@@ -65,7 +76,7 @@ public class Game {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return  ended == game.ended &&
+        return ended == game.ended &&
                 Objects.equals(currentPlayer, game.currentPlayer) &&
                 Objects.equals(players, game.players) &&
                 Objects.equals(bank, game.bank) &&
