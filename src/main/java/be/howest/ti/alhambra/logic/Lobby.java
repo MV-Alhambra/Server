@@ -120,7 +120,6 @@ public class Lobby {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lobby lobby = (Lobby) o;
-        return Objects.equals(id, lobby.id) &&
-                Objects.equals(playersReady, lobby.playersReady);
+        return Objects.equals(id, lobby.id);
     }
 }
