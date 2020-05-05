@@ -18,32 +18,48 @@ public class Lobby {
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
-    private boolean started;
     private Map<String, Boolean> playersReady;
-    private int playerCount = 0;
+    private int playerCount;
+    private int readyCount;
 
     public Lobby(String gameId) {
-        this(gameId, false, new HashMap<>());
+        this(gameId, new HashMap<>());
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("started") boolean started, @JsonProperty("players") Map<String, Boolean> playersReady) {
-        this.started = started;
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") Map<String, Boolean> playersReady) {
         this.id = id;
         this.playersReady = playersReady;
+        updatePlayerCount();
+        updateReadyCount();
     }
 
-    public boolean isStarted() {
-        return started;
+    private void updatePlayerCount() {
+        playerCount = countPlayer();
+    }
+
+    private void updateReadyCount() {
+        readyCount = countReady();
+    }
+
+    public int countPlayer() {
+        return playersReady.size();
+    }
+
+    public int countReady() {
+        return (int) playersReady.values().stream().filter(status -> status).count();
     }
 
     public String getId() {
         return id;
     }
 
-
     public int getPlayerCount() {
         return playerCount;
+    }
+
+    public int getReadyCount() {
+        return readyCount;
     }
 
     @JsonGetter("players")
@@ -52,7 +68,7 @@ public class Lobby {
     }
 
     public void addPlayer(String name) {
-        if (playerCount() < MAX_PLAYER_COUNT) {
+        if (countPlayer() < MAX_PLAYER_COUNT) {
             if (playersReady.containsKey(name)) {
                 throw new AlhambraGameRuleException("Name already used");
             } else {
@@ -61,33 +77,31 @@ public class Lobby {
         } else {
             throw new AlhambraGameRuleException("The lobby is full");
         }
-        playerCount = playerCount();
-    }
-
-    public int playerCount() {
-        return playersReady.size();
+        updatePlayerCount();
     }
 
     public void removePlayer(String name) {
         if (!playersReady.containsKey(name)) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
         playersReady.remove(name);
-        playerCount = playerCount();
+        updatePlayerCount();
     }
 
     public boolean readyUpPlayer(String name) {
         if (playersReady.replace(name, true) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+        updateReadyCount();
         return true;
     }
 
     public boolean unreadyPlayer(String name) {
         if (playersReady.replace(name, false) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+        updateReadyCount();
         return true;
     }
 
     public void startGame() {
-        if (playerCount() > MIN_PLAYER_COUNT) {
-            if (amountReady() == playerCount()) {
-                this.started = true;
+        if (countPlayer() > MIN_PLAYER_COUNT) {
+            if (readyCount == playerCount) {
+                //#todo
             } else {
                 throw new AlhambraGameRuleException("All players need to be ready to start game");
             }
@@ -96,13 +110,9 @@ public class Lobby {
         }
     }
 
-    public int amountReady() {
-        return (int) playersReady.values().stream().filter(status -> status).count();
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(started, id, playersReady);
+        return Objects.hash(id, playersReady);
     }
 
     @Override
@@ -110,17 +120,7 @@ public class Lobby {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lobby lobby = (Lobby) o;
-        return started == lobby.started &&
-                Objects.equals(id, lobby.id) &&
+        return Objects.equals(id, lobby.id) &&
                 Objects.equals(playersReady, lobby.playersReady);
-    }
-
-    @Override
-    public String toString() {
-        return "Lobby{" +
-                "started=" + started +
-                ", gameId='" + id + '\'' +
-                ", playersReady=" + playersReady +
-                '}';
     }
 }

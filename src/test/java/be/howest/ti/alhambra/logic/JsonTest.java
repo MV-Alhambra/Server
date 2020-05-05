@@ -204,7 +204,7 @@ class JsonTest {
 
         // Assert that this object has the expected properties
         assertTrue(lobbyAsJsonObject.containsKey("id"));
-        assertTrue(lobbyAsJsonObject.containsKey("started"));
+        assertTrue(lobbyAsJsonObject.containsKey("readyCount"));
         assertTrue(lobbyAsJsonObject.containsKey("players"));
         assertTrue(lobbyAsJsonObject.containsKey("playerCount"));
 
