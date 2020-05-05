@@ -14,9 +14,9 @@ import java.util.Objects;
 
 public class Lobby {
     @JsonIgnore
-    private final static int MAX_PLAYER_COUNT = 6;
+    private static final int MAX_PLAYER_COUNT = 6;
     @JsonIgnore
-    private final static int MIN_PLAYER_COUNT = 2;
+    private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
     private boolean started;
     private Map<String, Boolean> playersReady;
@@ -69,12 +69,14 @@ public class Lobby {
     }
 
     public boolean readyUpPlayer(String name) {
-        if (playersReady.replace(name, true) ==null)throw new AlhambraEntityNotFoundException("Couldn't find that player: "+name);
+        if (playersReady.replace(name, true) == null)
+            throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
         return true;
     }
 
     public boolean unreadyPlayer(String name) {
-        if (playersReady.replace(name, false) ==null)throw new AlhambraEntityNotFoundException("Couldn't find that player: "+name);
+        if (playersReady.replace(name, false) == null)
+            throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
         return true;
     }
 
