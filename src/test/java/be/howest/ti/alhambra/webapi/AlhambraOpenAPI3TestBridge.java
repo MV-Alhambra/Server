@@ -129,4 +129,9 @@ class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
         LOGGER.info("getGame");
         return null;
     }
+
+    @Override
+    public Object getTest(RoutingContext ctx) {
+        return null;
+    }
 }

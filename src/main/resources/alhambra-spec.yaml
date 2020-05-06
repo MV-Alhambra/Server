@@ -237,6 +237,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/currency'
+  '/test':
+    get:
+      tags:
+        - data
+      summary: test
+      operationId: getTest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: String
   '/scoring/{round}':
     parameters:
       - name: round
