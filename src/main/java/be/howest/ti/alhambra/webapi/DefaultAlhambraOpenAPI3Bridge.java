@@ -109,10 +109,9 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return null;
     }
 
-    @Override
-    public Object getTest(RoutingContext ctx) {
-        LOGGER.info("getGame");
-        return "test";
+    public Object startGame(RoutingContext ctx) {
+        LOGGER.info("startGame");
+        return "started the game";
     }
 
     private String getGameId(RoutingContext ctx){
