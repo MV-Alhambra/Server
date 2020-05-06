@@ -99,11 +99,11 @@ public class Lobby {
     }
 
     public Game startGame() {
-        if (countPlayer() > MIN_PLAYER_COUNT) {
+        if (countPlayer() >= MIN_PLAYER_COUNT) {
             if (readyCount == playerCount) {
                return new Game(playersReady.keySet());
             } else {
-                throw new AlhambraGameRuleException("All players need to be ready to start game");
+                throw new AlhambraGameRuleException("All players need to be ready to start the game");
             }
         } else {
             throw new AlhambraGameRuleException("You must be with 2 players to start a game");
