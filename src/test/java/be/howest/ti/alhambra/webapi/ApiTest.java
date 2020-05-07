@@ -196,7 +196,7 @@ class ApiTest {
         );
     }
 
-    @Test
+    //@Test createGame doesnt use a body anymore
     void createGameWithInvalidBody(final VertxTestContext testContext) {
         testRequest(
                 testContext,
