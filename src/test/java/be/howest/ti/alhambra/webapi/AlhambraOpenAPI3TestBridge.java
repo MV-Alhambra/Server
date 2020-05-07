@@ -1,9 +1,7 @@
 package be.howest.ti.alhambra.webapi;
 
-import be.howest.ti.alhambra.exceptions.AlhambraException;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraEntityNotFoundException;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
-
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
@@ -12,13 +10,11 @@ import java.util.Collections;
 
 class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AlhambraOpenAPI3TestBridge.class);
-
     public static final String DEFAULT_GAME_ID = "game-000";
     public static final String THIEVE_PLAYER_NAME = "thieve";
-
     public static final String DEFAULT_ADMIN_TOKEN = "admin";
     public static final String DEFAULT_PLAYER_TOKEN = "player";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlhambraOpenAPI3TestBridge.class);
 
     public boolean verifyAdminToken(String token) {
         LOGGER.info("verifyPlayerToken");
@@ -59,7 +55,6 @@ class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
         LOGGER.info("getGames");
         return Collections.emptyList();
     }
-
 
 
     public Object createGame(RoutingContext ctx) {
@@ -127,6 +122,10 @@ class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
 
     public Object getGame(RoutingContext ctx) {
         LOGGER.info("getGame");
+        return null;
+    }
+
+    public Object startGame(RoutingContext ctx) {
         return null;
     }
 }

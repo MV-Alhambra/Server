@@ -44,4 +44,6 @@ interface AlhambraOpenAPI3Bridge {
 
     Object getGame(RoutingContext ctx);
 
+    Object startGame(RoutingContext ctx);
+
 }

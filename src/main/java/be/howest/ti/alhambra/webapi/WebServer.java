@@ -59,6 +59,7 @@ public class WebServer extends AbstractVerticle {
                 // Failed to retrieve the configuration
             } else {
                 JsonObject config = ar.result();
+                config.put("openApi3Spec","src/main/resources/alhambra-spec.yaml");//seems to be working, it loads our custom spec in
                 int port = config.getInteger("port", PORT_FALLBACK);
                 String spec = config.getString("openApi3Spec", OPEN_API3_FILE_FALLBACK);
                 LOGGER.info("Starting web server with config: port {0} (fallback: {1})", "" + port, "" + PORT_FALLBACK);

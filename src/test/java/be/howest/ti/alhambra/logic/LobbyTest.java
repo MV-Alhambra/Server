@@ -1,7 +1,6 @@
 package be.howest.ti.alhambra.logic;
 
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +14,7 @@ class LobbyTest {
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
-        assertEquals(3, lobby.playerCount());
+        assertEquals(3, lobby.countPlayer());
 
         // checks limit of lobby size (6)
         lobby.addPlayer("Howard");
@@ -45,16 +44,16 @@ class LobbyTest {
 
         //checks if one player is ready
         lobby.readyUpPlayer("Joe");
-        assertEquals(1, lobby.amountReady());
+        assertEquals(1, lobby.countReady());
 
         //checks how many are ready
         lobby.readyUpPlayer("Carol");
         lobby.readyUpPlayer("Jef");
-        assertEquals(3, lobby.amountReady());
+        assertEquals(3, lobby.countReady());
 
         //checks if player can unready
         lobby.unreadyPlayer("Joe");
-        assertEquals(2, lobby.amountReady());
+        assertEquals(2, lobby.countReady());
 
     }
 
@@ -73,12 +72,6 @@ class LobbyTest {
 
         // checks if all players are ready to start
         assertThrows(AlhambraGameRuleException.class, lobby::startGame);
-
-        // starting game
-        lobby.readyUpPlayer("Jef");
-        lobby.startGame();
-        assertTrue(lobby.isStarted());
-
     }
 
 
