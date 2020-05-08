@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Market {
     private final Map<Currency, Building> markets;
@@ -45,11 +48,10 @@ public class Market {
         return markets.containsKey(currency);
     }
 
-    public void fillMarkets(List<Building> buildings) {
-        System.out.println(buildings);
+    public void fillMarkets(Game game) {
         markets.keySet().stream()
                 .filter(currency -> markets.get(currency) == null)
-                .forEach(currency -> markets.put(currency, buildings.remove(0)));
+                .forEach(currency -> markets.put(currency, game.removeBuilding()));
     }
 
     @Override

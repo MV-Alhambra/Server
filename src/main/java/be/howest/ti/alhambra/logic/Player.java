@@ -1,8 +1,13 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Player {
     private final String name;
@@ -10,11 +15,12 @@ public class Player {
     private final Coins coins;
     private final Reserve reserve;
     private final City city;
-    private final int score;
-    private final int virtualScore;
     private final List<Building> buildingsInHand;
     @JsonIgnore
     private final String playerToken;
+
+    private int score;
+    private int virtualScore;
 
 
     public Player(String name) {
@@ -38,17 +44,17 @@ public class Player {
     }
 
     @JsonProperty("coins") //this method is solely used for JSON conversion
-    public List<Coin> coinConvert(){
+    public List<Coin> coinConvert() {
         return coins.getCoinsBag();
     }
 
     @JsonProperty("reserve") //this method is solely used for JSON conversion
-    public List<Building> reserveConvert(){
+    public List<Building> reserveConvert() {
         return reserve.getBuildings();
     }
 
     @JsonProperty("city") //this method is solely used for JSON conversion
-    public Building[][] cityConvert(){
+    public Building[][] cityConvert() {
         return city.getBuildings();
     }
 
@@ -68,6 +74,10 @@ public class Player {
         return score;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public String getPlayerToken() {
         return playerToken;
     }
@@ -75,6 +85,10 @@ public class Player {
     @JsonGetter("virtual-score")
     public int getVirtualScore() {
         return virtualScore;
+    }
+
+    public void setVirtualScore(int virtualScore) {
+        this.virtualScore = virtualScore;
     }
 
     @JsonGetter("buildings-in-hand")

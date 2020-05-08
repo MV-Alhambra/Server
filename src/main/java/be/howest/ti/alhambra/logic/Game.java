@@ -40,7 +40,8 @@ public class Game {
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();
-        this.market.fillMarkets(buildings);
+        this.market.fillMarkets(this);
+        this.bank.fillBank(this);
     }
 
     private List<Building> loadFromFile() {
@@ -62,7 +63,6 @@ public class Game {
         coins.add(secondScore, new Coin(null, 0));
     }
 
-
     public Game(Set<String> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
@@ -71,6 +71,12 @@ public class Game {
         List<Player> newPlayers = new ArrayList<>();
         keySet.forEach(name -> newPlayers.add(new Player(name)));
         return newPlayers;
+    }
+
+    public void scoreRound() {
+        //for a different issue
+        //but basically here should every player his score be updated its get calculated in city
+        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
     }
 
     public boolean isEnded() {
@@ -91,6 +97,24 @@ public class Game {
 
     public Market getMarket() {
         return market;
+    }
+
+    public Coin removeCoin() { //removes an coin and returns it
+        try {
+            Coin coin = coins.remove(0);
+            if (coin.getAmount() == 0) { //calls an scoreRound
+                scoreRound();
+                return removeCoin();
+            }
+            return coin;
+        } catch (IndexOutOfBoundsException e) {
+            // end game bc game is over, used up all the coins
+            // game also ends when buildings are up
+            // that is for another issue
+            // might also keep going and only stop game when buildings are gone
+            // this shouldn't throw an error since bank.fillBank works with nulls
+            return null;
+        }
     }
 
     @JsonProperty("market") //this method is solely used for JSON conversion
@@ -133,5 +157,17 @@ public class Game {
 
     public List<Building> getBuildings() {
         return buildings;
+    }
+
+    public Building removeBuilding() {
+        try {
+            return buildings.remove(0);
+        } catch (IndexOutOfBoundsException e) {
+            // end game bc game is over, used up all the buildings
+            // game might also end when coins are up, depends on implementation
+            // that is for another issue
+            // this shouldn't throw an error since market.fillMarket works with nulls
+            return null;
+        }
     }
 }

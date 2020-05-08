@@ -1,7 +1,11 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.*;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Bank {
     private final Coin[] bankCoins;
@@ -49,6 +53,10 @@ public class Bank {
         throw new IllegalStateException("The bank is full");
     }
 
+    public void fillBank(Game game) {
+        Arrays.stream(bankCoins).filter(Objects::isNull).forEach(coin -> addCoin(game.removeCoin()));
+    }
+
     public int countEmptyCoins() {
         return (int) Arrays.stream(bankCoins).filter(Objects::isNull).count();
     }
@@ -59,15 +67,15 @@ public class Bank {
     }
 
     @Override
+    public int hashCode() {
+        return Arrays.hashCode(bankCoins);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bank bank = (Bank) o;
         return Arrays.equals(this.bankCoins, bank.bankCoins);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(bankCoins);
     }
 }
