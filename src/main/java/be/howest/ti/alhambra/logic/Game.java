@@ -13,13 +13,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Game {
-    private boolean ended;
-    private String currentPlayer;
-    private List<Player> players;
-    private Bank bank;
-    private Market market;
+    private final boolean ended;
+    private final String currentPlayer;
+    private final List<Player> players;
+    private final Bank bank;
+    private final Market market;
     @JsonIgnore
     private final List<Building> buildings;
+    @JsonIgnore
+    private final List<Coin> coins;
 
 
     public Game() {
@@ -34,8 +36,32 @@ public class Game {
         this.bank = new Bank(bank);
         this.market = new Market(market);
         buildings = loadFromFile();
+        coins = Coin.allCoins();
         Collections.shuffle(buildings);
+        Collections.shuffle(coins);
+        addScoreRounds();
+
     }
+
+    private List<Building> loadFromFile() {
+        try (InputStream in = Game.class.getResourceAsStream("/buildings.json")) {
+            return Arrays.asList(
+                    Json.decodeValue(Buffer.buffer(in.readAllBytes()),
+                            Building[].class)
+            );
+        } catch (IOException ex) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Failed to load buildings", ex);
+            return Collections.emptyList();
+        }
+    }
+
+    private void addScoreRounds() {
+        int firstScore = new Random().nextInt(20) + 20; // so between 20 and 40
+        int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
+        coins.add(firstScore, new Coin(null, 0));
+        coins.add(secondScore, new Coin(null, 0));
+    }
+
 
     public Game(Set<String> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
@@ -43,10 +69,9 @@ public class Game {
 
     public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
         List<Player> newPlayers = new ArrayList<>();
-        keySet.forEach(name-> newPlayers.add(new Player(name)));
+        keySet.forEach(name -> newPlayers.add(new Player(name)));
         return newPlayers;
     }
-
 
     public boolean isEnded() {
         return ended;
@@ -104,18 +129,6 @@ public class Game {
                 ", bank=" + bank +
                 ", market=" + market +
                 '}';
-    }
-
-    private List<Building> loadFromFile() {
-        try (InputStream in = Game.class.getResourceAsStream("/buildings.json")) {
-            return Arrays.asList(
-                    Json.decodeValue(Buffer.buffer(in.readAllBytes()),
-                            Building[].class)
-            );
-        } catch (IOException ex) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Failed to load buildings", ex);
-            return Collections.emptyList();
-        }
     }
 
     public List<Building> getBuildings() {

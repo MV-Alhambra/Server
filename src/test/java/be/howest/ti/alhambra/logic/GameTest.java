@@ -9,4 +9,10 @@ public class GameTest {
         Game game = new Game();
         System.out.println(game.getBuildings());
     }
+
+    @Test
+    void allCoins(){
+        System.out.println(Coin.allCoins());
+    }
+
 }

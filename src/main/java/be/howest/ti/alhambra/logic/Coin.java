@@ -19,10 +19,10 @@ public class Coin {
     }
 
     static List<Coin> allCoins() {
-        return Stream.of(Currency.values())
-                .flatMap(currency -> IntStream.rangeClosed(1, 9).mapToObj(value -> new Coin(currency, value)))
-                .flatMap(coin -> Stream.of(coin, coin, coin))
-                .collect(Collectors.toList());
+        return Stream.of(Currency.values())//create a stream of each currency value
+                .flatMap(currency -> IntStream.rangeClosed(1, 9).mapToObj(value -> new Coin(currency, value))) // foreach currency create 9 coins from 1 to 9
+                .flatMap(coin -> Stream.of(coin, coin, coin)) // triples the amount of coins
+                .collect(Collectors.toList()); //returns a list of 108 coins (1->9->27)*4(for each currency)
     }
 
     public Currency getCurrency() {
