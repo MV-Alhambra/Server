@@ -4,64 +4,64 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class Market
-{
-    private final Map<Currency,Building> buildingMarket;
+public class Market {
+    private final Map<Currency, Building> markets;
 
     @JsonCreator
-    public Market(@JsonProperty("market") Map<Currency,Building> market)
-    {
-        this.buildingMarket = market;
-    }
-
-    @JsonCreator
-    public Market()
-    {
+    public Market() {
         this(new HashMap<>());
     }
 
-    public void addBuilding(Currency currency, Building building)
-    {
-        buildingMarket.put(currency, building);
+    @JsonCreator
+    public Market(@JsonProperty("market") Map<Currency, Building> market) {
+        this.markets = market;
+        initMarkets();
     }
 
-    public Building getBuilding (Currency currency)
-    {
-        return buildingMarket.get(currency);
+    private void initMarkets() {
+        if (markets.isEmpty()) Arrays.stream(Currency.values()).forEach(currency -> markets.put(currency, null));
+    }
+
+    public void addBuilding(Currency currency, Building building) {
+        markets.put(currency, building);
+    }
+
+    public Building getBuilding(Currency currency) {
+        return markets.get(currency);
     }
 
     @JsonGetter("market")
-    public Map<Currency,Building> getMarket()
-    {
-        return buildingMarket;
+    public Map<Currency, Building> getMarket() {
+        return markets;
     }
 
-    public void removeBuilding(Currency currency)
-    {
-        buildingMarket.remove(currency);
+    public void removeBuilding(Currency currency) {
+        markets.remove(currency);
     }
 
-    public boolean containsBuilding(Currency currency)
-    {
-        return buildingMarket.containsKey(currency);
+    public boolean containsBuilding(Currency currency) {
+        return markets.containsKey(currency);
+    }
+
+    public void fillMarkets(List<Building> buildings) {
+        System.out.println(buildings);
+        markets.keySet().stream()
+                .filter(currency -> markets.get(currency) == null)
+                .forEach(currency -> markets.put(currency, buildings.remove(0)));
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public int hashCode() {
+        return Objects.hash(markets);
+    }
+
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Market market1 = (Market) o;
-        return Objects.equals(buildingMarket, market1.buildingMarket);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(buildingMarket);
+        return Objects.equals(markets, market1.markets);
     }
 }

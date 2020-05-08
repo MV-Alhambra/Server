@@ -35,12 +35,12 @@ public class Game {
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
-        buildings = loadFromFile();
+        buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();
-
+        this.market.fillMarkets(buildings);
     }
 
     private List<Building> loadFromFile() {

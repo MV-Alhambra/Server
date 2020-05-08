@@ -1,12 +1,8 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.core.Version;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -106,7 +102,7 @@ class JsonTest {
     }
 
     @Test
-    void city(){
+    void city() {
         // Create a city ...
         City city = new City();
 
@@ -122,10 +118,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
     }
-    
+
     @Test
-    void market()
-    {
+    void market() {
         // Create a market ...
         Market market = new Market();
 
@@ -184,9 +179,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(player, Json.decodeValue(Json.encode(player), Player.class));
     }
-    
+
     @Test
-    void lobby(){
+    void lobby() {
         // Create lobby
         Lobby lobby = new Lobby("game21-002");
 
@@ -207,7 +202,7 @@ class JsonTest {
     }
 
     @Test
-    void game(){
+    void game() {
         // Create a game ...
         Game game = new Game();
 
@@ -227,5 +222,5 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(game, Json.decodeValue(Json.encode(game), Game.class));
     }
-    
+
 }
