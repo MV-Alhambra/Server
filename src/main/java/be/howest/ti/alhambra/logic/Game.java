@@ -1,9 +1,16 @@
 package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.Json;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game {
     private boolean ended;
@@ -11,6 +18,9 @@ public class Game {
     private List<Player> players;
     private Bank bank;
     private Market market;
+    @JsonIgnore
+    private final List<Building> buildings;
+
 
     public Game() {
         this(false, "", new ArrayList<>(), new Coin[4], new HashMap<>());
@@ -23,6 +33,8 @@ public class Game {
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
+        buildings = loadFromFile();
+        Collections.shuffle(buildings);
     }
 
     public Game(Set<String> names) {
@@ -92,5 +104,21 @@ public class Game {
                 ", bank=" + bank +
                 ", market=" + market +
                 '}';
+    }
+
+    private List<Building> loadFromFile() {
+        try (InputStream in = Game.class.getResourceAsStream("/buildings.json")) {
+            return Arrays.asList(
+                    Json.decodeValue(Buffer.buffer(in.readAllBytes()),
+                            Building[].class)
+            );
+        } catch (IOException ex) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Failed to load buildings", ex);
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
     }
 }

@@ -71,11 +71,10 @@ class JsonTest {
     @Test
     void building() {
         // Create a building ...
-        Building building = new Building(BuildingType.valueOf("PAVILION"), 5, null);
+        Building building = new Building(BuildingType.PAVILION, 5);
 
         // Turn it into a JsonObject
         JsonObject buildingAsJsonObject = JsonObject.mapFrom(building);
-
         // Assert that this object has the expected properties
         assertTrue(buildingAsJsonObject.containsKey("type"));
         assertTrue(buildingAsJsonObject.containsKey("cost"));
@@ -83,16 +82,8 @@ class JsonTest {
 
         // Assert that you can convert it back to the same Building.
         assertEquals(building, buildingAsJsonObject.mapTo(Building.class));
-
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(building, Json.decodeValue(Json.encode(building), Building.class));
-    }
-
-    @Test
-    void buildingType() {
-        // TODO test doesnt belong here, change to other file
-        assertEquals("pavilion", BuildingType.valueOf("PAVILION").toString() );
-        assertEquals("chambers" , BuildingType.valueOf("CHAMBERS").toString());
     }
 
     @Test
