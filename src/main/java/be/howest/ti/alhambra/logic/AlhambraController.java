@@ -62,12 +62,14 @@ public class AlhambraController {
         return true;
     }
 
-    public void readyUp(String gameId, String playerName) {
-        findLobby(gameId).readyUpPlayer(playerName);
+    public boolean readyUp(String gameId, String playerName) {
+        return findLobby(gameId).readyUpPlayer(playerName);
+
     }
 
-    public void readyDown(String gameId, String playerName) {
-         findLobby(gameId).unreadyPlayer(playerName);
+    public boolean readyDown(String gameId, String playerName) {
+        return findLobby(gameId).unreadyPlayer(playerName);
+
     }
 
     public boolean startLobby(String gameId) {

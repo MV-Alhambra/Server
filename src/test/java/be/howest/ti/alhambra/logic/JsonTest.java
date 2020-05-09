@@ -172,7 +172,7 @@ class JsonTest {
     @Test
     void player() {
         // Create player
-        Player player = new Player("Henk");
+        Player player = new Player("Henk", "");
 
         // Turn it into a JsonObject
         JsonObject playerAsJsonObject = JsonObject.mapFrom(player);

@@ -12,6 +12,9 @@ public class PlayerInLobby {
         this.playerToken = "token";
     }
 
+
+
+
     public String getName() {
         return name;
     }

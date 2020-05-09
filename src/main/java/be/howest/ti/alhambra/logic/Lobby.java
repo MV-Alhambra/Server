@@ -110,16 +110,16 @@ public class Lobby {
         updatePlayerCount();
     }
 
-    public void readyUpPlayer(String name) {
-        PlayerInLobby player = getPlayerClass(name);
-        player.setStatus(true);
+    public boolean readyUpPlayer(String name) {
+        getPlayerClass(name).setStatus(true);
         updateReadyCount();
+        return true;
     }
 
-    public void unreadyPlayer(String name) {
-        PlayerInLobby player = getPlayerClass(name);
-        player.setStatus(false);
+    public boolean unreadyPlayer(String name) {
+        getPlayerClass(name).setStatus(false);
         updateReadyCount();
+        return true;
     }
 
     public Game startGame() {
