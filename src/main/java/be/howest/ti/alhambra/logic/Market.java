@@ -23,7 +23,7 @@ public class Market {
         initMarkets();
     }
 
-    private void initMarkets() {
+    private void initMarkets() { // adds a market for each currency
         if (markets.isEmpty()) Arrays.stream(Currency.values()).forEach(currency -> markets.put(currency, null));
     }
 

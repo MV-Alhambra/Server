@@ -39,9 +39,20 @@ public class Game {
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
-        addScoreRounds();
+        addScoreRounds();//must before all other methods that might remove Coins
+        givePlayersStarterCoins();
         this.market.fillMarkets(this);
         this.bank.fillBank(this);
+    }
+
+    public Game(Set<String> names) {
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
+    }
+
+    public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
+        List<Player> newPlayers = new ArrayList<>();
+        keySet.forEach(name -> newPlayers.add(new Player(name)));
+        return newPlayers;
     }
 
     private List<Building> loadFromFile() {
@@ -61,16 +72,6 @@ public class Game {
         int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
-    }
-
-    public Game(Set<String> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
-    }
-
-    public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
-        List<Player> newPlayers = new ArrayList<>();
-        keySet.forEach(name -> newPlayers.add(new Player(name)));
-        return newPlayers;
     }
 
     public void scoreRound() {
@@ -169,5 +170,18 @@ public class Game {
             // this shouldn't throw an error since market.fillMarket works with nulls
             return null;
         }
+    }
+
+    private void givePlayersStarterCoins() {
+        players.forEach(player -> {
+            int sum = 0;
+            List<Coin> bag = new ArrayList<>();
+            while (sum < 20) {
+                Coin coin = removeCoin();
+                sum += coin.getAmount();
+                bag.add(coin);
+            }
+            player.getCoins().addCoins(bag.toArray(Coin[]::new));
+        });
     }
 }
