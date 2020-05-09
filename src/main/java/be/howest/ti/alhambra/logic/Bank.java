@@ -22,15 +22,21 @@ public class Bank {
     }
 
     public void removeCoins(Coin[] coins) {
+        removeCoins(coins, false);
+    }
+
+    public void removeCoins(Coin[] coins, boolean dontActuallyRemove) {
         if (coins.length > 4) throw new IllegalArgumentException("Can only remove upto 4 coins");
+
+        Coin[] actualCoins = dontActuallyRemove ? bankCoins.clone() : bankCoins; // now i can use it as a test if it contains or actually remove it
 
         for (Coin coin : coins) {
             boolean flag = true;
-            for (int i = 0; i < this.bankCoins.length && flag; i++) {
-                if (coin.equals(this.bankCoins[i])) {
-                    this.bankCoins[i] = null;
+            for (int i = 0; i < actualCoins.length && flag; i++) {
+                if (coin.equals(actualCoins[i])) {
+                    actualCoins[i] = null;
                     flag = false;
-                } else if (i == this.bankCoins.length - 1) {
+                } else if (i == actualCoins.length - 1) {
                     throw new IllegalArgumentException("Couldn't find the coin in the bank");
                 }
             }
