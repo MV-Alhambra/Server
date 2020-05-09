@@ -1,16 +1,13 @@
 package be.howest.ti.alhambra.logic;
 
 
-import be.howest.ti.alhambra.logic.exceptions.AlhambraEntityNotFoundException;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Lobby {
     @JsonIgnore
@@ -18,16 +15,16 @@ public class Lobby {
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
-    private Map<String, Boolean> playersReady;
+    private List<PlayerInLobby> playersReady;
     private int playerCount;
     private int readyCount;
 
     public Lobby(String gameId) {
-        this(gameId, new HashMap<>());
+        this(gameId, new LinkedList<>());
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") Map<String, Boolean> playersReady) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady) {
         this.id = id;
         this.playersReady = playersReady;
         updatePlayerCount();
@@ -47,7 +44,14 @@ public class Lobby {
     }
 
     public int countReady() {
-        return (int) playersReady.values().stream().filter(status -> status).count();
+        int i = 0;
+        for (PlayerInLobby p : playersReady){
+            if (p.isStatus()){
+                i++;
+            }
+        }
+        return i;
+        //TODO no idea how to do this whit stream, maarten has to fixs this
     }
 
     public String getId() {
@@ -63,45 +67,65 @@ public class Lobby {
     }
 
     @JsonGetter("players")
-    public Map<String, Boolean> getPlayersReady() {
+    public List<PlayerInLobby> getPlayersReady() {
         return playersReady;
     }
 
     public void addPlayer(String name) {
         if (countPlayer() < MAX_PLAYER_COUNT) {
-            if (playersReady.containsKey(name)) {
+            if (checkInLobby(name))
                 throw new AlhambraGameRuleException("Name already used");
-            } else {
-                playersReady.put(name, false);
+            else {
+                playersReady.add(new PlayerInLobby(name));
             }
-        } else {
+        }
+        else {
             throw new AlhambraGameRuleException("The lobby is full");
         }
         updatePlayerCount();
     }
 
+    private PlayerInLobby getPlayerClass(String name) {
+        for (PlayerInLobby p : playersReady) {
+            if (name.equals(p.getName())) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("player not in lobby");
+    }
+
+
+    private boolean checkInLobby(String name) {
+        for (PlayerInLobby p : playersReady) {
+            if (name.equals(p.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removePlayer(String name) {
-        if (!playersReady.containsKey(name)) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
-        playersReady.remove(name);
+        PlayerInLobby player = getPlayerClass(name);
+        playersReady.remove(player);
         updatePlayerCount();
     }
 
-    public boolean readyUpPlayer(String name) {
-        if (playersReady.replace(name, true) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+    public void readyUpPlayer(String name) {
+        PlayerInLobby player = getPlayerClass(name);
+        player.setStatus(true);
         updateReadyCount();
-        return true;
     }
 
-    public boolean unreadyPlayer(String name) {
-        if (playersReady.replace(name, false) == null) throw new AlhambraEntityNotFoundException("Couldn't find that player: " + name);
+    public void unreadyPlayer(String name) {
+        PlayerInLobby player = getPlayerClass(name);
+        player.setStatus(false);
         updateReadyCount();
-        return true;
     }
 
     public Game startGame() {
         if (countPlayer() >= MIN_PLAYER_COUNT) {
             if (readyCount == playerCount) {
-               return new Game(playersReady.keySet());
+               return new Game(playersReady);
             } else {
                 throw new AlhambraGameRuleException("All players need to be ready to start the game");
             }

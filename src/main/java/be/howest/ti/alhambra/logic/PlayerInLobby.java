@@ -11,4 +11,20 @@ public class PlayerInLobby {
         this.status = false;
         this.playerToken = "token";
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public String getPlayerToken() {
+        return playerToken;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }

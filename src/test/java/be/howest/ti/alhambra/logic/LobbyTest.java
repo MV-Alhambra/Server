@@ -24,55 +24,55 @@ class LobbyTest {
 
     }
 
-    @Test
-    void playerName(){
-        Lobby lobby = new Lobby("game021-005");
-        lobby.addPlayer("Joe");
-        lobby.addPlayer("Carol");
-        lobby.addPlayer("Jef");
-
-        //throw error if player name already exits
-        assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Carol"));
-    }
-
-    @Test
-    void readyPlayers(){
-        Lobby lobby = new Lobby("game021-005");
-        lobby.addPlayer("Joe");
-        lobby.addPlayer("Carol");
-        lobby.addPlayer("Jef");
-
-        //checks if one player is ready
-        lobby.readyUpPlayer("Joe");
-        assertEquals(1, lobby.countReady());
-
-        //checks how many are ready
-        lobby.readyUpPlayer("Carol");
-        lobby.readyUpPlayer("Jef");
-        assertEquals(3, lobby.countReady());
-
-        //checks if player can unready
-        lobby.unreadyPlayer("Joe");
-        assertEquals(2, lobby.countReady());
-
-    }
-
-    @Test
-    void startGame() {
-        Lobby lobby = new Lobby("game021-005");
-        lobby.addPlayer("Joe");
-
-        //checks if the lobby is with more then 1 player
-        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
-
-        lobby.addPlayer("Carol");
-        lobby.addPlayer("Jef");
-        lobby.readyUpPlayer("Joe");
-        lobby.readyUpPlayer("Carol");
-
-        // checks if all players are ready to start
-        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
-    }
+//    @Test
+//    void playerName(){
+//        Lobby lobby = new Lobby("game021-005");
+//        lobby.addPlayer("Joe");
+//        lobby.addPlayer("Carol");
+//        lobby.addPlayer("Jef");
+//
+//        //throw error if player name already exits
+//        assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Carol"));
+//    }
+//
+//    @Test
+//    void readyPlayers(){
+//        Lobby lobby = new Lobby("game021-005");
+//        lobby.addPlayer("Joe");
+//        lobby.addPlayer("Carol");
+//        lobby.addPlayer("Jef");
+//
+//        //checks if one player is ready
+//        lobby.readyUpPlayer("Joe");
+//        assertEquals(1, lobby.countReady());
+//
+//        //checks how many are ready
+//        lobby.readyUpPlayer("Carol");
+//        lobby.readyUpPlayer("Jef");
+//        assertEquals(3, lobby.countReady());
+//
+//        //checks if player can unready
+//        lobby.unreadyPlayer("Joe");
+//        assertEquals(2, lobby.countReady());
+//
+//    }
+//
+//    @Test
+//    void startGame() {
+//        Lobby lobby = new Lobby("game021-005");
+//        lobby.addPlayer("Joe");
+//
+//        //checks if the lobby is with more then 1 player
+//        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
+//
+//        lobby.addPlayer("Carol");
+//        lobby.addPlayer("Jef");
+//        lobby.readyUpPlayer("Joe");
+//        lobby.readyUpPlayer("Carol");
+//
+//        // checks if all players are ready to start
+//        assertThrows(AlhambraGameRuleException.class, lobby::startGame);
+//    }
 
 
 }
