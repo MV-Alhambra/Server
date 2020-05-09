@@ -13,7 +13,6 @@ public class Player {
     private final int score;
     private final int virtualScore;
     private final List<Building> buildingsInHand;
-    @JsonIgnore
     private final String playerToken;
 
 
@@ -22,7 +21,7 @@ public class Player {
     }
 
     @JsonCreator
-    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore, String playerToken) {
+    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore, @JsonProperty("token") String playerToken) {
         this.name = name;
         this.coins = new Coins(coins);
         this.reserve = new Reserve(reserve);
