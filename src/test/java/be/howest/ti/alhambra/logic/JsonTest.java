@@ -4,6 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonTest {
@@ -204,7 +207,10 @@ class JsonTest {
     @Test
     void game() {
         // Create a game ...
-        Game game = new Game();
+        Set<String> names = new HashSet<>();
+        names.add("frank");
+        names.add("jake");
+        Game game = new Game(names);
 
         // Turn it into a JsonObject
         JsonObject gameAsJsonObject = JsonObject.mapFrom(game);

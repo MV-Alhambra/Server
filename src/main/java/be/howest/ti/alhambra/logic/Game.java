@@ -25,10 +25,6 @@ public class Game {
     @JsonIgnore
     private int index;
 
-    public Game() {
-        this(false, "", new ArrayList<>(), new Coin[4], new HashMap<>());
-    }
-
     public Game(Set<String> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
