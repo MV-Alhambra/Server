@@ -51,7 +51,6 @@ public class Lobby {
             }
         }
         return i;
-        //TODO no idea how to do this whit stream, maarten has to fixs this
     }
 
     public String getId() {
