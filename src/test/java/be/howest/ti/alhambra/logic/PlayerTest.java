@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PlayerTest {
     @Test
     void player(){
-        Player player = new Player("p1", "");
+        Player player = new Player("p1");
         assertEquals("p1", player.getName());
     }
     @Test
     void testEqualsAndHashcode(){
-        Player p1 = new Player("test", "");
-        Player p2 = new Player("test", "");
-        Player p3 = new Player("Tset", "");
+        Player p1 = new Player("test");
+        Player p2 = new Player("test");
+        Player p3 = new Player("Tset");
 
 
         assertTrue(p1.equals(p2) && p2.equals(p1));

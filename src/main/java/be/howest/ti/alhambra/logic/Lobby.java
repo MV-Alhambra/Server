@@ -20,7 +20,7 @@ public class Lobby {
     private int readyCount;
 
     public Lobby(String gameId) {
-        this(gameId, new LinkedList<>());
+        this(gameId, new ArrayList<>());
     }
 
     @JsonCreator

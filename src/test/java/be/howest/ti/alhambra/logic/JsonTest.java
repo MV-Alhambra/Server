@@ -172,7 +172,7 @@ class JsonTest {
     @Test
     void player() {
         // Create player
-        Player player = new Player("Henk", "");
+        Player player = new Player("Henk");
 
         // Turn it into a JsonObject
         JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
@@ -185,7 +185,6 @@ class JsonTest {
         assertTrue(playerAsJsonObject.containsKey("buildings-in-hand"));
         assertTrue(playerAsJsonObject.containsKey("virtual-score"));
         assertTrue(playerAsJsonObject.containsKey("score"));
-        assertTrue(playerAsJsonObject.containsKey("playerToken"));
 
         // Assert that you can convert it back to the same player.
         assertEquals(player, playerAsJsonObject.mapTo(Player.class));
@@ -225,7 +224,6 @@ class JsonTest {
 
         // Assert that this object has the expected properties
         assertTrue(playerAsJsonObject.containsKey("name"));
-        //TODO fix this -> assertTrue(playerAsJsonObject.containsKey("token"));
         assertTrue(playerAsJsonObject.containsKey("status"));
 
         // Assert that you can convert it back to the same player.

@@ -9,20 +9,17 @@ public class PlayerInLobby {
 
     private final String name;
     private boolean status;
-    private final String playerToken;
 
     @JsonCreator
-    public PlayerInLobby(@JsonProperty("name") String name, @JsonProperty("status") boolean status, @JsonProperty("token") String playerToken ) {
+    public PlayerInLobby(@JsonProperty("name") String name, @JsonProperty("status") boolean status) {
         this.name = name;
         this.status = status;
-        this.playerToken = playerToken;
     }
 
 
     public PlayerInLobby(String name) {
         this.name = name;
         this.status = false;
-        this.playerToken = "token";
     }
 
 
@@ -36,9 +33,6 @@ public class PlayerInLobby {
         return status;
     }
 
-    public String getPlayerToken() {
-        return playerToken;
-    }
 
     public void setStatus(boolean status) {
         this.status = status;
@@ -50,12 +44,11 @@ public class PlayerInLobby {
         if (o == null || getClass() != o.getClass()) return false;
         PlayerInLobby that = (PlayerInLobby) o;
         return status == that.status &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(playerToken, that.playerToken);
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, status, playerToken);
+        return Objects.hash(name, status);
     }
 }

@@ -31,7 +31,7 @@ public class Game {
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
-        allPlayers.forEach(player-> newPlayers.add(new Player( player.getName(), player.getPlayerToken())));
+        allPlayers.forEach(player-> newPlayers.add(new Player( player.getName())));
         return newPlayers;
     }
 

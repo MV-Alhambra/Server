@@ -13,15 +13,14 @@ public class Player {
     private final int score;
     private final int virtualScore;
     private final List<Building> buildingsInHand;
-    private final String playerToken;
 
 
-    public Player(String name, String playerToken) {
-        this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0, playerToken);
+    public Player(String name) {
+        this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0);
     }
 
     @JsonCreator
-    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore, @JsonProperty("token") String playerToken) {
+    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore) {
         this.name = name;
         this.coins = new Coins(coins);
         this.reserve = new Reserve(reserve);
@@ -29,7 +28,6 @@ public class Player {
         this.buildingsInHand = buildingsInHand;
         this.score = score;
         this.virtualScore = virtualScore;
-        this.playerToken = playerToken;//later generate this through generatePlayerToken -> see issue
     }
 
     public String getName() {
@@ -65,10 +63,6 @@ public class Player {
 
     public int getScore() {
         return score;
-    }
-
-    public String getPlayerToken() {
-        return playerToken;
     }
 
     @JsonGetter("virtual-score")
