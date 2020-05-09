@@ -1,12 +1,11 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.core.Version;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,11 +70,10 @@ class JsonTest {
     @Test
     void building() {
         // Create a building ...
-        Building building = new Building(BuildingType.valueOf("PAVILION"), 5, null);
+        Building building = new Building(BuildingType.PAVILION, 5);
 
         // Turn it into a JsonObject
         JsonObject buildingAsJsonObject = JsonObject.mapFrom(building);
-
         // Assert that this object has the expected properties
         assertTrue(buildingAsJsonObject.containsKey("type"));
         assertTrue(buildingAsJsonObject.containsKey("cost"));
@@ -83,16 +81,8 @@ class JsonTest {
 
         // Assert that you can convert it back to the same Building.
         assertEquals(building, buildingAsJsonObject.mapTo(Building.class));
-
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(building, Json.decodeValue(Json.encode(building), Building.class));
-    }
-
-    @Test
-    void buildingType() {
-        // TODO test doesnt belong here, change to other file
-        assertEquals("pavilion", BuildingType.valueOf("PAVILION").toString() );
-        assertEquals("chambers" , BuildingType.valueOf("CHAMBERS").toString());
     }
 
     @Test
@@ -115,7 +105,7 @@ class JsonTest {
     }
 
     @Test
-    void city(){
+    void city() {
         // Create a city ...
         City city = new City();
 
@@ -131,10 +121,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(city, Json.decodeValue(Json.encode(city), City.class));
     }
-    
+
     @Test
-    void market()
-    {
+    void market() {
         // Create a market ...
         Market market = new Market();
 
@@ -192,9 +181,9 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(player, Json.decodeValue(Json.encode(player), Player.class));
     }
-    
+
     @Test
-    void lobby(){
+    void lobby() {
         // Create lobby
         Lobby lobby = new Lobby("game21-002");
 
@@ -215,6 +204,7 @@ class JsonTest {
     }
 
     @Test
+<<<<<<< src/test/java/be/howest/ti/alhambra/logic/JsonTest.java
     void playerInLobby() {
         // Create player
         PlayerInLobby player = new PlayerInLobby("Carol");
@@ -236,7 +226,10 @@ class JsonTest {
     @Test
     void game(){
         // Create a game ...
-        Game game = new Game();
+        Set<String> names = new HashSet<>();
+        names.add("frank");
+        names.add("jake");
+        Game game = new Game(names);
 
         // Turn it into a JsonObject
         JsonObject gameAsJsonObject = JsonObject.mapFrom(game);
@@ -254,5 +247,5 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(game, Json.decodeValue(Json.encode(game), Game.class));
     }
-    
+
 }
