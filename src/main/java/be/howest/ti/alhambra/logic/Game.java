@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 public class Game {
     private final boolean ended;
-    private final String currentPlayer;
     private final List<Player> players;
     private final Bank bank;
     private final Market market;
@@ -22,10 +21,16 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
-
+    private String currentPlayer;
+    @JsonIgnore
+    private int index;
 
     public Game() {
         this(false, "", new ArrayList<>(), new Coin[4], new HashMap<>());
+    }
+
+    public Game(Set<String> names) {
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
 
     @JsonCreator
@@ -35,6 +40,8 @@ public class Game {
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
+        index = 0;
+        nextPlayer();
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
@@ -43,10 +50,6 @@ public class Game {
         givePlayersStarterCoins();
         this.market.fillMarkets(this);
         this.bank.fillBank(this);
-    }
-
-    public Game(Set<String> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
 
     public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
@@ -183,5 +186,10 @@ public class Game {
             }
             player.getCoins().addCoins(bag.toArray(Coin[]::new));
         });
+    }
+
+    private void nextPlayer() {
+        currentPlayer = players.get(index).getName();
+        if (++index >= players.size()) index = 0;
     }
 }
