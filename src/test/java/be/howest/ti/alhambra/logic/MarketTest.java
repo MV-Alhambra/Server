@@ -30,6 +30,6 @@ public class MarketTest
         //remove building
         market.removeBuilding(Currency.BLUE);
         //test building removed
-        assertFalse(market.containsBuilding(Currency.BLUE));
+        assertEquals(null,market.getBuilding(Currency.BLUE));
     }
 }
