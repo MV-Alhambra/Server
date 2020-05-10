@@ -1,6 +1,6 @@
 package be.howest.ti.alhambra.logic;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +29,9 @@ public class BankTest {
         temp2[0] = (new Coin(Currency.GREEN, 5));
         temp2[1] = (new Coin(Currency.GREEN, 5));
 
+        //tests if the coins are not removed
+        bank.removeCoins(temp2, true);//bank is full tries to notActuallyRemove two coins, means it just tests if it can remove it
+        assertEquals(0, bank.countEmptyCoins());
 
         bank.removeCoins(temp2);
         //check if removeCoins works
@@ -43,6 +46,7 @@ public class BankTest {
         bank.addCoins(temp3);
 
         Coin[] temp4 = {new Coin(Currency.GREEN, 5), new Coin(Currency.GREEN, 7), null, new Coin(Currency.GREEN, 5)};
-        assertArrayEquals(temp4,bank.getBankCoins());
+        assertArrayEquals(temp4, bank.getBankCoins());
+
     }
 }
