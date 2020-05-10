@@ -197,6 +197,8 @@ public class Game {
                 bank.removeCoins(coins, true);
                 bank.removeCoins(coins); //now i actually remove them
                 findPlayers(playerName).getCoins().addCoins(coins); // now add them to the player
+                bank.fillBank(this);
+                nextPlayer();
             } catch (IllegalArgumentException exception) {
                 throw new AlhambraEntityNotFoundException("Couldn't find those coins: " + Arrays.toString(coins));
             }
