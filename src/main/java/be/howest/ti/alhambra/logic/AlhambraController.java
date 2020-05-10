@@ -46,12 +46,6 @@ public class AlhambraController {
         return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Lobby (" + gameId + ") not found!"));
     }
 
-    private Game findGame(String gameId) {
-        Game game = games.get(gameId);
-        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
-        return game;
-    }
-
     public Boolean leaveLobby(String gameId, String name) {
         try {
             findLobby(gameId).removePlayer(name);
@@ -87,5 +81,15 @@ public class AlhambraController {
 
     private Lobby findLobbyNoError(String gameId) {
         return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElse(null);
+    }
+
+    private Game findGame(String gameId) {
+        Game game = games.get(gameId);
+        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
+        return game;
+    }
+
+    public Game takeCoins(String gameId, String playerName, Coin[] coins) {
+        return findGame(gameId).takeCoins(playerName, coins);
     }
 }

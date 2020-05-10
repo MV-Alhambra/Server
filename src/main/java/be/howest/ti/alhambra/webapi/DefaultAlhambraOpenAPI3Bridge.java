@@ -1,6 +1,8 @@
 package be.howest.ti.alhambra.webapi;
 
 import be.howest.ti.alhambra.logic.AlhambraController;
+import be.howest.ti.alhambra.logic.Coin;
+import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
@@ -70,22 +72,22 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object leaveGame(RoutingContext ctx) {
         LOGGER.info("leaveGame");
-        return controller.leaveLobby(getGameId(ctx),getPlayerName(ctx));
+        return controller.leaveLobby(getGameId(ctx), getPlayerName(ctx));
     }
 
     public Object setReady(RoutingContext ctx) {
         LOGGER.info("setReady");
-        return controller.readyUp(getGameId(ctx),getPlayerName(ctx));
+        return controller.readyUp(getGameId(ctx), getPlayerName(ctx));
     }
 
     public Object setNotReady(RoutingContext ctx) {
         LOGGER.info("setNotReady");
-        return controller.readyDown(getGameId(ctx),getPlayerName(ctx));
+        return controller.readyDown(getGameId(ctx), getPlayerName(ctx));
     }
 
     public Object takeMoney(RoutingContext ctx) {
         LOGGER.info("takeMoney");
-        return null;
+        return controller.takeCoins(getGameId(ctx), getPlayerName(ctx), Json.decodeValue(ctx.getBodyAsString(), Coin[].class));
     }
 
     public Object buyBuilding(RoutingContext ctx) {
@@ -114,12 +116,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return controller.startLobby(getGameId(ctx));
     }
 
-    private String getGameId(RoutingContext ctx){
-        return ctx.request().getParam("gameId");
+    private String getPlayerName(RoutingContext ctx) {
+        return ctx.request().getParam("playerName");
     }
 
-    private String getPlayerName(RoutingContext ctx){
-       return ctx.request().getParam("playerName");
+    private String getGameId(RoutingContext ctx) {
+        return ctx.request().getParam("gameId");
     }
 
 }
