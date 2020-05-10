@@ -92,4 +92,8 @@ public class AlhambraController {
     public Game takeCoins(String gameId, String playerName, Coin[] coins) {
         return findGame(gameId).takeCoins(playerName, coins);
     }
+
+    public Game buyBuilding(String gameId, String playerName, Currency currency, Coin[] coins) {
+        return findGame(gameId).buyBuilding(playerName, currency, coins);
+    }
 }

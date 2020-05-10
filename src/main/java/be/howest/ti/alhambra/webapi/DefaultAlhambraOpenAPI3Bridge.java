@@ -2,6 +2,7 @@ package be.howest.ti.alhambra.webapi;
 
 import be.howest.ti.alhambra.logic.AlhambraController;
 import be.howest.ti.alhambra.logic.Coin;
+import be.howest.ti.alhambra.logic.Currency;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -92,7 +93,9 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object buyBuilding(RoutingContext ctx) {
         LOGGER.info("buyBuilding");
-        return null;
+        Currency currency = Json.decodeValue("\"" + ctx.getBodyAsJson().getString("currency") + "\"", Currency.class);
+        Coin[] coins = Json.decodeValue(ctx.getBodyAsJson().getJsonArray("coins").toString(), Coin[].class);
+        return controller.buyBuilding(getGameId(ctx), getPlayerName(ctx), currency, coins);
     }
 
 

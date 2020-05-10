@@ -39,15 +39,13 @@ public class Game {
         this.bank = new Bank(bank);
         this.market = new Market(market);
         index = 0;
-        nextPlayer();
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();//must before all other methods that might remove Coins
         givePlayersStarterCoins();
-        this.market.fillMarkets(this);
-        this.bank.fillBank(this);
+        nextPlayer();
     }
 
     public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
@@ -192,7 +190,6 @@ public class Game {
             bank.removeCoins(coins, true);
             bank.removeCoins(coins); //now i actually remove them
             findPlayers(playerName).getCoins().addCoins(coins); // now add them to the player
-            bank.fillBank(this);
             nextPlayer();
         } catch (IllegalArgumentException exception) {
             throw new AlhambraEntityNotFoundException("Couldn't find those coins: " + Arrays.toString(coins));
@@ -210,13 +207,15 @@ public class Game {
     }
 
     private void nextPlayer() { // when called it sets the next current Player
+        bank.fillBank(this);
+        market.fillMarkets(this);
         currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
         if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
      * and then either changes the turn or not depending on same cost as sum
-     * Then moves that building from market to buildingsInHand */
+     * Then moves that building from market to buildingsInHand and removes the coins from the player */
     public Game buyBuilding(String playerName, Currency currency, Coin[] coins) {
         checkTurn(playerName);
         int sum = Coin.getSumCoins(coins);
@@ -226,9 +225,11 @@ public class Game {
         if (!player.getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
         else if (!Coin.coinsSameCurrency(coins)) throw new AlhambraGameRuleException("Coins must have the same currency");
         else if (sum < cost) throw new AlhambraGameRuleException("Not enough coins were given");
-        else if (sum != cost) nextPlayer();
-
-        player.getBuildingsInHand().add(market.removeBuilding(currency)); //remove and add it to the hand
+        else {
+            player.getBuildingsInHand().add(market.removeBuilding(currency)); //remove and add it to the hand
+            player.getCoins().removeCoins(coins);
+            if (sum != cost) nextPlayer();
+        }
         return this;
     }
 }
