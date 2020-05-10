@@ -214,7 +214,10 @@ public class Game {
         if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
-    public Game buyBuilding(Currency currency, Coin[] coins) {
+    public Game buyBuilding(String playerName,Currency currency, Coin[] coins) {
+        checkTurn(playerName);
+        if(!findPlayers(playerName).getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
+
 
         return null;
     }
