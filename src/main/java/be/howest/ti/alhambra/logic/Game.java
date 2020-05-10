@@ -217,6 +217,7 @@ public class Game {
     public Game buyBuilding(String playerName,Currency currency, Coin[] coins) {
         checkTurn(playerName);
         if(!findPlayers(playerName).getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
+        else if (!Coin.coinsSameCurrency(coins)) throw new AlhambraGameRuleException("Coins must have the same currency");
 
 
         return null;

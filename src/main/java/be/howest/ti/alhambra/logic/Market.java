@@ -54,18 +54,6 @@ public class Market {
                 .forEach(currency -> markets.put(currency, game.removeBuilding()));
     }
 
-    public boolean coinsSameCurrency(Coin[] coins) { //checks if the coins are all the same currency
-        if (coins.length < 2) return true;
-
-        Currency currency = coins[0].getCurrency();
-        for (Coin coin : coins) {
-            if (!currency.equals(coin.getCurrency())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(markets);
