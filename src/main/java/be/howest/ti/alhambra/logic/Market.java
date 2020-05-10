@@ -41,7 +41,7 @@ public class Market {
     }
 
     public void removeBuilding(Currency currency) {
-        markets.remove(currency);
+        markets.put(currency, null);
     }
 
     public boolean containsBuilding(Currency currency) {

@@ -186,29 +186,36 @@ public class Game {
         });
     }
 
+    public Game takeCoins(String playerName, Coin[] coins) {
+        checkTurn(playerName);
+        try {
+            bank.removeCoins(coins, true);
+            bank.removeCoins(coins); //now i actually remove them
+            findPlayers(playerName).getCoins().addCoins(coins); // now add them to the player
+            bank.fillBank(this);
+            nextPlayer();
+        } catch (IllegalArgumentException exception) {
+            throw new AlhambraEntityNotFoundException("Couldn't find those coins: " + Arrays.toString(coins));
+        }
+
+        return this;
+    }
+
+    private void checkTurn(String playerName) {
+        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
+    }
+
+    private Player findPlayers(String name) {
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
+    }
+
     private void nextPlayer() { // when called it sets the next current Player
         currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
         if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
-    public Game takeCoins(String playerName, Coin[] coins) {
-        if (currentPlayer.equals(playerName)) {
-            try {
-                bank.removeCoins(coins, true);
-                bank.removeCoins(coins); //now i actually remove them
-                findPlayers(playerName).getCoins().addCoins(coins); // now add them to the player
-                bank.fillBank(this);
-                nextPlayer();
-            } catch (IllegalArgumentException exception) {
-                throw new AlhambraEntityNotFoundException("Couldn't find those coins: " + Arrays.toString(coins));
-            }
-        } else {
-            throw new AlhambraGameRuleException("It's not your turn");
-        }
-        return this;
-    }
+    public Game buyBuilding(Currency currency, Coin[] coins) {
 
-    private Player findPlayers(String name) {
-        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
+        return null;
     }
 }
