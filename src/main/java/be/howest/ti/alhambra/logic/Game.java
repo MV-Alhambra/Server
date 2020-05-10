@@ -214,12 +214,21 @@ public class Game {
         if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
-    public Game buyBuilding(String playerName,Currency currency, Coin[] coins) {
+    /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
+     * and then either changes the turn or not depending on same cost as sum
+     * Then moves that building from market to buildingsInHand */
+    public Game buyBuilding(String playerName, Currency currency, Coin[] coins) {
         checkTurn(playerName);
-        if(!findPlayers(playerName).getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
+        int sum = Coin.getSumCoins(coins);
+        int cost = market.getBuilding(currency).getCost();
+        Player player = findPlayers(playerName);
+
+        if (!player.getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
         else if (!Coin.coinsSameCurrency(coins)) throw new AlhambraGameRuleException("Coins must have the same currency");
+        else if (sum < cost) throw new AlhambraGameRuleException("Not enough coins were given");
+        else if (sum != cost) nextPlayer();
 
-
-        return null;
+        player.getBuildingsInHand().add(market.removeBuilding(currency)); //remove and add it to the hand
+        return this;
     }
 }

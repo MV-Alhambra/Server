@@ -40,8 +40,8 @@ public class Market {
         return markets;
     }
 
-    public void removeBuilding(Currency currency) {
-        markets.put(currency, null);
+    public Building removeBuilding(Currency currency) {
+        return markets.put(currency, null);
     }
 
     public boolean containsBuilding(Currency currency) {
