@@ -15,6 +15,7 @@ class LobbyTest {
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
         assertEquals(3, lobby.countPlayer());
+        assertEquals("testLobby", lobby.getCustomNameLobby());
 
         // checks limit of lobby size (6)
         lobby.addPlayer("Howard");
@@ -23,7 +24,16 @@ class LobbyTest {
         assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Dillon"));
 
     }
-
+    @Test
+    void maxPlayerCount()
+    {
+        Lobby lobby = new Lobby("game021-005", "testLobby",4);
+        lobby.addPlayer("Joe");
+        lobby.addPlayer("Carol");
+        lobby.addPlayer("Jef");
+        lobby.addPlayer("Howard");
+        assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Dillon"));
+    }
     @Test
     void playerName(){
         Lobby lobby = new Lobby("game021-005", "testLobby");
