@@ -66,18 +66,14 @@ public class AlhambraController {
     }
 
     public boolean startLobby(String gameId) {
-        Lobby lobby = findLobby(gameId);
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) { //checks if game is already started
+            findGame(gameId);
+            return false;
+        }
         games.put(lobby.getId(), lobby.startGame());
         lobbies.remove(lobby);
         return true;
-    }
-
-    public Object getGame(String gameId) {
-        Lobby lobby = findLobbyNoError(gameId);
-        if (lobby == null) {
-            return findGame(gameId);
-        }
-        return lobby;
     }
 
     private Lobby findLobbyNoError(String gameId) {
@@ -88,6 +84,12 @@ public class AlhambraController {
         Game game = games.get(gameId);
         if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
         return game;
+    }
+
+    public Object getGame(String gameId) {
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) return findGame(gameId);
+        return lobby;
     }
 
     public Game takeCoins(String gameId, String playerName, Coin[] coins) {
@@ -103,6 +105,6 @@ public class AlhambraController {
     }
 
     public Game build(String gameId, String playerName, Building building, Location location) {
-        return  findGame(gameId).build(playerName,building,location);
+        return findGame(gameId).build(playerName, building, location);
     }
 }
