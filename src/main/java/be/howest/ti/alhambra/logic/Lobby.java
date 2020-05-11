@@ -12,12 +12,12 @@ import java.util.Objects;
 
 public class Lobby {
 
-    private final int maxNumberOfPlayers;
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
+    private final int maxNumberOfPlayers;
     private final String id;
-    private List<PlayerInLobby> players;
     private final String customNameLobby;
+    private List<PlayerInLobby> players;
     private int playerCount;
     private int readyCount;
 
@@ -35,11 +35,6 @@ public class Lobby {
         updateReadyCount();
     }
 
-    public Lobby(String gameId, String customNameLobby) {
-        this(gameId, new ArrayList<>(), customNameLobby, 6);
-    }
-
-
     private void updatePlayerCount() {
         playerCount = countPlayer();
     }
@@ -56,11 +51,18 @@ public class Lobby {
         return (int) players.stream().filter(PlayerInLobby::isStatus).count();
     }
 
+
+    public Lobby(String gameId, String customNameLobby) {
+        this(gameId, new ArrayList<>(), customNameLobby, 6);
+    }
+
     public String getId() {
         return id;
     }
 
-    public String getCustomNameLobby() { return customNameLobby; }
+    public String getCustomNameLobby() {
+        return customNameLobby;
+    }
 
     public int getPlayerCount() {
         return playerCount;
@@ -74,12 +76,11 @@ public class Lobby {
         return players;
 
     }
-    public int getMaxNumberOfPlayers()
-    {
+
+    public int getMaxNumberOfPlayers() {
         return maxNumberOfPlayers;
     }
 
-    
 
     public void addPlayer(String name) {
         if (countPlayer() < maxNumberOfPlayers) {
@@ -132,6 +133,11 @@ public class Lobby {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(maxNumberOfPlayers, id, customNameLobby, players, playerCount, readyCount);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -141,11 +147,6 @@ public class Lobby {
                 readyCount == lobby.readyCount &&
                 Objects.equals(id, lobby.id) &&
                 Objects.equals(customNameLobby, lobby.customNameLobby) &&
-                Objects.equals(playersReady, lobby.playersReady);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(maxNumberOfPlayers, id, customNameLobby, playersReady, playerCount, readyCount);
+                Objects.equals(players, lobby.players);
     }
 }
