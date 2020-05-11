@@ -11,26 +11,34 @@ import java.util.List;
 import java.util.Objects;
 
 public class Lobby {
-    @JsonIgnore
-    private static final int MAX_PLAYER_COUNT = 6;
+
+    private final int maxNumberOfPlayers;
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
     private List<PlayerInLobby> players;
+    private final String customNameLobby;
     private int playerCount;
     private int readyCount;
 
-    public Lobby(String gameId) {
-        this(gameId, new ArrayList<>());
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) {
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers);
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> players) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby, @JsonProperty("maxNumberOfPlayers") int maxNumberOfPlayers) {
         this.id = id;
-        this.players = players;
+        this.players = playersReady;
+        this.customNameLobby = customNameLobby;
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
         updatePlayerCount();
         updateReadyCount();
     }
+
+    public Lobby(String gameId, String customNameLobby) {
+        this(gameId, new ArrayList<>(), customNameLobby, 6);
+    }
+
 
     private void updatePlayerCount() {
         playerCount = countPlayer();
@@ -52,6 +60,8 @@ public class Lobby {
         return id;
     }
 
+    public String getCustomNameLobby() { return customNameLobby; }
+
     public int getPlayerCount() {
         return playerCount;
     }
@@ -62,10 +72,17 @@ public class Lobby {
 
     public List<PlayerInLobby> getPlayers() {
         return players;
+
+    }
+    public int getMaxNumberOfPlayers()
+    {
+        return maxNumberOfPlayers;
     }
 
+    
+
     public void addPlayer(String name) {
-        if (countPlayer() < MAX_PLAYER_COUNT) {
+        if (countPlayer() < maxNumberOfPlayers) {
             if (checkInLobby(name))
                 throw new AlhambraGameRuleException("Name already used");
             else {
@@ -115,15 +132,20 @@ public class Lobby {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, players);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lobby lobby = (Lobby) o;
-        return Objects.equals(id, lobby.id);
+        return maxNumberOfPlayers == lobby.maxNumberOfPlayers &&
+                playerCount == lobby.playerCount &&
+                readyCount == lobby.readyCount &&
+                Objects.equals(id, lobby.id) &&
+                Objects.equals(customNameLobby, lobby.customNameLobby) &&
+                Objects.equals(playersReady, lobby.playersReady);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(maxNumberOfPlayers, id, customNameLobby, playersReady, playerCount, readyCount);
     }
 }

@@ -299,20 +299,27 @@ paths:
         - setup
       summary: Create a new game
       operationId: createGame
-#      requestBody: #reason why this code is commented out is because it gives error when you give an empty string when it says it shouldn't
-#        required: false
-#        description: Optional prefix for the new game id. This parameter is used to seperate game lobbies per group. When omitting, ensure that the request body content-type is also not set to application.json. Submitting an empty String value is a valid alternative in case of empty value
-#        content:
-#         application/json:
-#          schema:
-#            type: object
-#            properties:
-#             prefix:
-#              type: string
-#              example:
-#               prefix: "group00"
-#            required:
-#             - prefix
+      requestBody:
+        required: true
+        description: Optional prefix for the new game id. This parameter is used to seperate game lobbies per group. When omitting, ensure that the request body content-type is also not set to application.json. Submitting an empty String value is a valid alternative in case of empty value
+        content:
+         application/json:
+          schema:
+            type: object
+            properties:
+              maxNumberOfPlayers:
+                type: integer
+                minimum: 2
+                maximum: 6
+                example:
+                  maxNumberOfPlayers: "4"
+              customGameName:
+               type: string
+               example:
+                customGameName: "name"
+            required:
+             - maxNumberOfPlayers
+             - customGameName
       responses:
         '200':
           description: OK

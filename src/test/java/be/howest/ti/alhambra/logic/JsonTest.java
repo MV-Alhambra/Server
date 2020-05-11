@@ -196,7 +196,7 @@ class JsonTest {
     @Test
     void lobby() {
         // Create lobby
-        Lobby lobby = new Lobby("game21-002");
+        Lobby lobby = new Lobby("game21-002", "testLobby");
 
         // Turn it into a JsonObject
         JsonObject lobbyAsJsonObject = JsonObject.mapFrom(lobby);
@@ -206,7 +206,8 @@ class JsonTest {
         assertTrue(lobbyAsJsonObject.containsKey("readyCount"));
         assertTrue(lobbyAsJsonObject.containsKey("players"));
         assertTrue(lobbyAsJsonObject.containsKey("playerCount"));
-
+        assertTrue(lobbyAsJsonObject.containsKey("customNameLobby"));
+        assertTrue(lobbyAsJsonObject.containsKey("maxNumberOfPlayers"));
         // Assert that you can convert it back to the same lobby.
         assertEquals(lobby, lobbyAsJsonObject.mapTo(Lobby.class));
 
