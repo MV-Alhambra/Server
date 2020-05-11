@@ -46,7 +46,7 @@ public class City {
     private void checkMapSize() { //checks if the city needs to be expanded
         for (int row = 0; row < buildings.length; row++) {
             for (int col = 0; col < buildings.length; col++) {
-                if (buildings[col][row] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) {
+                if (buildings[col][row] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
                     updateMapSize();
                     return;// stop/exit
                 }
@@ -86,18 +86,18 @@ public class City {
 
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
-                if (buildings[col][row] != null) {
-                    if (row - 1 >= 0 && buildings[col][row - 1] == null) {
-                        locations.add(Location.convertStaticLocationToLocation(new Location(col, row - 1),mapSize));
+                if (buildings[row][col] != null) {
+                    if (row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
                     }
-                    if (col - 1 >= 0 && buildings[col - 1][row] == null) {
-                        locations.add(Location.convertStaticLocationToLocation(new Location(col-1, row ),mapSize));
+                    if (col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
                     }
-                    if (row + 1 < mapSize && buildings[col][row + 1] == null) {
-                        locations.add(Location.convertStaticLocationToLocation(new Location(col, row+1 ),mapSize));
+                    if (row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
                     }
-                    if (col + 1 < mapSize && buildings[col + 1][row] == null) {
-                        locations.add(Location.convertStaticLocationToLocation(new Location(col+1, row ),mapSize));
+                    if (col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
                     }
                 }
             }
