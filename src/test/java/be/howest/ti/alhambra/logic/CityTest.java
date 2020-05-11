@@ -1,5 +1,7 @@
 package be.howest.ti.alhambra.logic;
 
+import be.howest.ti.alhambra.exceptions.AlhambraException;
+import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -24,8 +26,7 @@ public class CityTest {
         //tests if the building was actually placed and on the right place
         assertArrayEquals(tempBuildings, city1.getBuildings());
         //tests if it throws error when placing building on a building
-        assertThrows(IllegalArgumentException.class, () -> city1.placeBuilding(building, new Location(-1, 0)));
-        //needs further expanding when further validation is completed
+        assertThrows(AlhambraGameRuleException.class, () -> city1.placeBuilding(building, new Location(-1, 0)));
     }
 
     @Test
