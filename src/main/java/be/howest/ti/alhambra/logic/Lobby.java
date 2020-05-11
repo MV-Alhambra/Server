@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 public class Lobby {
-    @JsonIgnore
-    private static final int MAX_PLAYER_COUNT = 6;
+
+    private final int maxNumberOfPlayers;
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
@@ -20,17 +20,22 @@ public class Lobby {
     private int playerCount;
     private int readyCount;
 
-    public Lobby(String gameId, String customNameLobby) {
-        this(gameId, new ArrayList<>(), customNameLobby);
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) {
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers);
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby, @JsonProperty("maxNumberOfPlayers") int maxNumberOfPlayers) {
         this.id = id;
         this.playersReady = playersReady;
         this.customNameLobby = customNameLobby;
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
         updatePlayerCount();
         updateReadyCount();
+    }
+
+    public Lobby(String gameId, String customNameLobby) {
+        this(gameId, new ArrayList<>(), customNameLobby, 6);
     }
 
 
@@ -70,13 +75,18 @@ public class Lobby {
         return readyCount;
     }
 
+    public int getMaxNumberOfPlayers()
+    {
+        return maxNumberOfPlayers;
+    }
+
     @JsonGetter("players")
     public List<PlayerInLobby> getPlayersReady() {
         return playersReady;
     }
 
     public void addPlayer(String name) {
-        if (countPlayer() < MAX_PLAYER_COUNT) {
+        if (countPlayer() < maxNumberOfPlayers) {
             if (checkInLobby(name))
                 throw new AlhambraGameRuleException("Name already used");
             else {
