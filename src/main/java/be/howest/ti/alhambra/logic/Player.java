@@ -73,12 +73,26 @@ public class Player {
         mostOfEachBuilding.put(BuildingType.GARDEN, null);
         mostOfEachBuilding.put(BuildingType.TOWER, null);
 
-        //List<Player> players = game.getPlayers();
-        //for (Player player : players){
-            //for(Map.Entry<BuildingType , Map<Player, Integer>> entry : mostOfEachBuilding.entrySet()){
+        List<Player> players = game.getPlayers();
 
-            //}
-        //}
+        for (Player player : players){
+            Map<BuildingType, Integer> types = new HashMap<>();
+            Building[][] buildings = player.getCity().getBuildings();
+            for( int row = 0; row < buildings.length; row++){
+                for( int col = 0; col < buildings.length; col++){
+                    if(buildings[row][col] != null){
+                        Building b = buildings[row][col];
+                        BuildingType type = b.getType();
+                        if(types.containsKey(type)){
+                            types.put(type, 0);
+                        }
+                        else{
+                            types.replace(type, types.get(type) +1);
+                        }
+                    }
+                }
+            }
+        }
         return score;
     }
 
