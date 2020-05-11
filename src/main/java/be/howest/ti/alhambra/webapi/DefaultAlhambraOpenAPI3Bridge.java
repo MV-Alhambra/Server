@@ -98,7 +98,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object buyBuilding(RoutingContext ctx) {
         LOGGER.info("buyBuilding");
-        Currency currency = Json.decodeValue("\"" + ctx.getBodyAsJson().getString("currency") + "\"", Currency.class);
+        Currency currency = Currency.valueOf(ctx.getBodyAsJson().getString("currency").toUpperCase());
         Coin[] coins = Json.decodeValue(ctx.getBodyAsJson().getJsonArray("coins").toString(), Coin[].class);
         return controller.buyBuilding(getGameId(ctx), getPlayerName(ctx), currency, coins);
     }
