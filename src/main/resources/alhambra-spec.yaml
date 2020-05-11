@@ -309,6 +309,8 @@ paths:
             properties:
               maxNumberOfPlayers:
                 type: integer
+                minimum: 2
+                maximum: 6
                 example:
                   maxNumberOfPlayers: "4"
               customGameName:
