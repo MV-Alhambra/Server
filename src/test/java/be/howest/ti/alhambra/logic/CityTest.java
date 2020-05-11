@@ -45,7 +45,8 @@ public class CityTest {
     void availableLocations(){
         City city1 = new City();
         System.out.println(city1.getAvailableLocations(new HashMap<>()));
-        city1.placeBuilding(new Building(BuildingType.ARCADES,5),new Location(0,1));
+        city1.placeBuilding(new Building(BuildingType.ARCADES,5),new Location(0,-1));
+        System.out.println(Arrays.deepToString(city1.getBuildings()));
         System.out.println(city1.getAvailableLocations(new HashMap<>()));
 
     }

@@ -67,7 +67,6 @@ public class Building {
         return "Building{" +
                 "type=" + type +
                 ", cost=" + cost +
-                ", walls=" + walls +
                 '}';
     }
 }

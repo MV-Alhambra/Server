@@ -19,6 +19,11 @@ public class Location {
         return new Location(location.getCol() + mapRadius, location.getRow() + mapRadius);
     }
 
+    public static Location convertStaticLocationToLocation(Location location, int mapSize) { //turns the static location on based on top left into dynamic location based on fountain position
+        int mapRadius = (mapSize - 1) / 2;
+        return new Location(location.getCol() - mapRadius, location.getRow() - mapRadius);
+    }
+
     public int getCol() {
         return col;
     }

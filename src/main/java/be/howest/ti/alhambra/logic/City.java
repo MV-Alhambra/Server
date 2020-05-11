@@ -88,13 +88,16 @@ public class City {
             for (int col = 0; col < mapSize; col++) {
                 if (buildings[col][row] != null) {
                     if (row - 1 >= 0 && buildings[col][row - 1] == null) {
-                        locations.add(new Location(col, row - 1));
-                    } if (col - 1 >= 0 && buildings[col - 1][row] == null) {
-                        locations.add(new Location(col - 1, row));
-                    } if (row + 1 < mapSize && buildings[col][row + 1] == null) {
-                        locations.add(new Location(col, row + 1));
-                    }  if (col + 1 < mapSize && buildings[col + 1][row] == null) {
-                        locations.add(new Location(col + 1, row));
+                        locations.add(Location.convertStaticLocationToLocation(new Location(col, row - 1),mapSize));
+                    }
+                    if (col - 1 >= 0 && buildings[col - 1][row] == null) {
+                        locations.add(Location.convertStaticLocationToLocation(new Location(col-1, row ),mapSize));
+                    }
+                    if (row + 1 < mapSize && buildings[col][row + 1] == null) {
+                        locations.add(Location.convertStaticLocationToLocation(new Location(col, row+1 ),mapSize));
+                    }
+                    if (col + 1 < mapSize && buildings[col + 1][row] == null) {
+                        locations.add(Location.convertStaticLocationToLocation(new Location(col+1, row ),mapSize));
                     }
                 }
             }
