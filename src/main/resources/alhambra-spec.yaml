@@ -307,16 +307,16 @@ paths:
           schema:
             type: object
             properties:
-              numberOfPlayers:
+              maxNumberOfPlayers:
                 type: integer
                 example:
-                 numberOfPlayers: "4"
+                  maxNumberOfPlayers: "4"
               customGameName:
                type: string
                example:
                 customGameName: "name"
             required:
-             - numberOfPlayers
+             - maxNumberOfPlayers
              - customGameName
       responses:
         '200':
