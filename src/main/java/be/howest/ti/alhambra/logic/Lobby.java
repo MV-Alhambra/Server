@@ -20,8 +20,8 @@ public class Lobby {
     private int playerCount;
     private int readyCount;
 
-    public Lobby(String gameId) {
-        this(gameId, new ArrayList<>());
+    public Lobby(String gameId, String customNameLobby) {
+        this(gameId, new ArrayList<>(), customNameLobby);
     }
 
     @JsonCreator
@@ -33,13 +33,6 @@ public class Lobby {
         updateReadyCount();
     }
 
-    public Lobby(String id, List<PlayerInLobby> playersReady) {
-        this.id = id;
-        this.playersReady = playersReady;
-        this.customNameLobby = id;
-        updatePlayerCount();
-        updateReadyCount();
-    }
 
     private void updatePlayerCount() {
         playerCount = countPlayer();
