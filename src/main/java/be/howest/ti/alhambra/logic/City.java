@@ -46,7 +46,7 @@ public class City {
     private void checkMapSize() { //checks if the city needs to be expanded
         for (int row = 0; row < buildings.length; row++) {
             for (int col = 0; col < buildings.length; col++) {
-                if (buildings[col][row] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
+                if (buildings[row][col] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
                     updateMapSize();
                     return;// stop/exit
                 }
@@ -60,9 +60,7 @@ public class City {
         Building[][] newBuildings = new Building[mapSize][mapSize];
 
         for (int row = 0; row < buildings.length; row++) {
-            for (int col = 0; col < buildings.length; col++) {
-                newBuildings[col + 1][row + 1] = buildings[col][row];
-            }
+            System.arraycopy(buildings[row], 0, newBuildings[row + 1], 1, buildings.length); //basically copies a complete row and puts in the new array with one offset so its in the middle
         }
         buildings = newBuildings;
     }
