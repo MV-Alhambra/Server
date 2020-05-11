@@ -16,10 +16,8 @@ public class PlayerInLobby {
         this.status = status;
     }
 
-
     public PlayerInLobby(String name) {
-        this.name = name;
-        this.status = false;
+        this(name,false);
     }
 
     public String getName() {
@@ -29,7 +27,6 @@ public class PlayerInLobby {
     public boolean isStatus() {
         return status;
     }
-
 
     public void setStatus(boolean status) {
         this.status = status;

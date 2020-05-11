@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class City {
 
@@ -76,8 +77,9 @@ public class City {
     }
 
     /*
-     * Available location is a location that is null, is next to a not null location
-     *
+     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that arent inside the ),
+     *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
+     *  Remove duplicates
      * */
     public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
         List<Location> locations = new ArrayList<>();
@@ -85,22 +87,22 @@ public class City {
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
                 if (buildings[row][col] != null) {
-                    if (row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                    if (!walls.get("south") && !buildings[row][col].getWalls().get("north") && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
                     }
-                    if (col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                    if (!walls.get("east") && !buildings[row][col].getWalls().get("west") && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
                     }
-                    if (row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                    if (!walls.get("north") && !buildings[row][col].getWalls().get("south") && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
                     }
-                    if (col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                    if (!walls.get("west") && !buildings[row][col].getWalls().get("east") && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
                     }
                 }
             }
         }
-        return locations;
+        return locations.stream().distinct().collect(Collectors.toList()); // remove duplicates
     }
 
     @Override
