@@ -86,13 +86,8 @@ public class Lobby {
         updatePlayerCount();
     }
 
-    private PlayerInLobby getPlayerClass(String name) {
-        for (PlayerInLobby p : players) {
-            if (name.equals(p.getName())) {
-                return p;
-            }
-        }
-        throw new IllegalArgumentException("player not in lobby");
+    private PlayerInLobby getPlayerClass(String name) { // find the player or throws an error if it cant find it
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new IllegalArgumentException("player not in lobby"));
     }
 
     public boolean readyUpPlayer(String name) {

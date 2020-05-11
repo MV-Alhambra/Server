@@ -22,9 +22,6 @@ public class PlayerInLobby {
         this.status = false;
     }
 
-
-
-
     public String getName() {
         return name;
     }
@@ -39,16 +36,15 @@ public class PlayerInLobby {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(name, status);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerInLobby that = (PlayerInLobby) o;
-        return status == that.status &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, status);
+        return Objects.equals(name, that.name);
     }
 }

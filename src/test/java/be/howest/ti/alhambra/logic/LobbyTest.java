@@ -74,13 +74,12 @@ class LobbyTest {
         assertThrows(AlhambraGameRuleException.class, lobby::startGame);
     }
 
-    //@Test
+    @Test
     void checkPlayers() {
         Lobby lobby = new Lobby("game021-005");
         lobby.addPlayer("Joe");
-        assertTrue(lobby.checkInLobby("Joe"));
-        assertFalse(lobby.checkInLobby("henk"));
-
+       // assertEquals(new PlayerInLobby("Joe"),lobby.getPlayerClass("Joe"));
+        //assertThrows(IllegalArgumentException.class, ()->lobby.getPlayerClass("henk"));
     }
 
 
