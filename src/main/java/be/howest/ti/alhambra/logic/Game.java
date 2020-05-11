@@ -26,6 +26,8 @@ public class Game {
     private String currentPlayer;
     @JsonIgnore
     private int index;
+    @JsonIgnore
+    private int round;
 
 
     public Game(List<PlayerInLobby> names) {
@@ -40,6 +42,7 @@ public class Game {
         this.bank = new Bank(bank);
         this.market = new Market(market);
         index = 0;
+        round = 0;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
@@ -79,7 +82,8 @@ public class Game {
     public void scoreRound() {
         //for a different issue
         //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore(this) + 1));//temp replaced with above
+        players.forEach(player -> player.setScore(player.getScore(this, ++round)));//temp replaced with above
+
     }
 
     public boolean isEnded() {

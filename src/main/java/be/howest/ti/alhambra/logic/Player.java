@@ -64,7 +64,7 @@ public class Player {
         return city;
     }
 
-    public int getScore(Game game) {
+    public int getScore(Game game, int round) {
         Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
         mostOfEachBuilding.put(BuildingType.PAVILION, null);
         mostOfEachBuilding.put(BuildingType.SERAGLIO, null);
