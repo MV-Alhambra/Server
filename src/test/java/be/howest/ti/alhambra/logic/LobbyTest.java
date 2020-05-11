@@ -25,7 +25,7 @@ class LobbyTest {
     }
 
     @Test
-    void playerName(){
+    void playerName() {
         Lobby lobby = new Lobby("game021-005");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
@@ -36,7 +36,7 @@ class LobbyTest {
     }
 
     @Test
-    void readyPlayers(){
+    void readyPlayers() {
         Lobby lobby = new Lobby("game021-005");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
@@ -72,6 +72,15 @@ class LobbyTest {
 
         // checks if all players are ready to start
         assertThrows(AlhambraGameRuleException.class, lobby::startGame);
+    }
+
+    //@Test
+    void checkPlayers() {
+        Lobby lobby = new Lobby("game021-005");
+        lobby.addPlayer("Joe");
+        assertTrue(lobby.checkInLobby("Joe"));
+        assertFalse(lobby.checkInLobby("henk"));
+
     }
 
 

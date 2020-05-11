@@ -44,7 +44,7 @@ public class Lobby {
         return players.size();
     }
 
-    public int countReady() {
+    public int countReady() { // counts how many players are ready
         return (int) players.stream().filter(PlayerInLobby::isStatus).count();
     }
 
@@ -78,17 +78,11 @@ public class Lobby {
     }
 
     private boolean checkInLobby(String name) {
-        for (PlayerInLobby p : players) {
-            if (name.equals(p.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return players.stream().anyMatch(player -> player.getName().equals(name));
     }
 
     public void removePlayer(String name) {
-        PlayerInLobby player = getPlayerClass(name);
-        players.remove(player);
+        players.remove(getPlayerClass(name));
         updatePlayerCount();
     }
 
