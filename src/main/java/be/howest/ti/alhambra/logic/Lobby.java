@@ -15,6 +15,7 @@ public class Lobby {
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
     private final String id;
+    private final String customNameLobby;
     private List<PlayerInLobby> playersReady;
     private int playerCount;
     private int readyCount;
@@ -24,9 +25,18 @@ public class Lobby {
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, String customNameLobby) {
         this.id = id;
         this.playersReady = playersReady;
+        this.customNameLobby = customNameLobby;
+        updatePlayerCount();
+        updateReadyCount();
+    }
+
+    public Lobby(String id, List<PlayerInLobby> playersReady) {
+        this.id = id;
+        this.playersReady = playersReady;
+        this.customNameLobby = id;
         updatePlayerCount();
         updateReadyCount();
     }
