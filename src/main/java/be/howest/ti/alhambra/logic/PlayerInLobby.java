@@ -16,14 +16,9 @@ public class PlayerInLobby {
         this.status = status;
     }
 
-
     public PlayerInLobby(String name) {
-        this.name = name;
-        this.status = false;
+        this(name,false);
     }
-
-
-
 
     public String getName() {
         return name;
@@ -33,9 +28,13 @@ public class PlayerInLobby {
         return status;
     }
 
-
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, status);
     }
 
     @Override
@@ -43,12 +42,6 @@ public class PlayerInLobby {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerInLobby that = (PlayerInLobby) o;
-        return status == that.status &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, status);
+        return Objects.equals(name, that.name);
     }
 }

@@ -3,7 +3,8 @@ package be.howest.ti.alhambra.logic;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LobbyTest {
 
@@ -24,18 +25,19 @@ class LobbyTest {
         assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Dillon"));
 
     }
+
     @Test
-    void maxPlayerCount()
-    {
-        Lobby lobby = new Lobby("game021-005", "testLobby",4);
+    void maxPlayerCount() {
+        Lobby lobby = new Lobby("game021-005", "testLobby", 4);
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
         lobby.addPlayer("Howard");
         assertThrows(AlhambraGameRuleException.class, () -> lobby.addPlayer("Dillon"));
     }
+
     @Test
-    void playerName(){
+    void playerName() {
         Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
@@ -46,7 +48,7 @@ class LobbyTest {
     }
 
     @Test
-    void readyPlayers(){
+    void readyPlayers() {
         Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
@@ -83,6 +85,4 @@ class LobbyTest {
         // checks if all players are ready to start
         assertThrows(AlhambraGameRuleException.class, lobby::startGame);
     }
-
-
 }

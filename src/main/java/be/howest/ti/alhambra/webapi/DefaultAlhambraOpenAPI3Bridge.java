@@ -1,12 +1,15 @@
 package be.howest.ti.alhambra.webapi;
 
 import be.howest.ti.alhambra.logic.AlhambraController;
+import be.howest.ti.alhambra.logic.Building;
 import be.howest.ti.alhambra.logic.Coin;
 import be.howest.ti.alhambra.logic.Currency;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
+
+import java.util.Map;
 
 public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
@@ -32,7 +35,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getAvailableBuildLocations(RoutingContext ctx) {
         LOGGER.info("getAvailableBuildLocations");
-        return null;
+        Map<String, Boolean> walls = Building.getDefaultWalls();
+        walls.put("north", Boolean.valueOf(ctx.request().getParam("north")));
+        walls.put("west", Boolean.valueOf(ctx.request().getParam("west")));
+        walls.put("east", Boolean.valueOf(ctx.request().getParam("east")));
+        walls.put("south", Boolean.valueOf(ctx.request().getParam("south")));
+        return controller.getAvailableBuildLocations(getGameId(ctx), getPlayerName(ctx), walls);
     }
 
     public Object getBuildingTypes(RoutingContext ctx) {
@@ -119,12 +127,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return controller.startLobby(getGameId(ctx));
     }
 
-    private String getPlayerName(RoutingContext ctx) {
-        return ctx.request().getParam("playerName");
-    }
-
     private String getGameId(RoutingContext ctx) {
         return ctx.request().getParam("gameId");
+    }
+
+    private String getPlayerName(RoutingContext ctx) {
+        return ctx.request().getParam("playerName");
     }
 
 }

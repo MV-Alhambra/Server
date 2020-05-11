@@ -1,9 +1,11 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class City {
 
@@ -21,9 +23,9 @@ public class City {
     }
 
     public static Building[][] getDefaultCity() {
-       Building[][] defaultCity = new Building[3][3];
-       defaultCity[1][1] = new Building(null, 0);
-       return defaultCity;
+        Building[][] defaultCity = new Building[3][3];
+        defaultCity[1][1] = new Building(null, 0);
+        return defaultCity;
     }
 
     @JsonGetter("city")
@@ -45,7 +47,7 @@ public class City {
     private void checkMapSize() { //checks if the city needs to be expanded
         for (int row = 0; row < buildings.length; row++) {
             for (int col = 0; col < buildings.length; col++) {
-                if (buildings[col][row] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) {
+                if (buildings[row][col] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
                     updateMapSize();
                     return;// stop/exit
                 }
@@ -59,9 +61,7 @@ public class City {
         Building[][] newBuildings = new Building[mapSize][mapSize];
 
         for (int row = 0; row < buildings.length; row++) {
-            for (int col = 0; col < buildings.length; col++) {
-                newBuildings[col + 1][row + 1] = buildings[col][row];
-            }
+            System.arraycopy(buildings[row], 0, newBuildings[row + 1], 1, buildings.length); //basically copies a complete row and puts in the new array with one offset so its in the middle
         }
         buildings = newBuildings;
     }
@@ -74,6 +74,35 @@ public class City {
         } else {
             buildings[location.getRow()][location.getCol()] = null;
         }
+    }
+
+    /*
+     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that arent inside the ),
+     *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
+     *  Remove duplicates
+     * */
+    public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
+        List<Location> locations = new ArrayList<>();
+
+        for (int row = 0; row < mapSize; row++) {
+            for (int col = 0; col < mapSize; col++) {
+                if (buildings[row][col] != null) {
+                    if (!walls.get("south") && !buildings[row][col].getWalls().get("north") && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
+                    }
+                    if (!walls.get("east") && !buildings[row][col].getWalls().get("west") && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
+                    }
+                    if (!walls.get("north") && !buildings[row][col].getWalls().get("south") && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
+                    }
+                    if (!walls.get("west") && !buildings[row][col].getWalls().get("east") && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
+                    }
+                }
+            }
+        }
+        return locations.stream().distinct().collect(Collectors.toList()); // remove duplicates
     }
 
     @Override
