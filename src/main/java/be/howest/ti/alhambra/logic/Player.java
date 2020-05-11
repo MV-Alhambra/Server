@@ -2,7 +2,6 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -16,8 +15,6 @@ public class Player {
     private final Reserve reserve;
     private final City city;
     private final List<Building> buildingsInHand;
-    @JsonIgnore
-    private final String playerToken;
 
     private int score;
     private int virtualScore;
@@ -36,7 +33,6 @@ public class Player {
         this.buildingsInHand = buildingsInHand;
         this.score = score;
         this.virtualScore = virtualScore;
-        this.playerToken = "";//later generate this through generatePlayerToken -> see issue
     }
 
     public String getName() {
@@ -76,10 +72,6 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
-    }
-
-    public String getPlayerToken() {
-        return playerToken;
     }
 
     @JsonGetter("virtual-score")

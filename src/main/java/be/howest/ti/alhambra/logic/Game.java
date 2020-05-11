@@ -27,7 +27,8 @@ public class Game {
     @JsonIgnore
     private int index;
 
-    public Game(Set<String> names) {
+
+    public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
 
@@ -50,9 +51,11 @@ public class Game {
         this.bank.fillBank(this);
     }
 
-    public static List<Player> convertNamesIntoPlayers(Set<String> keySet) {
+
+
+    public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
-        keySet.forEach(name -> newPlayers.add(new Player(name)));
+        allPlayers.forEach(player-> newPlayers.add(new Player( player.getName())));
         return newPlayers;
     }
 

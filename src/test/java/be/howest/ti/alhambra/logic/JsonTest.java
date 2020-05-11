@@ -4,7 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -174,7 +176,6 @@ class JsonTest {
         assertTrue(playerAsJsonObject.containsKey("buildings-in-hand"));
         assertTrue(playerAsJsonObject.containsKey("virtual-score"));
         assertTrue(playerAsJsonObject.containsKey("score"));
-        assertFalse(playerAsJsonObject.containsKey("playerToken"));
 
         // Assert that you can convert it back to the same player.
         assertEquals(player, playerAsJsonObject.mapTo(Player.class));
@@ -205,11 +206,32 @@ class JsonTest {
     }
 
     @Test
-    void game() {
+    void playerInLobby() {
+        // Create player
+        PlayerInLobby player = new PlayerInLobby("Carol");
+
+        // Turn it into a JsonObject
+        JsonObject playerAsJsonObject = JsonObject.mapFrom(player);
+
+        // Assert that this object has the expected properties
+        assertTrue(playerAsJsonObject.containsKey("name"));
+        assertTrue(playerAsJsonObject.containsKey("status"));
+
+        // Assert that you can convert it back to the same player.
+        assertEquals(player, playerAsJsonObject.mapTo(PlayerInLobby.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(player, Json.decodeValue(Json.encode(player), PlayerInLobby.class));
+    }
+
+    @Test
+    void game(){
         // Create a game ...
-        Set<String> names = new HashSet<>();
-        names.add("frank");
-        names.add("jake");
+        List<PlayerInLobby> names = new ArrayList<>();
+        PlayerInLobby p1 = new PlayerInLobby("Carol");
+        PlayerInLobby p2 = new PlayerInLobby("Joe");
+        names.add(p1);
+        names.add(p2);
         Game game = new Game(names);
 
         // Turn it into a JsonObject

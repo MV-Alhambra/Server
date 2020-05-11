@@ -58,10 +58,12 @@ public class AlhambraController {
 
     public boolean readyUp(String gameId, String playerName) {
         return findLobby(gameId).readyUpPlayer(playerName);
+
     }
 
     public boolean readyDown(String gameId, String playerName) {
         return findLobby(gameId).unreadyPlayer(playerName);
+
     }
 
     public boolean startLobby(String gameId) {
