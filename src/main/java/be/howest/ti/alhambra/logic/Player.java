@@ -2,7 +2,6 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -73,10 +72,6 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
-    }
-
-    public String getPlayerToken() {
-        return playerToken;
     }
 
     @JsonGetter("virtual-score")

@@ -25,7 +25,8 @@ public class Game {
     @JsonIgnore
     private int index;
 
-    public Game(Set<String> names) {
+
+    public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
 
@@ -36,10 +37,6 @@ public class Game {
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
-    }
-
-    public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
         index = 0;
         nextPlayer();
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
@@ -52,10 +49,11 @@ public class Game {
         this.bank.fillBank(this);
     }
 
+
+
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
         allPlayers.forEach(player-> newPlayers.add(new Player( player.getName())));
-        keySet.forEach(name -> newPlayers.add(new Player(name)));
         return newPlayers;
     }
 

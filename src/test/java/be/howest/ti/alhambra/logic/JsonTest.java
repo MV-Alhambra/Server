@@ -4,7 +4,9 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -204,7 +206,6 @@ class JsonTest {
     }
 
     @Test
-<<<<<<< src/test/java/be/howest/ti/alhambra/logic/JsonTest.java
     void playerInLobby() {
         // Create player
         PlayerInLobby player = new PlayerInLobby("Carol");
@@ -226,9 +227,11 @@ class JsonTest {
     @Test
     void game(){
         // Create a game ...
-        Set<String> names = new HashSet<>();
-        names.add("frank");
-        names.add("jake");
+        List<PlayerInLobby> names = new ArrayList<>();
+        PlayerInLobby p1 = new PlayerInLobby("Carol");
+        PlayerInLobby p2 = new PlayerInLobby("Joe");
+        names.add(p1);
+        names.add(p2);
         Game game = new Game(names);
 
         // Turn it into a JsonObject
