@@ -175,7 +175,7 @@ class ApiTest {
         );
     }
 
-    @Test
+    //@Test
     void createGame(final VertxTestContext testContext) {
         testRequest(
                 testContext,
@@ -185,7 +185,7 @@ class ApiTest {
         );
     }
 
-    @Test
+    //@Test
     void createGameWithPrefix(final VertxTestContext testContext) {
         JsonObject body = new JsonObject().put("prefix", "game");
         testRequest(
