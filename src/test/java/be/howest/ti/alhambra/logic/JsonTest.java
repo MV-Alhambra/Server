@@ -14,6 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonTest {
 
     @Test
+    void currency(){
+        // Create a currency ...
+        Currency currency = Currency.GREEN;
+        System.out.println(Json.encode(currency));
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(currency, Json.decodeValue(Json.encode(currency), Currency.class));
+    }
+
+    @Test
     void coin() {
         // Create a coin ...
         Coin coin = new Coin(Currency.ORANGE, 10);
