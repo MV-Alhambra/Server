@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Player {
     private final String name;
@@ -66,7 +64,21 @@ public class Player {
         return city;
     }
 
-    public int getScore() {
+    public int getScore(Game game) {
+        Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
+        mostOfEachBuilding.put(BuildingType.PAVILION, null);
+        mostOfEachBuilding.put(BuildingType.SERAGLIO, null);
+        mostOfEachBuilding.put(BuildingType.ARCADES, null);
+        mostOfEachBuilding.put(BuildingType.CHAMBERS, null);
+        mostOfEachBuilding.put(BuildingType.GARDEN, null);
+        mostOfEachBuilding.put(BuildingType.TOWER, null);
+
+        //List<Player> players = game.getPlayers();
+        //for (Player player : players){
+            //for(Map.Entry<BuildingType , Map<Player, Integer>> entry : mostOfEachBuilding.entrySet()){
+
+            //}
+        //}
         return score;
     }
 
