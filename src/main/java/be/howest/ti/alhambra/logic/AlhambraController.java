@@ -30,10 +30,9 @@ public class AlhambraController {
         return lobbies;
     }
 
-    public String addLobby(String customGameName) {
+    public String addLobby(String customGameName, int maxPlayerCount) {
         String gameId = String.format("%03d", id++); //001
-        Lobby lobby = new Lobby(gameId, customGameName);
-        lobbies.add(lobby);
+        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount));
         return gameId;
     }
 

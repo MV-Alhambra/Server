@@ -307,11 +307,18 @@ paths:
           schema:
             type: object
             properties:
-             customGameName:
-              type: string
-              example:
+              maxNumberOfPlayers:
+                type: integer
+                minimum: 2
+                maximum: 6
+                example:
+                  maxNumberOfPlayers: "4"
+              customGameName:
+               type: string
+               example:
                 customGameName: "name"
             required:
+             - maxNumberOfPlayers
              - customGameName
       responses:
         '200':
