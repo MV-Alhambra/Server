@@ -92,8 +92,19 @@ public class Player {
                     }
                 }
             }
+            compareAmountOfBuildings(player, mostOfEachBuilding, types);
         }
         return score;
+    }
+    public void compareAmountOfBuildings(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
+        for(Map.Entry<BuildingType, Integer> entry : types.entrySet()){
+            Player player = amounts.entrySet().iterator().next().getValue().entrySet().iterator().next().getKey();
+            if (entry.getValue() > amounts.get(entry.getKey()).get(player)){
+                Map<Player, Integer> current = new HashMap<>();
+                current.put(p, entry.getValue());
+                amounts.replace(entry.getKey(), current);
+            }
+        }
     }
 
     public void setScore(int score) {
