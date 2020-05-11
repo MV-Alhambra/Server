@@ -312,7 +312,7 @@ paths:
                 minimum: 2
                 maximum: 6
                 example:
-                  maxNumberOfPlayers: "4"
+                  maxNumberOfPlayers: 4
               customGameName:
                type: string
                example:

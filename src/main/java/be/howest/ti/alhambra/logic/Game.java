@@ -50,10 +50,9 @@ public class Game {
     }
 
 
-
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
-        allPlayers.forEach(player-> newPlayers.add(new Player( player.getName())));
+        allPlayers.forEach(player -> newPlayers.add(new Player(player.getName())));
         return newPlayers;
     }
 
@@ -232,6 +231,16 @@ public class Game {
             player.getBuildingsInHand().add(market.removeBuilding(currency)); //remove and add it to the hand
             player.getCoins().removeCoins(coins);
             if (sum != cost) nextPlayer();
+        }
+        return this;
+    }
+
+    public Game build(Player player, Building building, Location location) {
+        if (!player.getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building in the hand");
+        if (location == null) {
+            player.getReserve().addBuilding(building);
+        } else {
+            player.getCity().placeBuilding(building, location);
         }
         return this;
     }
