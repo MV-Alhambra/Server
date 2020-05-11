@@ -98,4 +98,8 @@ public class AlhambraController {
     public Game buyBuilding(String gameId, String playerName, Currency currency, Coin[] coins) {
         return findGame(gameId).buyBuilding(playerName, currency, coins);
     }
+
+    public List<Location> getAvailableBuildLocations(String gameId, String playerName,Map<String,Boolean> walls) {
+        return findGame(gameId).findPlayers(playerName).getCity().getAvailableLocations(walls);
+    }
 }

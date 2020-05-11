@@ -205,7 +205,7 @@ public class Game {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
     }
 
-    private Player findPlayers(String name) {
+    public Player findPlayers(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
