@@ -57,7 +57,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object createGame(RoutingContext ctx) {
         LOGGER.info("createGame");
-        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString());
+        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString(),ctx.getBodyAsJson().getInteger("maxNumberOfPlayers"));
     }
 
     public Object clearGames(RoutingContext ctx) {
