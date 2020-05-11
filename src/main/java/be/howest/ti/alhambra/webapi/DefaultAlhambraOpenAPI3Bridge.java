@@ -1,9 +1,6 @@
 package be.howest.ti.alhambra.webapi;
 
-import be.howest.ti.alhambra.logic.AlhambraController;
-import be.howest.ti.alhambra.logic.Building;
-import be.howest.ti.alhambra.logic.Coin;
-import be.howest.ti.alhambra.logic.Currency;
+import be.howest.ti.alhambra.logic.*;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -65,7 +62,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object createGame(RoutingContext ctx) {
         LOGGER.info("createGame");
-        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString(),ctx.getBodyAsJson().getInteger("maxNumberOfPlayers"));
+        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString(), ctx.getBodyAsJson().getInteger("maxNumberOfPlayers"));
     }
 
     public Object clearGames(RoutingContext ctx) {
@@ -114,7 +111,9 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object build(RoutingContext ctx) {
         LOGGER.info("build");
-        return null;
+        Building building = ctx.getBodyAsJson().getJsonObject("building").mapTo(Building.class);
+        Location location = ctx.getBodyAsJson().getJsonObject("location") == null ? null : ctx.getBodyAsJson().getJsonObject("location").mapTo(Location.class);
+        return controller.build(getGameId(ctx), getPlayerName(ctx), building, location);
     }
 
     public Object getGame(RoutingContext ctx) {
