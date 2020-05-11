@@ -1,9 +1,10 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class City {
 
@@ -21,9 +22,9 @@ public class City {
     }
 
     public static Building[][] getDefaultCity() {
-       Building[][] defaultCity = new Building[3][3];
-       defaultCity[1][1] = new Building(null, 0);
-       return defaultCity;
+        Building[][] defaultCity = new Building[3][3];
+        defaultCity[1][1] = new Building(null, 0);
+        return defaultCity;
     }
 
     @JsonGetter("city")
@@ -74,6 +75,32 @@ public class City {
         } else {
             buildings[location.getRow()][location.getCol()] = null;
         }
+    }
+
+    /*
+     * Available location is a location that is null, is next to a not null location
+     *
+     * */
+    public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
+        List<Location> locations = new ArrayList<>();
+
+        for (int row = 0; row < mapSize; row++) {
+            for (int col = 0; col < mapSize; col++) {
+                if (buildings[col][row] != null) {
+                    if (row - 1 >= 0 && buildings[col][row - 1] == null) {
+                        locations.add(new Location(col, row - 1));
+                    } if (col - 1 >= 0 && buildings[col - 1][row] == null) {
+                        locations.add(new Location(col - 1, row));
+                    } if (row + 1 < mapSize && buildings[col][row + 1] == null) {
+                        locations.add(new Location(col, row + 1));
+                    }  if (col + 1 < mapSize && buildings[col + 1][row] == null) {
+                        locations.add(new Location(col + 1, row));
+                    }
+                }
+            }
+        }
+
+        return locations;
     }
 
     @Override

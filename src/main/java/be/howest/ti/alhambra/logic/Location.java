@@ -42,9 +42,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "col=" + col +
-                ", row=" + row +
-                '}';
+        return String.format("(%d;%d)",col,row);
     }
 }

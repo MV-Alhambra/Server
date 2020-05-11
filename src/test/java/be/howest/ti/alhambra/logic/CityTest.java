@@ -3,6 +3,7 @@ package be.howest.ti.alhambra.logic;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,5 +39,14 @@ public class CityTest {
         assertArrayEquals(tempBuildings,city2.getBuildings());
         //tests if it throws error when removing a building that doesnt exist
         assertThrows(IllegalArgumentException.class,()->city2.removeBuilding(new Location(0,-1)));
+    }
+
+    @Test
+    void availableLocations(){
+        City city1 = new City();
+        System.out.println(city1.getAvailableLocations(new HashMap<>()));
+        city1.placeBuilding(new Building(BuildingType.ARCADES,5),new Location(0,1));
+        System.out.println(city1.getAvailableLocations(new HashMap<>()));
+
     }
 }
