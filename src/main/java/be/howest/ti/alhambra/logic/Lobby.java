@@ -25,7 +25,7 @@ public class Lobby {
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, String customNameLobby) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby) {
         this.id = id;
         this.playersReady = playersReady;
         this.customNameLobby = customNameLobby;
@@ -59,6 +59,8 @@ public class Lobby {
     public String getId() {
         return id;
     }
+
+    public String getCustomNameLobby() { return customNameLobby; }
 
     public int getPlayerCount() {
         return playerCount;

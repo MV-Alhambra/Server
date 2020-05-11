@@ -10,7 +10,7 @@ class LobbyTest {
     @Test
     void playerCount() {
         // checks lobby size
-        Lobby lobby = new Lobby("game021-005");
+        Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
@@ -26,7 +26,7 @@ class LobbyTest {
 
     @Test
     void playerName(){
-        Lobby lobby = new Lobby("game021-005");
+        Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
@@ -37,7 +37,7 @@ class LobbyTest {
 
     @Test
     void readyPlayers(){
-        Lobby lobby = new Lobby("game021-005");
+        Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
         lobby.addPlayer("Carol");
         lobby.addPlayer("Jef");
@@ -59,7 +59,7 @@ class LobbyTest {
 
     @Test
     void startGame() {
-        Lobby lobby = new Lobby("game021-005");
+        Lobby lobby = new Lobby("game021-005", "testLobby");
         lobby.addPlayer("Joe");
 
         //checks if the lobby is with more then 1 player
