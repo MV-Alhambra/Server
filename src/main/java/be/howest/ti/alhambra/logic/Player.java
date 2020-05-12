@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Player {
@@ -67,7 +68,6 @@ public class Player {
     public int calcScore(Game game, int round) {
         Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
         Map<Player, Integer> amountPerPlayer = new HashMap<>();
-        amountPerPlayer.put(null, 0);
         mostOfEachBuilding.put(BuildingType.PAVILION, amountPerPlayer);
         mostOfEachBuilding.put(BuildingType.SERAGLIO, amountPerPlayer);
         mostOfEachBuilding.put(BuildingType.ARCADES, amountPerPlayer);
@@ -78,30 +78,32 @@ public class Player {
         List<Player> players = game.getPlayers();
 
         for (Player player : players){
-            Map<BuildingType, Integer> types = new HashMap<>();
             Building[][] buildings = player.getCity().getBuildings();
             for (Building[] building : buildings) {
                 for (int col = 0; col < buildings.length; col++) {
                     if (building[col] != null && building[col].getType() != null) {
                         Building b = building[col];
                         BuildingType type = b.getType();
-                        if (types.containsKey(type)) {
-                            types.replace(type, types.get(type) + 1);
+                        System.out.println(type);
+                        Map<Player, Integer> typeInMap = mostOfEachBuilding.get(type);
+                        if (typeInMap.containsKey(player)) {
+                            typeInMap.replace(player, typeInMap.get(player) + 1);
                         } else{
-                            types.put(type, 1);
+                            typeInMap.put(player, 1);
                         }
+                        System.out.println(typeInMap);
                     }
                 }
             }
-            mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, types);
+            mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, amountPerPlayer);
         }
         return giveScore(this, mostOfEachBuilding, round);
     }
-    public Map<BuildingType, Map<Player, Integer>> addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
-        for(Map.Entry<BuildingType, Integer> entry : types.entrySet()){
+    public Map<BuildingType, Map<Player, Integer>> addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<Player, Integer> types){
+        for(Map.Entry<Player, Integer> entry : types.entrySet()){
             Map<Player, Integer> amountsMap = amounts.get(entry.getKey());
             amountsMap.put(p, types.get(entry.getKey()));
-            amounts.replace(entry.getKey(), amountsMap);
+            //amounts.replace(entry.getKey(), amountsMap);
         }
         return amounts;
     }
@@ -313,5 +315,12 @@ public class Player {
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
         return Objects.equals(name, player.name);
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }
