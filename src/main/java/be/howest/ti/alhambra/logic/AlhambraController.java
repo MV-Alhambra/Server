@@ -66,18 +66,14 @@ public class AlhambraController {
     }
 
     public boolean startLobby(String gameId) {
-        Lobby lobby = findLobby(gameId);
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) { //checks if game is already started
+            findGame(gameId);
+            return false;
+        }
         games.put(lobby.getId(), lobby.startGame());
         lobbies.remove(lobby);
         return true;
-    }
-
-    public Object getGame(String gameId) {
-        Lobby lobby = findLobbyNoError(gameId);
-        if (lobby == null) {
-            return findGame(gameId);
-        }
-        return lobby;
     }
 
     private Lobby findLobbyNoError(String gameId) {
@@ -90,6 +86,12 @@ public class AlhambraController {
         return game;
     }
 
+    public Object getGame(String gameId) {
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) return findGame(gameId);
+        return lobby;
+    }
+
     public Game takeCoins(String gameId, String playerName, Coin[] coins) {
         return findGame(gameId).takeCoins(playerName, coins);
     }
@@ -98,7 +100,11 @@ public class AlhambraController {
         return findGame(gameId).buyBuilding(playerName, currency, coins);
     }
 
-    public List<Location> getAvailableBuildLocations(String gameId, String playerName,Map<String,Boolean> walls) {
-        return findGame(gameId).findPlayers(playerName).getCity().getAvailableLocations(walls);
+    public List<Location> getAvailableBuildLocations(String gameId, String playerName, Map<String, Boolean> walls) {
+        return findGame(gameId).findPlayer(playerName).getCity().getAvailableLocations(walls);
+    }
+
+    public Game build(String gameId, String playerName, Building building, Location location) {
+        return findGame(gameId).build(playerName, building, location);
     }
 }

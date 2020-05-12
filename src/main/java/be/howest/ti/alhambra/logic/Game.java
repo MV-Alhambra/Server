@@ -50,10 +50,9 @@ public class Game {
     }
 
 
-
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
-        allPlayers.forEach(player-> newPlayers.add(new Player( player.getName())));
+        allPlayers.forEach(player -> newPlayers.add(new Player(player.getName())));
         return newPlayers;
     }
 
@@ -192,7 +191,7 @@ public class Game {
         try {
             bank.removeCoins(coins, true);
             bank.removeCoins(coins); //now i actually remove them
-            findPlayers(playerName).getCoins().addCoins(coins); // now add them to the player
+            findPlayer(playerName).getCoins().addCoins(coins); // now add them to the player
             nextPlayer();
         } catch (IllegalArgumentException exception) {
             throw new AlhambraEntityNotFoundException("Couldn't find those coins: " + Arrays.toString(coins));
@@ -205,7 +204,7 @@ public class Game {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
     }
 
-    public Player findPlayers(String name) {
+    public Player findPlayer(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
@@ -223,7 +222,7 @@ public class Game {
         checkTurn(playerName);
         int sum = Coin.getSumCoins(coins);
         int cost = market.getBuilding(currency).getCost();
-        Player player = findPlayers(playerName);
+        Player player = findPlayer(playerName);
 
         if (!player.getCoins().containsCoins(coins)) throw new AlhambraGameRuleException("Player doesn't own those coins");
         else if (!Coin.coinsSameCurrency(coins)) throw new AlhambraGameRuleException("Coins must have the same currency");
@@ -232,6 +231,18 @@ public class Game {
             player.getBuildingsInHand().add(market.removeBuilding(currency)); //remove and add it to the hand
             player.getCoins().removeCoins(coins);
             if (sum != cost) nextPlayer();
+        }
+        return this;
+    }
+
+    public Game build(String playerName, Building building, Location location) {
+        Player player = findPlayer(playerName);
+
+        if (!player.getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building in the hand");
+        if (location == null) {
+            player.getReserve().addBuilding(building);
+        } else {
+            player.getCity().placeBuilding(building, location);
         }
         return this;
     }

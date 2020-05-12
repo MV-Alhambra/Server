@@ -36,9 +36,8 @@ public class City {
 
 
     public void placeBuilding(Building building, Location location) { // places a building in the city
-        location = Location.convertLocationToStaticLocation(location, mapSize);
-
         if (getAvailableLocations(building.getWalls()).contains(location)) { //check if it is a valid location
+            location = Location.convertLocationToStaticLocation(location, mapSize);
             buildings[location.getRow()][location.getCol()] = building;
         } else {
             throw new AlhambraGameRuleException("You can't place a building here");
@@ -50,6 +49,7 @@ public class City {
      * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that arent inside the ),
      *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
      *  Remove duplicates
+     *  #todo even more validation: only walls on walls so no building next to another can have a wall and no wall
      * */
     public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
         List<Location> locations = new ArrayList<>();
