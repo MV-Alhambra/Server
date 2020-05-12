@@ -80,18 +80,15 @@ public class Player {
                     if (building[col] != null && building[col].getType() != null) {
                         Building b = building[col];
                         BuildingType type = b.getType();
-                        System.out.println(type);
                         Map<Player, Integer> typeInMap = mostOfEachBuilding.get(type);
                         if (typeInMap.containsKey(player)) {
                             typeInMap.replace(player, typeInMap.get(player) + 1);
                         } else{
                             typeInMap.put(player, 1);
                         }
-                        System.out.println(typeInMap);
                     }
                 }
             }
-            //mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, amountPerPlayer);
         }
         return giveScore(this, mostOfEachBuilding, round);
     }
@@ -101,11 +98,11 @@ public class Player {
                 int value = 0;
                 Player most = null;
                 for(Map.Entry<Player, Integer> playerEntry : entry.getValue().entrySet()){
-                    if(playerEntry.getValue() >= value){
+                    if(playerEntry.getValue() > value){
+                        value = playerEntry.getValue();
                         most = playerEntry.getKey();
                     }
                 }
-                System.out.println(most);
                 switch (entry.getKey()){
                     case PAVILION:
                         if(most == p){
