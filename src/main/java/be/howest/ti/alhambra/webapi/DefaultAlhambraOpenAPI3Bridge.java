@@ -8,6 +8,8 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+
 public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
 
@@ -22,7 +24,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public boolean verifyPlayerToken(String token, String gameId, String playerName) {
         LOGGER.info("verifyPlayerToken");
-        return controller.verifyToken(gameId,token);
+        return controller.verifyToken(gameId, token);
     }
 
     public Object getBuildings(RoutingContext ctx) {
@@ -52,7 +54,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getScoringTable(RoutingContext ctx) {
         LOGGER.info("getScoringTable");
-        return null;
+        return ScoringTable.getRoundTable(parseInt(ctx.request().getParam("round")));
     }
 
     public Object getGames(RoutingContext ctx) {
