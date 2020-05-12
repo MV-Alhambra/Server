@@ -82,7 +82,7 @@ public class Game {
     public void scoreRound() {
         //for a different issue
         //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore(this, ++round)));//temp replaced with above
+        players.forEach(player -> player.setScore(player.calcScore(this, ++round)));//temp replaced with above
 
     }
 
