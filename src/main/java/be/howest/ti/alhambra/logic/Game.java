@@ -55,11 +55,10 @@ public class Game {
         return newPlayers;
     }
 
-    public Boolean removePlayer(String name) {
-        boolean flag = players.remove(findPlayer(name));
+    public void removePlayer(String name) {
+        players.remove(findPlayer(name));
         if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
         else if (players.size() == 1) endGame();
-        return flag;
     }
 
     public Player findPlayer(String name) {

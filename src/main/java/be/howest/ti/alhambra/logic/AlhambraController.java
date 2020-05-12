@@ -50,10 +50,15 @@ public class AlhambraController {
         try {
             findLobby(gameId).removePlayer(name);
         } catch (AlhambraEntityNotFoundException exception) {
-            //try leaving a game instead but that's for a different issue
-            throw exception;//temp since not implemented yet
+            findGame(gameId).removePlayer(name);
         }
         return true;
+    }
+
+    private Game findGame(String gameId) {
+        Game game = games.get(gameId);
+        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
+        return game;
     }
 
     public boolean readyUp(String gameId, String playerName) {
@@ -79,12 +84,6 @@ public class AlhambraController {
 
     private Lobby findLobbyNoError(String gameId) {
         return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElse(null);
-    }
-
-    private Game findGame(String gameId) {
-        Game game = games.get(gameId);
-        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
-        return game;
     }
 
     public Object getGame(String gameId) {
@@ -118,7 +117,7 @@ public class AlhambraController {
         try { //tried implementing an interface to reduce this code but it didnt end up working
             return findLobby(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
         } catch (AlhambraEntityNotFoundException e) {
-            return findGame(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
+            return findGame(gameId).getPlayers().stream().anyMatch(player -> player.getToken().equals(playerToken));
         }
     }
 }
