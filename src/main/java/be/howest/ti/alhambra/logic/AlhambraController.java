@@ -107,4 +107,8 @@ public class AlhambraController {
     public Game build(String gameId, String playerName, Building building, Location location) {
         return findGame(gameId).build(playerName, building, location);
     }
+
+    public Game redesign(String gameId, String playerName, Building building, Location location) {
+        return findGame(gameId).redesign(playerName, building, location);
+    }
 }

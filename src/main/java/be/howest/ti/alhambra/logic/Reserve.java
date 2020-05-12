@@ -35,6 +35,10 @@ public class Reserve {
         }
     }
 
+    public Boolean contains(Building building){
+        return buildings.contains(building);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
