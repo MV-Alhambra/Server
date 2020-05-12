@@ -36,9 +36,8 @@ public class AlhambraController {
         return gameId;
     }
 
-    public String joinLobby(String gameId, String name) {
-        findLobby(gameId).addPlayer(name);
-        return "playerToken";
+    public byte[] joinLobby(String gameId, String name) {
+        return findLobby(gameId).addPlayer(name).getToken();
     }
 
     private Lobby findLobby(String gameId) {

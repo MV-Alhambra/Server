@@ -82,17 +82,19 @@ public class Lobby {
     }
 
 
-    public void addPlayer(String name) {
+    public PlayerToken addPlayer(String name) {
         if (countPlayer() < maxNumberOfPlayers) {
             if (checkInLobby(name))
                 throw new AlhambraGameRuleException("Name already used");
             else {
-                players.add(new PlayerInLobby(name));
+                PlayerToken token = new PlayerToken(name, id, customNameLobby);
+                players.add(new PlayerInLobby(name).setToken(token));
+                updatePlayerCount();
+                return token;
             }
         } else {
             throw new AlhambraGameRuleException("The lobby is full");
         }
-        updatePlayerCount();
     }
 
     private boolean checkInLobby(String name) {
