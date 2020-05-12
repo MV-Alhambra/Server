@@ -64,7 +64,7 @@ public class Player {
         return city;
     }
 
-    public int getScore(Game game, int round) {
+    public void getScore(Game game, int round) {
         Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
         mostOfEachBuilding.put(BuildingType.PAVILION, null);
         mostOfEachBuilding.put(BuildingType.SERAGLIO, null);
@@ -78,29 +78,68 @@ public class Player {
         for (Player player : players){
             Map<BuildingType, Integer> types = new HashMap<>();
             Building[][] buildings = player.getCity().getBuildings();
-            for( int row = 0; row < buildings.length; row++){
-                for( int col = 0; col < buildings.length; col++){
-                    if(buildings[row][col] != null){
-                        Building b = buildings[row][col];
+            for (Building[] building : buildings) {
+                for (int col = 0; col < buildings.length; col++) {
+                    if (building[col] != null) {
+                        Building b = building[col];
                         BuildingType type = b.getType();
-                        if(types.containsKey(type)){
+                        if (types.containsKey(type)) {
                             types.put(type, 1);
-                        }
-                        else{
-                            types.replace(type, types.get(type) +1);
+                        } else {
+                            types.replace(type, types.get(type) + 1);
                         }
                     }
                 }
             }
-            addBuildingsToMap(player, mostOfEachBuilding, types);
+            mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, types);
         }
-        return score;
+        giveScore(this, mostOfEachBuilding, round);
     }
-    public void addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
+    public Map<BuildingType, Map<Player, Integer>> addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
         for(Map.Entry<BuildingType, Integer> entry : types.entrySet()){
             Map<Player, Integer> amountsMap = amounts.get(entry.getKey());
             amountsMap.put(p, types.get(entry.getKey()));
             amounts.replace(entry.getKey(), amountsMap);
+        }
+        return amounts;
+    }
+    public void giveScore(Player p, Map<BuildingType, Map<Player, Integer>> mostOfEachBuilding, int round){
+        if (round == 1){
+            for(Map.Entry<BuildingType, Map<Player, Integer>> entry : mostOfEachBuilding.entrySet()){
+                int value = 0;
+                Player most = null;
+                for(Map.Entry<Player, Integer> playerEntry : entry.getValue().entrySet()){
+                    if(playerEntry.getValue() > value){
+                        most = playerEntry.getKey();
+                    }
+                }
+                switch (entry.getKey()){
+                    case PAVILION:
+                        if(most == p){
+                            p.score += 1;
+                        }
+                    case SERAGLIO:
+                        if(most == p){
+                            p.score += 2;
+                        }
+                    case ARCADES:
+                        if(most == p){
+                            p.score += 3;
+                        }
+                    case CHAMBERS:
+                        if(most == p){
+                            p.score += 4;
+                        }
+                    case GARDEN:
+                        if(most == p){
+                            p.score += 5;
+                        }
+                    case TOWER:
+                        if(most == p){
+                            p.score += 6;
+                        }
+                }
+            }
         }
     }
 
