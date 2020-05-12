@@ -248,4 +248,24 @@ public class Game {
         }
         return this;
     }
+
+    public Game redesign(String playerName, Building building, Location location) {
+
+        Player player = findPlayer(playerName);
+
+        if (building == null && location != null) { //city to reserve
+            Building relocateBuilding = player.getCity().getBuilding(location);
+            if (relocateBuilding != null && relocateBuilding.getType() != null) { //check if not fountain or empty
+                    player.getReserve().addBuilding(player.getCity().removeBuilding(location));
+            } else {
+                throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
+            }
+        } else if (location != null) { //reserve to city or swap if there is a building on the location
+
+        } else {
+            throw new AlhambraGameRuleException("Incorrect usage of redesign api");
+        }
+
+        return this;
+    }
 }

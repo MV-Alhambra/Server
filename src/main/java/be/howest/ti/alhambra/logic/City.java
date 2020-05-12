@@ -34,6 +34,9 @@ public class City {
         return buildings;
     }
 
+    public Building getBuilding(Location location) {
+        return buildings[location.getRow()][location.getCol()];
+    }
 
     public void placeBuilding(Building building, Location location) { // places a building in the city
         if (getAvailableLocations(building.getWalls()).contains(location)) { //check if it is a valid location
@@ -97,13 +100,15 @@ public class City {
         buildings = newBuildings;
     }
 
-    public void removeBuilding(Location location) {
+    public Building removeBuilding(Location location) {
         location = Location.convertLocationToStaticLocation(location, mapSize);
+        Building building = buildings[location.getRow()][location.getCol()];
 
-        if (buildings[location.getRow()][location.getCol()] == null) {
+        if (building == null) {
             throw new IllegalArgumentException("Location is already empty");
         } else {
             buildings[location.getRow()][location.getCol()] = null;
+            return building;
         }
     }
 
