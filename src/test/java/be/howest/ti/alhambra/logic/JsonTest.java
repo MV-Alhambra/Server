@@ -266,7 +266,6 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject tokenAsJsonObject = JsonObject.mapFrom(token);
-
         // Assert that this object has the expected properties
         assertTrue(tokenAsJsonObject.containsKey("token"));
 

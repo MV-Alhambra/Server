@@ -2,6 +2,8 @@ package be.howest.ti.alhambra.logic;
 
 
 import be.howest.ti.alhambra.logic.exceptions.AlhambraEntityNotFoundException;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,5 +111,14 @@ public class AlhambraController {
 
     public Game redesign(String gameId, String playerName, Building building, Location location) {
         return findGame(gameId).redesign(playerName, building, location);
+    }
+
+    public boolean verifyToken(String gameId, String token) {
+        PlayerToken playerToken = Json.decodeValue(new JsonObject().put("token", token).toString(), PlayerToken.class);
+        try {
+            return findLobby(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
+        } catch (AlhambraEntityNotFoundException e) {
+            return findGame(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
+        }
     }
 }
