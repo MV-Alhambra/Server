@@ -260,8 +260,14 @@ public class Game {
         else if (building == null && location != null) { //city to reserve
             cityToReserve(player, location);
         } else if (location != null) { //reserve to city or swap if there is a building on the location
-            if (player.getCity().getBuilding(location) != null) cityToReserve(player, location);
-            player.getCity().placeBuilding(building, location);
+            Building oldBuilding = player.getCity().getBuilding(location);
+            if (oldBuilding != null) cityToReserve(player, location);
+            try { //try and swap the building
+                player.getCity().placeBuilding(building, location);
+            } catch (AlhambraGameRuleException e) { //put the building back in the city that was removed
+                player.getCity().placeBuilding(oldBuilding, location);
+                throw e;
+            }
             player.getReserve().removeBuilding(building);
         } else {
             throw new AlhambraGameRuleException("Incorrect usage of redesign api");
