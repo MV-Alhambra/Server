@@ -205,7 +205,7 @@ public class Player {
                 Player sec = null;
                 Player third = null;
                 for(Map.Entry<Player, Integer> playerEntry : entry.getValue().entrySet()){
-                    if(playerEntry.getValue() > value){
+                    if(playerEntry.getValue() >= value){
                         third = sec;
                         sec = most;
                         most = playerEntry.getKey();
