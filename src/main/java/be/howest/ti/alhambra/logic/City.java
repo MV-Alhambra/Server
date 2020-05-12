@@ -35,6 +35,7 @@ public class City {
     }
 
     public Building getBuilding(Location location) {
+        location = Location.convertLocationToStaticLocation(location, mapSize);
         return buildings[location.getRow()][location.getCol()];
     }
 

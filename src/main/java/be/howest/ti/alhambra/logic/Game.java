@@ -249,23 +249,34 @@ public class Game {
         return this;
     }
 
+    /* check if its the player turn and check if the player has that building in reserve
+     *
+     * */
     public Game redesign(String playerName, Building building, Location location) {
-
+        checkTurn(playerName);
         Player player = findPlayer(playerName);
+        if (building != null && !player.getReserve().contains(building)) throw new AlhambraEntityNotFoundException("Couldn't that find building in reserve");
 
-        if (building == null && location != null) { //city to reserve
-            Building relocateBuilding = player.getCity().getBuilding(location);
-            if (relocateBuilding != null && relocateBuilding.getType() != null) { //check if not fountain or empty
-                    player.getReserve().addBuilding(player.getCity().removeBuilding(location));
-            } else {
-                throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
-            }
+        else if (building == null && location != null) { //city to reserve
+            cityToReserve(player, location);
         } else if (location != null) { //reserve to city or swap if there is a building on the location
-
+            if (player.getCity().getBuilding(location) != null) cityToReserve(player, location);
+            player.getCity().placeBuilding(building, location);
+            player.getReserve().removeBuilding(building);
         } else {
             throw new AlhambraGameRuleException("Incorrect usage of redesign api");
         }
-
+        nextPlayer();
         return this;
+    }
+
+    public void cityToReserve(Player player, Location location) {
+        Building relocateBuilding = player.getCity().getBuilding(location);
+
+        if (relocateBuilding != null && relocateBuilding.getType() != null) { //check if not fountain or empty
+            player.getReserve().addBuilding(player.getCity().removeBuilding(location));
+        } else {
+            throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
+        }
     }
 }
