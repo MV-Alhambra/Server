@@ -26,6 +26,8 @@ public class Game {
     private String currentPlayer;
     @JsonIgnore
     private int index;
+    @JsonIgnore
+    private int round;
 
 
     public Game(List<PlayerInLobby> names) {
@@ -40,6 +42,7 @@ public class Game {
         this.bank = new Bank(bank);
         this.market = new Market(market);
         index = 0;
+        round = 0;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
@@ -79,12 +82,6 @@ public class Game {
         ended = true;
     }
 
-    public void scoreRound() {
-        //for a different issue
-        //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
-    }
-
     private List<Building> loadFromFile() {
         try (InputStream in = Game.class.getResourceAsStream("/buildings.json")) {
             return Arrays.asList(
@@ -102,6 +99,13 @@ public class Game {
         int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
+    }
+
+    public void scoreRound() {
+        //for a different issue
+        //but basically here should every player his score be updated its get calculated in city
+        players.forEach(player -> player.setScore(player.calcScore(this, ++round)));//temp replaced with above
+
     }
 
     public boolean isEnded() {
