@@ -1,4 +1,4 @@
-package be.howest.ti.alhambra.logic.exceptions;
+package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,9 +23,9 @@ public class PlayerToken {
 
     private byte[] hashToken(String token)  { //according to internet PBKDF2 is more secure than SHA-512 since its slower to crack
         SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
+        byte[] salt = new byte[64];
         random.nextBytes(salt);
-        KeySpec spec = new PBEKeySpec(token.toCharArray(), salt, 65536, 128);
+        KeySpec spec = new PBEKeySpec(token.toCharArray(), salt, 65536, 512);
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             return factory.generateSecret(spec).getEncoded();
