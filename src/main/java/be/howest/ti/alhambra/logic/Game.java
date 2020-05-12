@@ -56,6 +56,7 @@ public class Game {
     }
 
     public void removePlayer(String name) {
+        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
         players.remove(findPlayer(name));
         if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
         if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
@@ -64,6 +65,13 @@ public class Game {
 
     public Player findPlayer(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
+    }
+
+    private void nextPlayer() { // when called it sets the next current Player
+        bank.fillBank(this);
+        market.fillMarkets(this);
+        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
+        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     private void endGame() { //end the game
@@ -214,13 +222,6 @@ public class Game {
 
     private void checkTurn(String playerName) {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
-    }
-
-    private void nextPlayer() { // when called it sets the next current Player
-        bank.fillBank(this);
-        market.fillMarkets(this);
-        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
-        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
