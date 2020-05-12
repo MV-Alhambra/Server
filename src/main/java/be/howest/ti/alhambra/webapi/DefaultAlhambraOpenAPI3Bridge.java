@@ -1,12 +1,12 @@
 package be.howest.ti.alhambra.webapi;
 
-import be.howest.ti.alhambra.logic.AlhambraController;
-import be.howest.ti.alhambra.logic.Coin;
-import be.howest.ti.alhambra.logic.Currency;
+import be.howest.ti.alhambra.logic.*;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
+
+import java.util.Map;
 
 public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
@@ -22,7 +22,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public boolean verifyPlayerToken(String token, String gameId, String playerName) {
         LOGGER.info("verifyPlayerToken");
-        return true;
+        return controller.verifyToken(gameId,token);
     }
 
     public Object getBuildings(RoutingContext ctx) {
@@ -32,7 +32,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getAvailableBuildLocations(RoutingContext ctx) {
         LOGGER.info("getAvailableBuildLocations");
-        return null;
+        Map<String, Boolean> walls = Building.getDefaultWalls();
+        walls.put("north", Boolean.valueOf(ctx.request().getParam("north")));
+        walls.put("west", Boolean.valueOf(ctx.request().getParam("west")));
+        walls.put("east", Boolean.valueOf(ctx.request().getParam("east")));
+        walls.put("south", Boolean.valueOf(ctx.request().getParam("south")));
+        return controller.getAvailableBuildLocations(getGameId(ctx), getPlayerName(ctx), walls);
     }
 
     public Object getBuildingTypes(RoutingContext ctx) {
@@ -57,7 +62,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object createGame(RoutingContext ctx) {
         LOGGER.info("createGame");
-        return controller.addLobby();
+        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString(), ctx.getBodyAsJson().getInteger("maxNumberOfPlayers"));
     }
 
     public Object clearGames(RoutingContext ctx) {
@@ -93,7 +98,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object buyBuilding(RoutingContext ctx) {
         LOGGER.info("buyBuilding");
-        Currency currency = Json.decodeValue("\"" + ctx.getBodyAsJson().getString("currency") + "\"", Currency.class);
+        Currency currency = Currency.valueOf(ctx.getBodyAsJson().getString("currency").toUpperCase());
         Coin[] coins = Json.decodeValue(ctx.getBodyAsJson().getJsonArray("coins").toString(), Coin[].class);
         return controller.buyBuilding(getGameId(ctx), getPlayerName(ctx), currency, coins);
     }
@@ -101,12 +106,16 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object redesign(RoutingContext ctx) {
         LOGGER.info("redesign");
-        return null;
+        Location location = ctx.getBodyAsJson().containsKey("location") ? ctx.getBodyAsJson().getJsonObject("location").mapTo(Location.class) : null;
+        Building building = ctx.getBodyAsJson().containsKey("building") ? ctx.getBodyAsJson().getJsonObject("building").mapTo(Building.class) : null;
+        return controller.redesign(getGameId(ctx), getPlayerName(ctx), building, location);
     }
 
     public Object build(RoutingContext ctx) {
         LOGGER.info("build");
-        return null;
+        Building building = ctx.getBodyAsJson().getJsonObject("building").mapTo(Building.class);
+        Location location = ctx.getBodyAsJson().getJsonObject("location") == null ? null : ctx.getBodyAsJson().getJsonObject("location").mapTo(Location.class);
+        return controller.build(getGameId(ctx), getPlayerName(ctx), building, location);
     }
 
     public Object getGame(RoutingContext ctx) {
@@ -119,12 +128,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return controller.startLobby(getGameId(ctx));
     }
 
-    private String getPlayerName(RoutingContext ctx) {
-        return ctx.request().getParam("playerName");
-    }
-
     private String getGameId(RoutingContext ctx) {
         return ctx.request().getParam("gameId");
+    }
+
+    private String getPlayerName(RoutingContext ctx) {
+        return ctx.request().getParam("playerName");
     }
 
 }

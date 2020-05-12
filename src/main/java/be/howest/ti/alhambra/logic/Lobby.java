@@ -3,30 +3,34 @@ package be.howest.ti.alhambra.logic;
 
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Lobby {
-    @JsonIgnore
-    private static final int MAX_PLAYER_COUNT = 6;
+
     @JsonIgnore
     private static final int MIN_PLAYER_COUNT = 2;
+    private final int maxNumberOfPlayers;
     private final String id;
-    private List<PlayerInLobby> playersReady;
+    private final String customNameLobby;
+    private List<PlayerInLobby> players;
     private int playerCount;
     private int readyCount;
 
-    public Lobby(String gameId) {
-        this(gameId, new ArrayList<>());
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) {
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers);
     }
 
     @JsonCreator
-    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady) {
+    public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby, @JsonProperty("maxNumberOfPlayers") int maxNumberOfPlayers) {
         this.id = id;
-        this.playersReady = playersReady;
+        this.players = playersReady;
+        this.customNameLobby = customNameLobby;
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
         updatePlayerCount();
         updateReadyCount();
     }
@@ -40,21 +44,24 @@ public class Lobby {
     }
 
     public int countPlayer() {
-        return playersReady.size();
+        return players.size();
     }
 
-    public int countReady() {
-        int i = 0;
-        for (PlayerInLobby p : playersReady){
-            if (p.isStatus()){
-                i++;
-            }
-        }
-        return i;
+    public int countReady() { // counts how many players are ready
+        return (int) players.stream().filter(PlayerInLobby::isStatus).count();
+    }
+
+
+    public Lobby(String gameId, String customNameLobby) {
+        this(gameId, new ArrayList<>(), customNameLobby, 6);
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getCustomNameLobby() {
+        return customNameLobby;
     }
 
     public int getPlayerCount() {
@@ -65,48 +72,42 @@ public class Lobby {
         return readyCount;
     }
 
-    @JsonGetter("players")
-    public List<PlayerInLobby> getPlayersReady() {
-        return playersReady;
+    public List<PlayerInLobby> getPlayers() {
+        return players;
+
     }
 
-    public void addPlayer(String name) {
-        if (countPlayer() < MAX_PLAYER_COUNT) {
+    public int getMaxNumberOfPlayers() {
+        return maxNumberOfPlayers;
+    }
+
+
+    public PlayerToken addPlayer(String name) {
+        if (countPlayer() < maxNumberOfPlayers) {
             if (checkInLobby(name))
                 throw new AlhambraGameRuleException("Name already used");
             else {
-                playersReady.add(new PlayerInLobby(name));
+                PlayerToken token = new PlayerToken(name, id, customNameLobby);
+                players.add(new PlayerInLobby(name).setToken(token));
+                updatePlayerCount();
+                return token;
             }
-        }
-        else {
+        } else {
             throw new AlhambraGameRuleException("The lobby is full");
         }
-        updatePlayerCount();
     }
-
-    private PlayerInLobby getPlayerClass(String name) {
-        for (PlayerInLobby p : playersReady) {
-            if (name.equals(p.getName())) {
-                return p;
-            }
-        }
-        throw new IllegalArgumentException("player not in lobby");
-    }
-
 
     private boolean checkInLobby(String name) {
-        for (PlayerInLobby p : playersReady) {
-            if (name.equals(p.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return players.stream().anyMatch(player -> player.getName().equals(name));
     }
 
     public void removePlayer(String name) {
-        PlayerInLobby player = getPlayerClass(name);
-        playersReady.remove(player);
+        players.remove(getPlayerClass(name));
         updatePlayerCount();
+    }
+
+    private PlayerInLobby getPlayerClass(String name) { // find the player or throws an error if it cant find it
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new IllegalArgumentException("player not in lobby"));
     }
 
     public boolean readyUpPlayer(String name) {
@@ -124,7 +125,7 @@ public class Lobby {
     public Game startGame() {
         if (countPlayer() >= MIN_PLAYER_COUNT) {
             if (readyCount == playerCount) {
-               return new Game(playersReady);
+                return new Game(players);
             } else {
                 throw new AlhambraGameRuleException("All players need to be ready to start the game");
             }
@@ -135,7 +136,7 @@ public class Lobby {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, playersReady);
+        return Objects.hash(maxNumberOfPlayers, id, customNameLobby, players, playerCount, readyCount);
     }
 
     @Override
@@ -143,6 +144,11 @@ public class Lobby {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lobby lobby = (Lobby) o;
-        return Objects.equals(id, lobby.id);
+        return maxNumberOfPlayers == lobby.maxNumberOfPlayers &&
+                playerCount == lobby.playerCount &&
+                readyCount == lobby.readyCount &&
+                Objects.equals(id, lobby.id) &&
+                Objects.equals(customNameLobby, lobby.customNameLobby) &&
+                Objects.equals(players, lobby.players);
     }
 }

@@ -2,6 +2,8 @@ package be.howest.ti.alhambra.logic;
 
 
 import be.howest.ti.alhambra.logic.exceptions.AlhambraEntityNotFoundException;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,16 +32,14 @@ public class AlhambraController {
         return lobbies;
     }
 
-    public String addLobby() {
+    public String addLobby(String customGameName, int maxPlayerCount) {
         String gameId = String.format("%03d", id++); //001
-        Lobby lobby = new Lobby(gameId);
-        lobbies.add(lobby);
+        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount));
         return gameId;
     }
 
-    public String joinLobby(String gameId, String name) {
-        findLobby(gameId).addPlayer(name);
-        return "playerToken";
+    public byte[] joinLobby(String gameId, String name) {
+        return findLobby(gameId).addPlayer(name).getToken();
     }
 
     private Lobby findLobby(String gameId) {
@@ -50,10 +50,15 @@ public class AlhambraController {
         try {
             findLobby(gameId).removePlayer(name);
         } catch (AlhambraEntityNotFoundException exception) {
-            //try leaving a game instead but that's for a different issue
-            throw exception;//temp since not implemented yet
+            findGame(gameId).removePlayer(name);
         }
         return true;
+    }
+
+    private Game findGame(String gameId) {
+        Game game = games.get(gameId);
+        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
+        return game;
     }
 
     public boolean readyUp(String gameId, String playerName) {
@@ -67,28 +72,24 @@ public class AlhambraController {
     }
 
     public boolean startLobby(String gameId) {
-        Lobby lobby = findLobby(gameId);
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) { //checks if game is already started
+            findGame(gameId);
+            return false;
+        }
         games.put(lobby.getId(), lobby.startGame());
         lobbies.remove(lobby);
         return true;
-    }
-
-    public Object getGame(String gameId) {
-        Lobby lobby = findLobbyNoError(gameId);
-        if (lobby == null) {
-            return findGame(gameId);
-        }
-        return lobby;
     }
 
     private Lobby findLobbyNoError(String gameId) {
         return lobbies.stream().filter(lobby -> lobby.getId().equals(gameId)).findFirst().orElse(null);
     }
 
-    private Game findGame(String gameId) {
-        Game game = games.get(gameId);
-        if (game == null) throw new AlhambraEntityNotFoundException("Can't find that game");
-        return game;
+    public Object getGame(String gameId) {
+        Lobby lobby = findLobbyNoError(gameId);
+        if (lobby == null) return findGame(gameId);
+        return lobby;
     }
 
     public Game takeCoins(String gameId, String playerName, Coin[] coins) {
@@ -97,5 +98,26 @@ public class AlhambraController {
 
     public Game buyBuilding(String gameId, String playerName, Currency currency, Coin[] coins) {
         return findGame(gameId).buyBuilding(playerName, currency, coins);
+    }
+
+    public List<Location> getAvailableBuildLocations(String gameId, String playerName, Map<String, Boolean> walls) {
+        return findGame(gameId).findPlayer(playerName).getCity().getAvailableLocations(walls);
+    }
+
+    public Game build(String gameId, String playerName, Building building, Location location) {
+        return findGame(gameId).build(playerName, building, location);
+    }
+
+    public Game redesign(String gameId, String playerName, Building building, Location location) {
+        return findGame(gameId).redesign(playerName, building, location);
+    }
+
+    public boolean verifyToken(String gameId, String token) {
+        PlayerToken playerToken = Json.decodeValue(new JsonObject().put("token", token).toString(), PlayerToken.class);
+        try { //tried implementing an interface to reduce this code but it didnt end up working
+            return findLobby(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
+        } catch (AlhambraEntityNotFoundException e) {
+            return findGame(gameId).getPlayers().stream().anyMatch(player -> player.getToken().equals(playerToken));
+        }
     }
 }
