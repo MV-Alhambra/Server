@@ -1,8 +1,13 @@
 package be.howest.ti.alhambra.logic.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Random;
@@ -16,14 +21,23 @@ public class PlayerToken {
         token = hashToken(toBeHashed);
     }
 
-
-    public byte[] hashToken(String token) { //according to internet PBKDF2 is more secure than SHA-512 since its slower to crack
+    private byte[] hashToken(String token)  { //according to internet PBKDF2 is more secure than SHA-512 since its slower to crack
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         KeySpec spec = new PBEKeySpec(token.toCharArray(), salt, 65536, 128);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        return factory.generateSecret(spec).getEncoded();
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            return factory.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            throw new IllegalStateException("Invalid SecretKeyFactory", ex);
+        }
+    }
+
+
+    @JsonCreator
+    public PlayerToken(@JsonProperty("token") byte[] token) {
+        this.token = token;
     }
 
     public byte[] getToken() {

@@ -261,4 +261,9 @@ class JsonTest {
         assertEquals(game, Json.decodeValue(Json.encode(game), Game.class));
     }
 
+    @Test
+    void playerToken(){
+
+    }
+
 }
