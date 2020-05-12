@@ -59,6 +59,6 @@ public class PlayerTest {
         pl3.getCity().placeBuilding(b7, new Location(0,1));
 
         assertEquals(3 , pl1.calcScore(g, 1));
-        
+
     }
 }

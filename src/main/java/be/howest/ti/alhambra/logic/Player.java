@@ -84,9 +84,9 @@ public class Player {
                         Building b = building[col];
                         BuildingType type = b.getType();
                         if (types.containsKey(type)) {
-                            types.put(type, 1);
-                        } else {
                             types.replace(type, types.get(type) + 1);
+                        } else {
+                            types.put(type, 1);
                         }
                     }
                 }
