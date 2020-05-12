@@ -329,6 +329,7 @@ public class Player {
         return "Player{" +
                 "name='" + name + '\'' +
                 '}';
+    }
 
     public PlayerToken getToken() {
         return token;
