@@ -57,6 +57,7 @@ public class Game {
 
     public void removePlayer(String name) {
         players.remove(findPlayer(name));
+        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
         if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
         else if (players.size() == 1) endGame();
     }
