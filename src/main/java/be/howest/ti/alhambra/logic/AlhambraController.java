@@ -115,7 +115,7 @@ public class AlhambraController {
 
     public boolean verifyToken(String gameId, String token) {
         PlayerToken playerToken = Json.decodeValue(new JsonObject().put("token", token).toString(), PlayerToken.class);
-        try {
+        try { //tried implementing an interface to reduce this code but it didnt end up working
             return findLobby(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
         } catch (AlhambraEntityNotFoundException e) {
             return findGame(gameId).getPlayers().stream().anyMatch(playerInLobby -> playerInLobby.getToken().equals(playerToken));
