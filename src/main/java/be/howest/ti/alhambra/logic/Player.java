@@ -2,6 +2,7 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class Player {
     private int score;
     private int virtualScore;
 
+    @JsonIgnore
+    private PlayerToken token;
 
     public Player(String name) {
         this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0);
@@ -99,5 +102,14 @@ public class Player {
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
         return Objects.equals(name, player.name);
+    }
+
+    public PlayerToken getToken() {
+        return token;
+    }
+
+    public Player setToken(PlayerToken token) {
+        this.token = token;
+        return this;
     }
 }
