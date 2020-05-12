@@ -66,12 +66,14 @@ public class Player {
 
     public int calcScore(Game game, int round) {
         Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
-        mostOfEachBuilding.put(BuildingType.PAVILION, null);
-        mostOfEachBuilding.put(BuildingType.SERAGLIO, null);
-        mostOfEachBuilding.put(BuildingType.ARCADES, null);
-        mostOfEachBuilding.put(BuildingType.CHAMBERS, null);
-        mostOfEachBuilding.put(BuildingType.GARDEN, null);
-        mostOfEachBuilding.put(BuildingType.TOWER, null);
+        Map<Player, Integer> amountPerPlayer = new HashMap<>();
+        amountPerPlayer.put(null, 0);
+        mostOfEachBuilding.put(BuildingType.PAVILION, amountPerPlayer);
+        mostOfEachBuilding.put(BuildingType.SERAGLIO, amountPerPlayer);
+        mostOfEachBuilding.put(BuildingType.ARCADES, amountPerPlayer);
+        mostOfEachBuilding.put(BuildingType.CHAMBERS, amountPerPlayer);
+        mostOfEachBuilding.put(BuildingType.GARDEN, amountPerPlayer);
+        mostOfEachBuilding.put(BuildingType.TOWER, amountPerPlayer);
 
         List<Player> players = game.getPlayers();
 
@@ -80,12 +82,12 @@ public class Player {
             Building[][] buildings = player.getCity().getBuildings();
             for (Building[] building : buildings) {
                 for (int col = 0; col < buildings.length; col++) {
-                    if (building[col] != null) {
+                    if (building[col] != null && building[col].getType() != null) {
                         Building b = building[col];
                         BuildingType type = b.getType();
                         if (types.containsKey(type)) {
                             types.replace(type, types.get(type) + 1);
-                        } else {
+                        } else{
                             types.put(type, 1);
                         }
                     }
