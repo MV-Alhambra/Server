@@ -270,7 +270,7 @@ public class Game {
         return this;
     }
 
-    public void cityToReserve(Player player, Location location) {
+    private void cityToReserve(Player player, Location location) {
         Building relocateBuilding = player.getCity().getBuilding(location);
 
         if (relocateBuilding != null && relocateBuilding.getType() != null) { //check if not fountain or empty
