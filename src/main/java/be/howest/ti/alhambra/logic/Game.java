@@ -52,7 +52,7 @@ public class Game {
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
-        allPlayers.forEach(player -> newPlayers.add(new Player(player.getName())));
+        allPlayers.forEach(player -> newPlayers.add(new Player(player.getName()).setToken(player.getToken())));
         return newPlayers;
     }
 

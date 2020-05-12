@@ -5,9 +5,7 @@ import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -259,6 +257,24 @@ class JsonTest {
 
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(game, Json.decodeValue(Json.encode(game), Game.class));
+    }
+
+    @Test
+    void playerToken(){
+        // Create token
+        PlayerToken token = new PlayerToken("Henk","001","henks game");
+
+        // Turn it into a JsonObject
+        JsonObject tokenAsJsonObject = JsonObject.mapFrom(token);
+        // Assert that this object has the expected properties
+        assertTrue(tokenAsJsonObject.containsKey("token"));
+
+        // Assert that you can convert it back to the same token.
+        assertEquals(token, tokenAsJsonObject.mapTo(PlayerToken.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(token, Json.decodeValue(Json.encode(token), PlayerToken.class));
+
     }
 
 }
