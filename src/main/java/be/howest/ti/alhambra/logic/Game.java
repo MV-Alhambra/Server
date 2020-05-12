@@ -82,12 +82,6 @@ public class Game {
         ended = true;
     }
 
-    public void scoreRound() {
-        //for a different issue
-        //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
-    }
-
     private List<Building> loadFromFile() {
         try (InputStream in = Game.class.getResourceAsStream("/buildings.json")) {
             return Arrays.asList(
