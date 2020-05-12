@@ -67,14 +67,10 @@ public class Player {
 
     public int calcScore(Game game, int round) {
         Map<BuildingType,Map<Player, Integer>> mostOfEachBuilding = new HashMap<>();
-        Map<Player, Integer> amountPerPlayer = new HashMap<>();
-        mostOfEachBuilding.put(BuildingType.PAVILION, amountPerPlayer);
-        mostOfEachBuilding.put(BuildingType.SERAGLIO, amountPerPlayer);
-        mostOfEachBuilding.put(BuildingType.ARCADES, amountPerPlayer);
-        mostOfEachBuilding.put(BuildingType.CHAMBERS, amountPerPlayer);
-        mostOfEachBuilding.put(BuildingType.GARDEN, amountPerPlayer);
-        mostOfEachBuilding.put(BuildingType.TOWER, amountPerPlayer);
 
+        for(BuildingType type : BuildingType.values()){
+            mostOfEachBuilding.put(type, new HashMap<>());
+        }
         List<Player> players = game.getPlayers();
 
         for (Player player : players){
@@ -95,17 +91,9 @@ public class Player {
                     }
                 }
             }
-            mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, amountPerPlayer);
+            //mostOfEachBuilding = addBuildingsToMap(player, mostOfEachBuilding, amountPerPlayer);
         }
         return giveScore(this, mostOfEachBuilding, round);
-    }
-    public Map<BuildingType, Map<Player, Integer>> addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<Player, Integer> types){
-        for(Map.Entry<Player, Integer> entry : types.entrySet()){
-            Map<Player, Integer> amountsMap = amounts.get(entry.getKey());
-            amountsMap.put(p, types.get(entry.getKey()));
-            //amounts.replace(entry.getKey(), amountsMap);
-        }
-        return amounts;
     }
     public int giveScore(Player p, Map<BuildingType, Map<Player, Integer>> mostOfEachBuilding, int round){
         if (round == 1){
@@ -113,35 +101,42 @@ public class Player {
                 int value = 0;
                 Player most = null;
                 for(Map.Entry<Player, Integer> playerEntry : entry.getValue().entrySet()){
-                    if(playerEntry.getValue() > value){
+                    if(playerEntry.getValue() >= value){
                         most = playerEntry.getKey();
                     }
                 }
+                System.out.println(most);
                 switch (entry.getKey()){
                     case PAVILION:
                         if(most == p){
                             p.setScore(p.getScore() + 1);
                         }
+                        break;
                     case SERAGLIO:
                         if(most == p){
                             p.setScore(p.getScore() + 2);
                         }
+                        break;
                     case ARCADES:
                         if(most == p){
                             p.setScore(p.getScore() + 3);
                         }
+                        break;
                     case CHAMBERS:
                         if(most == p){
                             p.setScore(p.getScore() + 4);
                         }
+                        break;
                     case GARDEN:
                         if(most == p){
                             p.setScore(p.getScore() + 5);
                         }
+                        break;
                     case TOWER:
                         if(most == p){
                             p.setScore(p.getScore() + 6);
                         }
+                        break;
                 }
             }
         }
@@ -164,6 +159,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 1);
                         }
+                        break;
                     case SERAGLIO:
                         if(most == p){
                             p.setScore(p.getScore() + 9);
@@ -171,6 +167,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 2);
                         }
+                        break;
                     case ARCADES:
                         if(most == p){
                             p.setScore(p.getScore() + 10);
@@ -178,6 +175,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 3);
                         }
+                        break;
                     case CHAMBERS:
                         if(most == p){
                             p.setScore(p.getScore() + 11);
@@ -185,6 +183,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 4);
                         }
+                        break;
                     case GARDEN:
                         if(most == p){
                             p.setScore(p.getScore() + 12);
@@ -192,6 +191,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 5);
                         }
+                        break;
                     case TOWER:
                         if(most == p){
                             p.setScore(p.getScore() + 13);
@@ -199,6 +199,7 @@ public class Player {
                         else if(sec == p){
                             p.setScore(p.getScore() + 6);
                         }
+                        break;
                 }
             }
         }
@@ -226,6 +227,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 1);
                         }
+                        break;
                     case SERAGLIO:
                         if(most == p){
                             p.setScore(p.getScore() + 17);
@@ -236,6 +238,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 2);
                         }
+                        break;
                     case ARCADES:
                         if(most == p){
                             p.setScore(p.getScore() + 18);
@@ -246,6 +249,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 3);
                         }
+                        break;
                     case CHAMBERS:
                         if(most == p){
                             p.setScore(p.getScore() + 19);
@@ -256,6 +260,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 4);
                         }
+                        break;
                     case GARDEN:
                         if(most == p){
                             p.setScore(p.getScore() + 20);
@@ -266,6 +271,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 5);
                         }
+                        break;
                     case TOWER:
                         if(most == p){
                             p.setScore(p.getScore() + 21);
@@ -276,6 +282,7 @@ public class Player {
                         else if(third == p){
                             p.setScore(p.getScore() + 6);
                         }
+                        break;
                 }
             }
         }

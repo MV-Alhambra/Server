@@ -42,23 +42,24 @@ public class PlayerTest {
         Building b4 = new Building(BuildingType.TOWER, 8);
         Building b5 = new Building(BuildingType.SERAGLIO, 8);
         Building b6 = new Building(BuildingType.GARDEN, 8);
-        Building b7 = new Building(BuildingType.ARCADES, 5);
+        Building b7 = new Building(BuildingType.CHAMBERS, 5);
 
         Player pl1 = g.getPlayers().get(0);
-        //Player pl2 = g.getPlayers().get(1);
-        //Player pl3 = g.getPlayers().get(2);
+        Player pl2 = g.getPlayers().get(1);
+        Player pl3 = g.getPlayers().get(2);
 
         pl1.getCity().placeBuilding(b1, new Location(1,0));
         pl1.getCity().placeBuilding(b2, new Location(0,1));
         pl1.getCity().placeBuilding(b3, new Location(1,1));
 
-        //pl2.getCity().placeBuilding(b4, new Location(1,0));
-        //pl2.getCity().placeBuilding(b5, new Location(0,1));
+        pl2.getCity().placeBuilding(b4, new Location(1,0));
+        pl2.getCity().placeBuilding(b5, new Location(0,1));
 
-        //pl3.getCity().placeBuilding(b6, new Location(1,0));
-        //pl3.getCity().placeBuilding(b7, new Location(0,1));
+        pl3.getCity().placeBuilding(b6, new Location(1,0));
+        pl3.getCity().placeBuilding(b7, new Location(0,1));
 
-        assertEquals(3 , pl1.calcScore(g, 1));
-
+        assertEquals(5 , pl1.calcScore(g, 1));
+        assertEquals(8, pl2.calcScore(g, 1));
+        assertEquals(5, pl3.calcScore(g, 1));
     }
 }
