@@ -84,7 +84,7 @@ public class Player {
                         Building b = buildings[row][col];
                         BuildingType type = b.getType();
                         if(types.containsKey(type)){
-                            types.put(type, 0);
+                            types.put(type, 1);
                         }
                         else{
                             types.replace(type, types.get(type) +1);
@@ -92,18 +92,15 @@ public class Player {
                     }
                 }
             }
-            compareAmountOfBuildings(player, mostOfEachBuilding, types);
+            addBuildingsToMap(player, mostOfEachBuilding, types);
         }
         return score;
     }
-    public void compareAmountOfBuildings(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
+    public void addBuildingsToMap(Player p, Map<BuildingType, Map<Player, Integer>> amounts, Map<BuildingType, Integer> types){
         for(Map.Entry<BuildingType, Integer> entry : types.entrySet()){
-            Player player = amounts.entrySet().iterator().next().getValue().entrySet().iterator().next().getKey();
-            if (entry.getValue() > amounts.get(entry.getKey()).get(player)){
-                Map<Player, Integer> current = new HashMap<>();
-                current.put(p, entry.getValue());
-                amounts.replace(entry.getKey(), current);
-            }
+            Map<Player, Integer> amountsMap = amounts.get(entry.getKey());
+            amountsMap.put(p, types.get(entry.getKey()));
+            amounts.replace(entry.getKey(), amountsMap);
         }
     }
 
