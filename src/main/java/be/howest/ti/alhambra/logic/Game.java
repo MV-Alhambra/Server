@@ -49,11 +49,40 @@ public class Game {
         nextPlayer();
     }
 
-
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
         allPlayers.forEach(player -> newPlayers.add(new Player(player.getName()).setToken(player.getToken())));
         return newPlayers;
+    }
+
+    public void removePlayer(String name) {
+        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
+        players.remove(findPlayer(name));
+        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
+        if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
+        else if (players.size() == 1) endGame();
+    }
+
+    public Player findPlayer(String name) {
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
+    }
+
+    private void nextPlayer() { // when called it sets the next current Player
+        bank.fillBank(this);
+        market.fillMarkets(this);
+        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
+        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
+    }
+
+    private void endGame() { //end the game
+        scoreRound(); // last score round
+        ended = true;
+    }
+
+    public void scoreRound() {
+        //for a different issue
+        //but basically here should every player his score be updated its get calculated in city
+        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
     }
 
     private List<Building> loadFromFile() {
@@ -164,17 +193,6 @@ public class Game {
         }
     }
 
-    private void endGame() { //end the game
-        scoreRound(); // last score round
-        ended = true;
-    }
-
-    public void scoreRound() {
-        //for a different issue
-        //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
-    }
-
     private void givePlayersStarterCoins() {
         players.forEach(player -> {
             int sum = 0;
@@ -204,17 +222,6 @@ public class Game {
 
     private void checkTurn(String playerName) {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
-    }
-
-    public Player findPlayer(String name) {
-        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
-    }
-
-    private void nextPlayer() { // when called it sets the next current Player
-        bank.fillBank(this);
-        market.fillMarkets(this);
-        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
-        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
