@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Game {
-    private final boolean ended;
     private final List<Player> players;
     private final Bank bank;
     private final Market market;
@@ -23,6 +22,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    private boolean ended;
     private String currentPlayer;
     @JsonIgnore
     private int index;
@@ -75,12 +75,6 @@ public class Game {
         coins.add(secondScore, new Coin(null, 0));
     }
 
-    public void scoreRound() {
-        //for a different issue
-        //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
-    }
-
     public boolean isEnded() {
         return ended;
     }
@@ -110,9 +104,7 @@ public class Game {
             }
             return coin;
         } catch (IndexOutOfBoundsException e) {
-            // end game bc game is over, used up all the coins
-            // game also ends when buildings are up
-            // that is for another issue
+            // game ends when no buildings are left
             // might also keep going and only stop game when buildings are gone
             // this shouldn't throw an error since bank.fillBank works with nulls
             return null;
@@ -167,10 +159,20 @@ public class Game {
         } catch (IndexOutOfBoundsException e) {
             // end game bc game is over, used up all the buildings
             // game might also end when coins are up, depends on implementation
-            // that is for another issue
-            // this shouldn't throw an error since market.fillMarket works with nulls
+            endGame();
             return null;
         }
+    }
+
+    private void endGame() { //end the game
+        scoreRound(); // last score round
+        ended = true;
+    }
+
+    public void scoreRound() {
+        //for a different issue
+        //but basically here should every player his score be updated its get calculated in city
+        players.forEach(player -> player.setScore(player.getScore() + 1));//temp replaced with above
     }
 
     private void givePlayersStarterCoins() {
