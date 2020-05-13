@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class City {
+    private static final String NORTH = "north";
+    private static final String SOUTH = "south";
+    private static final String WEST = "west";
+    private static final String EAST = "east";
 
     private Building[][] buildings;
     private int mapSize;
@@ -24,27 +28,22 @@ public class City {
     }
 
     public static Building[][] getDefaultCity() {
-        Building[][] defaultCity = new Building[3][3];
+        Building[][] defaultCity = new Building[3][3]; //on purpose creating a new object
         defaultCity[1][1] = new Building(null, 0);
         return defaultCity;
     }
 
     public Integer countType(BuildingType type) {
         return (int) Arrays.stream(buildings)
-                .flatMap(Arrays::stream)
+                .flatMap(Arrays::stream) //pulls the items out of the array, so essentially flatten the data structure
                 .filter(Objects::nonNull) //remove nulls
-                .filter(building -> type.equals(building.getType()))
+                .filter(building -> type.equals(building.getType())) //filter the types based on parameter
                 .count();
     }
 
     @JsonGetter("city")
     public Building[][] getBuildings() {
         return buildings;
-    }
-
-    public Building getBuilding(Location location) {
-        location = Location.convertLocationToStaticLocation(location, mapSize);
-        return buildings[location.getRow()][location.getCol()];
     }
 
     public void placeBuilding(Building building, Location location) { // places a building in the city
@@ -69,16 +68,16 @@ public class City {
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
                 if (buildings[row][col] != null) {
-                    if (!walls.get("south") && !buildings[row][col].getWalls().get("north") && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                    if (!walls.get(SOUTH) && !buildings[row][col].getWalls().get(NORTH) && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
                     }
-                    if (!walls.get("east") && !buildings[row][col].getWalls().get("west") && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                    if (!walls.get(EAST) && !buildings[row][col].getWalls().get(WEST) && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
                     }
-                    if (!walls.get("north") && !buildings[row][col].getWalls().get("south") && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                    if (!walls.get(NORTH) && !buildings[row][col].getWalls().get(SOUTH) && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
                     }
-                    if (!walls.get("west") && !buildings[row][col].getWalls().get("east") && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                    if (!walls.get(WEST) && !buildings[row][col].getWalls().get(EAST) && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
                     }
                 }
@@ -143,5 +142,25 @@ public class City {
                 "buildings=" + Arrays.deepToString(buildings) +
                 ", mapSize=" + mapSize +
                 '}';
+    }
+
+    private boolean checkSurroundings(Map<String, Boolean> walls, Location location) {
+        boolean flag = true;
+        Location left = new Location(location.getRow(), location.getCol() - 1);
+        Location up = new Location(location.getRow() - 1, location.getCol());
+        Location right = new Location(location.getRow(), location.getCol() + 1);
+        Location down = new Location(location.getRow() + 1, location.getCol());
+
+        //if (left.getCol() < mapSize && getBuildingStatic(left) != null && getBuildingStatic(left).getWall()) //check right of the giving location
+
+            return flag;
+    }
+
+    private Building getBuildingStatic(Location staticLocation) {
+        return buildings[staticLocation.getRow()][staticLocation.getCol()];
+    }
+
+    public Building getBuilding(Location location) {
+        return getBuildingStatic(Location.convertLocationToStaticLocation(location, mapSize));
     }
 }
