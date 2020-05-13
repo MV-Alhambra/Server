@@ -29,6 +29,14 @@ public class City {
         return defaultCity;
     }
 
+    public Integer countType(BuildingType type) {
+        return (int) Arrays.stream(buildings)
+                .flatMap(Arrays::stream)
+                .filter(Objects::nonNull) //remove nulls
+                .filter(building -> type.equals(building.getType()))
+                .count();
+    }
+
     @JsonGetter("city")
     public Building[][] getBuildings() {
         return buildings;
