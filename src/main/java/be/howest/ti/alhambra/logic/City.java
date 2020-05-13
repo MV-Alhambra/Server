@@ -57,7 +57,7 @@ public class City {
     }
 
     /*
-     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that arent inside the ),
+     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that aren outside the map -> IOB ),
      *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
      * then checks the surroundings of that location (walls match)
      * remove duplicates

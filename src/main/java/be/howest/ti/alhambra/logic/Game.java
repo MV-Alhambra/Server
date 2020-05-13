@@ -267,15 +267,15 @@ public class Game {
         checkTurn(playerName);
         Player player = findPlayer(playerName);
         if (building != null && !player.getReserve().contains(building)) throw new AlhambraEntityNotFoundException("Couldn't that find building in reserve");
-
-        else if (building == null && location != null) { //city to reserve
-            cityToReserve(player, location);
-        } else if (location != null) { //reserve to city or swap if there is a building on the location
+        else if (building == null && location != null) cityToReserve(player, location);//city to reserve
+        else if (location != null) { //reserve to city or swap if there is a building on the location
             Building oldBuilding = player.getCity().getBuilding(location);
+
             if (oldBuilding != null) cityToReserve(player, location);
             try { //try and swap the building
                 player.getCity().placeBuilding(building, location);
             } catch (AlhambraGameRuleException e) { //put the building back in the city that was removed
+                player.getReserve().removeBuilding(oldBuilding);
                 player.getCity().placeBuilding(oldBuilding, location);
                 throw e;
             }
