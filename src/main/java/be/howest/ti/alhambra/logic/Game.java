@@ -83,7 +83,10 @@ public class Game {
     }
 
     public void scoreRound() { //each time called it does an score round
-        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> player.setScore(player.getScore() + score)); //adds the new Score to the old score
+        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
+            player.setScore(player.getScore() + score); //adds the new Score to the old score
+            player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
+        });
     }
 
     private List<Building> loadFromFile() {
