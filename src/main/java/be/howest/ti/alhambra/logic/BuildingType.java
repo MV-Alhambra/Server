@@ -3,7 +3,7 @@ package be.howest.ti.alhambra.logic;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum BuildingType {
-    FOUNTAIN, PAVILION, SERAGLIO, ARCADES, CHAMBERS, GARDEN, TOWER;
+    PAVILION, SERAGLIO, ARCADES, CHAMBERS, GARDEN, TOWER; //removed FOUNTAIN and sorted on score for ScoringTable
 
     @JsonValue
     @Override

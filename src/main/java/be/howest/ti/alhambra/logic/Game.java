@@ -29,7 +29,6 @@ public class Game {
     @JsonIgnore
     private int round;
 
-
     public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
     }
@@ -42,7 +41,7 @@ public class Game {
         this.bank = new Bank(bank);
         this.market = new Market(market);
         index = 0;
-        round = 0;
+        round = 1;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
         coins = Coin.allCoins();
         Collections.shuffle(buildings);
@@ -71,6 +70,7 @@ public class Game {
     }
 
     private void nextPlayer() { // when called it sets the next current Player
+        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
         bank.fillBank(this);
         market.fillMarkets(this);
         currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
@@ -80,6 +80,13 @@ public class Game {
     private void endGame() { //end the game
         scoreRound(); // last score round
         ended = true;
+    }
+
+    public void scoreRound() { //each time called it does an score round
+        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
+            player.setScore(player.getScore() + score); //adds the new Score to the old score
+            player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
+        });
     }
 
     private List<Building> loadFromFile() {
@@ -99,13 +106,6 @@ public class Game {
         int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
-    }
-
-    public void scoreRound() {
-        //for a different issue
-        //but basically here should every player his score be updated its get calculated in city
-        players.forEach(player -> player.setScore(player.calcScore(this, ++round)));//temp replaced with above
-
     }
 
     public boolean isEnded() {
