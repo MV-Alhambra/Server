@@ -1,11 +1,9 @@
 package be.howest.ti.alhambra.logic;
 
-import be.howest.ti.alhambra.exceptions.AlhambraException;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
