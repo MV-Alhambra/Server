@@ -5,6 +5,8 @@ import be.howest.ti.alhambra.logic.exceptions.AlhambraIllegalArgumentException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.stream.Collectors.toMap;
+
 //Utility class to calc the score, everything the do with score should be put here
 public class ScoringTable {
 
@@ -53,16 +55,16 @@ public class ScoringTable {
         Map<BuildingType, Map<Player, Integer>> totalTypeEachPlayer = new HashMap<>();
 
         for (BuildingType type : BuildingType.values()) {
-            totalTypeEachPlayer.put(type, new HashMap<>());
-            for (Player player : players) {
+            totalTypeEachPlayer.put(type, new LinkedHashMap<>()); //order matters
+            for (Player player : players) { //fill the map with players and count for each type
                 totalTypeEachPlayer.get(type).put(player, player.getCity().countType(type));
             }
-            totalTypeEachPlayer.get(type).entrySet().stream()
-                    .sorted(Map.Entry.comparingByValue());
-
-
+            totalTypeEachPlayer.put(type, totalTypeEachPlayer.get(type).entrySet().stream() //sort players by count of each type
+                    .sorted(Map.Entry.comparingByValue((i1, i2) -> i2 - i1)) //sort them by custom comparator cuz i wanted it reversed, that code in the parameter is a comparator
+                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new)) //back to map
+            );
         }
-        //totalTypeEachPlayer.forEach((k, v) -> System.out.println(k + " " + v));
+        totalTypeEachPlayer.forEach((k, v) -> System.out.println(k + " " + v));
 
 
         return null;
