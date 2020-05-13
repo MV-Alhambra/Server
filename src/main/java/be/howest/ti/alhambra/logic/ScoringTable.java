@@ -46,13 +46,14 @@ public class ScoringTable {
         pl3.getCity().placeBuilding(b6, new Location(1, 0));
         pl3.getCity().placeBuilding(b7, new Location(0, 1));
 
-        getScoreBuildings(g.getPlayers(), 2);
+        System.out.println( calcScoreBuildings(g.getPlayers(), 2));
+
     }
 
-    public static Map<Player, Integer> getScoreBuildings(List<Player> players, int round) {
-        //map with for each total amount
+    public static Map<Player, Integer> calcScoreBuildings(List<Player> players, int round) {
 
-        Map<BuildingType, Map<Player, Integer>> totalTypeEachPlayer = new HashMap<>();
+
+        Map<BuildingType, Map<Player, Integer>> totalTypeEachPlayer = new HashMap<>();    //map with for each total amount
 
         for (BuildingType type : BuildingType.values()) {
             totalTypeEachPlayer.put(type, new LinkedHashMap<>()); //order matters
@@ -68,11 +69,21 @@ public class ScoringTable {
 
         Map<Player, Integer> scores = new HashMap<>();
 
+        for (Player player : players) {
+            scores.put(player, 0);
+        }
+        Map<BuildingType, List<Integer>> roundTable = getRoundTable(round);
 
-        totalTypeEachPlayer.forEach((k, v) -> System.out.println(k + " " + v));
+        for (BuildingType type : totalTypeEachPlayer.keySet()) {
 
-
-        return null;
+            List<Player> playersScore = new ArrayList<>(totalTypeEachPlayer.get(type).keySet());
+            for (int i = 0; i < round; i++) {
+                Player player = playersScore.get(i);
+                int newScore = roundTable.get(type).get(i);
+                scores.put(player, scores.get(player) + newScore);
+            }
+        }
+        return scores;
     }
 
     public static Map<BuildingType, List<Integer>> getRoundTable(int round) {
@@ -90,6 +101,4 @@ public class ScoringTable {
         }
         return roundTable;
     }
-
-
 }
