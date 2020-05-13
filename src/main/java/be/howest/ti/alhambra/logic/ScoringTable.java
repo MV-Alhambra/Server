@@ -46,7 +46,7 @@ public class ScoringTable {
         pl3.getCity().placeBuilding(b6, new Location(1, 0));
         pl3.getCity().placeBuilding(b7, new Location(0, 1));
 
-        getScoreBuildings(g.getPlayers(), 1);
+        getScoreBuildings(g.getPlayers(), 2);
     }
 
     public static Map<Player, Integer> getScoreBuildings(List<Player> players, int round) {
@@ -61,9 +61,14 @@ public class ScoringTable {
             }
             totalTypeEachPlayer.put(type, totalTypeEachPlayer.get(type).entrySet().stream() //sort players by count of each type
                     .sorted(Map.Entry.comparingByValue((i1, i2) -> i2 - i1)) //sort them by custom comparator cuz i wanted it reversed, that code in the parameter is a comparator
+                    .limit(round) //only hold amount of players equal to scores available
                     .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new)) //back to map
             );
         }
+
+        Map<Player, Integer> scores = new HashMap<>();
+
+
         totalTypeEachPlayer.forEach((k, v) -> System.out.println(k + " " + v));
 
 
@@ -83,7 +88,6 @@ public class ScoringTable {
             if (i == 3) index.getAndIncrement();
             roundTable.forEach((key, value) -> value.add(0, index.getAndIncrement() + finalI));
         }
-        roundTable.forEach((key, value) -> System.out.println(key + " " + value));
         return roundTable;
     }
 
