@@ -70,7 +70,7 @@ public class Game {
     }
 
     private void nextPlayer() { // when called it sets the next current Player
-        ScoringTable.calcScoreBuildings(players, round++).forEach(Player::setVirtualScore); // set the virtual score
+        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
         bank.fillBank(this);
         market.fillMarkets(this);
         currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer

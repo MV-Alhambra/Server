@@ -12,7 +12,6 @@ public class ScoringTable {
     } //bc you aren't allowed to make instances of utility classes
 
     public static Map<Player, Integer> calcScoreBuildings(List<Player> players, int round) {
-
         Map<BuildingType, Map<Player, Integer>> totalTypeEachPlayer = new LinkedHashMap<>();// map with for each type another map with key player and then how many they have of that type, linked bc order matters
 
         for (BuildingType type : BuildingType.values()) {
@@ -34,7 +33,7 @@ public class ScoringTable {
         for (Map.Entry<BuildingType, Map<Player, Integer>> type : totalTypeEachPlayer.entrySet()) {
             List<Player> keysOfType = new ArrayList<>(type.getValue().keySet());
             for (int i = 0; i < round; i++) {
-                if (keysOfType.size() != i) { //prevent NPE
+                if (keysOfType.size() > i) { //prevent NPE
                     Player player = keysOfType.get(i);
                     scores.put(player, scores.get(player) + roundTable.get(type.getKey()).get(i)); //gets old score and adds new score
                 }
