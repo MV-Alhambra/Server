@@ -68,16 +68,16 @@ public class City {
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
                 if (buildings[row][col] != null) {
-                    if (!walls.get(SOUTH) && !buildings[row][col].getWalls().get(NORTH) && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                    if (!walls.get(SOUTH) && !buildings[row][col].getWall(NORTH) && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
                     }
-                    if (!walls.get(EAST) && !buildings[row][col].getWalls().get(WEST) && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                    if (!walls.get(EAST) && !buildings[row][col].getWall(WEST) && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
                     }
-                    if (!walls.get(NORTH) && !buildings[row][col].getWalls().get(SOUTH) && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                    if (!walls.get(NORTH) && !buildings[row][col].getWall(SOUTH) && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
                     }
-                    if (!walls.get(WEST) && !buildings[row][col].getWalls().get(EAST) && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                    if (!walls.get(WEST) && !buildings[row][col].getWall(EAST) && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
                         locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
                     }
                 }
@@ -150,10 +150,16 @@ public class City {
         Location up = new Location(location.getRow() - 1, location.getCol());
         Location right = new Location(location.getRow(), location.getCol() + 1);
         Location down = new Location(location.getRow() + 1, location.getCol());
+        //checks if there no IOB or NPE then continues to check if that location has both a wall or both no wall on the border between two locations
+        if (checkNotIOBorNPE(left) && getBuildingStatic(left).getWall(EAST) != walls.get(WEST)) flag = false;
+        else if (checkNotIOBorNPE(right) && getBuildingStatic(right).getWall(WEST) != walls.get(EAST)) flag = false;
+        else if (checkNotIOBorNPE(up) && getBuildingStatic(up).getWall(SOUTH) != walls.get(NORTH)) flag = false;
+        else if (checkNotIOBorNPE(down) && getBuildingStatic(down).getWall(NORTH) != walls.get(SOUTH)) flag = false;
+        return flag;
+    }
 
-        //if (left.getCol() < mapSize && getBuildingStatic(left) != null && getBuildingStatic(left).getWall()) //check right of the giving location
-
-            return flag;
+    private boolean checkNotIOBorNPE(Location staticLocation) { //check if the giving location wouldn't throw a NPE (NullPointerException) or an IOB (IndexOutOfBounds)
+        return staticLocation.getCol() < mapSize && getBuildingStatic(staticLocation) != null;
     }
 
     private Building getBuildingStatic(Location staticLocation) {
