@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toMap;
 
-//Utility class to calc the score, everything the do with score should be put here
+//Utility class to calc the score, everything the do with score should be put here, just for the sake of using learned structures
 public class ScoringTable {
 
     private ScoringTable() {

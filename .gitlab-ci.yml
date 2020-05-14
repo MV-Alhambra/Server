@@ -24,7 +24,7 @@ build-jar:
 
 sonarqube:
   variables:
-    openApi3Spec: http://172.18.18.201/alhambra-api-spec/alhambra-spec.yaml
+    openApi3Spec: alhambra-spec.yaml
   stage: qa
   except:
     changes:
