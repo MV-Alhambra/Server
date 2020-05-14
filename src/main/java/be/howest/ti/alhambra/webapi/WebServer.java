@@ -34,7 +34,7 @@ public class WebServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebServer.class);
 
     private static final int PORT_FALLBACK = 8080;
-    private static final String OPEN_API3_FILE_FALLBACK = "http://172.21.22.52:48201/alhambra-api-spec/alhambra-spec.yaml";
+    private static final String OPEN_API3_FILE_FALLBACK = "alhambra-spec.yaml";
 
     public static final String AUTHORIZATION_TOKEN_PREFIX = "Bearer ";
 
@@ -59,7 +59,7 @@ public class WebServer extends AbstractVerticle {
                 // Failed to retrieve the configuration
             } else {
                 JsonObject config = ar.result();
-                config.put("openApi3Spec","src/main/resources/alhambra-spec.yaml");//seems to be working, it loads our custom spec in
+                //config.put("openApi3Spec","src/main/resources/alhambra-spec.yaml");//seems to be working, it loads our custom spec in
                 int port = config.getInteger("port", PORT_FALLBACK);
                 String spec = config.getString("openApi3Spec", OPEN_API3_FILE_FALLBACK);
                 LOGGER.info("Starting web server with config: port {0} (fallback: {1})", "" + port, "" + PORT_FALLBACK);
