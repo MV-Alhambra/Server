@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class City {
+    private static final String NORTH = "north";
+    private static final String SOUTH = "south";
+    private static final String WEST = "west";
+    private static final String EAST = "east";
 
     private Building[][] buildings;
     private int mapSize;
@@ -24,27 +28,22 @@ public class City {
     }
 
     public static Building[][] getDefaultCity() {
-        Building[][] defaultCity = new Building[3][3];
+        Building[][] defaultCity = new Building[3][3]; //on purpose creating a new object
         defaultCity[1][1] = new Building(null, 0);
         return defaultCity;
     }
 
     public Integer countType(BuildingType type) {
         return (int) Arrays.stream(buildings)
-                .flatMap(Arrays::stream)
+                .flatMap(Arrays::stream) //pulls the items out of the array, so essentially flatten the data structure
                 .filter(Objects::nonNull) //remove nulls
-                .filter(building -> type.equals(building.getType()))
+                .filter(building -> type.equals(building.getType())) //filter the types based on parameter
                 .count();
     }
 
     @JsonGetter("city")
     public Building[][] getBuildings() {
         return buildings;
-    }
-
-    public Building getBuilding(Location location) {
-        location = Location.convertLocationToStaticLocation(location, mapSize);
-        return buildings[location.getRow()][location.getCol()];
     }
 
     public void placeBuilding(Building building, Location location) { // places a building in the city
@@ -58,28 +57,32 @@ public class City {
     }
 
     /*
-     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that arent inside the ),
+     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that aren outside the map -> IOB ),
      *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
-     *  Remove duplicates
-     *  #todo even more validation: only walls on walls so no building next to another can have a wall and no wall
-     * */
+     * then checks the surroundings of that location (walls match)
+     * remove duplicates
+     */
     public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
         List<Location> locations = new ArrayList<>();
 
         for (int row = 0; row < mapSize; row++) {
             for (int col = 0; col < mapSize; col++) {
                 if (buildings[row][col] != null) {
-                    if (!walls.get("south") && !buildings[row][col].getWalls().get("north") && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
-                        locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
+                    if (!walls.get(SOUTH) && !buildings[row][col].getWall(NORTH) && row - 1 >= 0 && buildings[row - 1][col] == null) { // check above the current location
+                        if (checkSurroundings(walls, new Location(row - 1, col))) //was getting to long so i split it
+                            locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
                     }
-                    if (!walls.get("east") && !buildings[row][col].getWalls().get("west") && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
-                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
+                    if (!walls.get(EAST) && !buildings[row][col].getWall(WEST) && col - 1 >= 0 && buildings[row][col - 1] == null) { // check left of the current location
+                        if (checkSurroundings(walls, new Location(row, col - 1)))
+                            locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
                     }
-                    if (!walls.get("north") && !buildings[row][col].getWalls().get("south") && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
-                        locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
+                    if (!walls.get(NORTH) && !buildings[row][col].getWall(SOUTH) && row + 1 < mapSize && buildings[row + 1][col] == null) { // check below the current location
+                        if (checkSurroundings(walls, new Location(row + 1, col)))
+                            locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
                     }
-                    if (!walls.get("west") && !buildings[row][col].getWalls().get("east") && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
-                        locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
+                    if (!walls.get(WEST) && !buildings[row][col].getWall(EAST) && col + 1 < mapSize && buildings[row][col + 1] == null) { // check right of the current location
+                        if (checkSurroundings(walls, new Location(row, col + 1)))
+                            locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
                     }
                 }
             }
@@ -98,6 +101,20 @@ public class City {
         }
     }
 
+    private boolean checkSurroundings(Map<String, Boolean> walls, Location location) { //check if the surroundings are a good location for the giving wall structure
+        boolean flag = true;
+        Location left = new Location(location.getRow(), location.getCol() - 1);
+        Location up = new Location(location.getRow() - 1, location.getCol());
+        Location right = new Location(location.getRow(), location.getCol() + 1);
+        Location down = new Location(location.getRow() + 1, location.getCol());
+        //checks if there no IOB or NPE then continues to check if that location has both a wall or both no wall on the border between two locations
+        if (checkNotIOBorNPE(left) && getBuildingStatic(left).getWall(EAST) != walls.get(WEST)) flag = false;
+        else if (checkNotIOBorNPE(right) && getBuildingStatic(right).getWall(WEST) != walls.get(EAST)) flag = false;
+        else if (checkNotIOBorNPE(up) && getBuildingStatic(up).getWall(SOUTH) != walls.get(NORTH)) flag = false;
+        else if (checkNotIOBorNPE(down) && getBuildingStatic(down).getWall(NORTH) != walls.get(SOUTH)) flag = false;
+        return flag;
+    }
+
     private void updateMapSize() { //expands the city
         mapSize += 2;
 
@@ -107,6 +124,14 @@ public class City {
             System.arraycopy(buildings[row], 0, newBuildings[row + 1], 1, buildings.length); //basically copies a complete row and puts in the new array with one offset so its in the middle
         }
         buildings = newBuildings;
+    }
+
+    private boolean checkNotIOBorNPE(Location staticLocation) { //check if the giving location wouldn't throw a NPE (NullPointerException) or an IOB (IndexOutOfBounds)
+        return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0 && getBuildingStatic(staticLocation) != null;
+    }
+
+    private Building getBuildingStatic(Location staticLocation) {
+        return buildings[staticLocation.getRow()][staticLocation.getCol()];
     }
 
     public Building removeBuilding(Location location) {
@@ -143,5 +168,9 @@ public class City {
                 "buildings=" + Arrays.deepToString(buildings) +
                 ", mapSize=" + mapSize +
                 '}';
+    }
+
+    public Building getBuilding(Location location) {
+        return getBuildingStatic(Location.convertLocationToStaticLocation(location, mapSize));
     }
 }

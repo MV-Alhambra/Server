@@ -4,7 +4,9 @@ package be.howest.ti.alhambra.logic;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Building {
 
@@ -12,6 +14,10 @@ public class Building {
     private final int cost;
     private final Map<String, Boolean> walls;
 
+
+    public Building(BuildingType type, int cost) { //chaining
+        this(type, cost, getDefaultWalls());
+    }
 
     @JsonCreator
     public Building(
@@ -24,8 +30,13 @@ public class Building {
         this.walls = walls;
     }
 
-    public Building(BuildingType type, int cost) { //chaining
-        this(type, cost,getDefaultWalls());
+    public static Map<String, Boolean> getDefaultWalls() {
+        Map<String, Boolean> tempWalls = new HashMap<>();
+        tempWalls.put("north", false);
+        tempWalls.put("east", false);
+        tempWalls.put("south", false);
+        tempWalls.put("west", false);
+        return tempWalls;
     }
 
     public BuildingType getType() {
@@ -40,13 +51,13 @@ public class Building {
         return walls;
     }
 
-    public static Map<String, Boolean> getDefaultWalls() {
-        Map<String, Boolean> tempWalls = new HashMap<>();
-        tempWalls.put("north", false);
-        tempWalls.put("east", false);
-        tempWalls.put("south", false);
-        tempWalls.put("west", false);
-        return tempWalls;
+    public boolean getWall(String key) {
+        return walls.get(key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, cost, walls);
     }
 
     @Override
@@ -55,11 +66,6 @@ public class Building {
         if (o == null || getClass() != o.getClass()) return false;
         Building building = (Building) o;
         return cost == building.cost && Objects.equals(type, building.type) && Objects.equals(walls, building.walls);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, cost, walls);
     }
 
     @Override

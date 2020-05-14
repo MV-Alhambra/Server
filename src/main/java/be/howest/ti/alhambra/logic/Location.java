@@ -1,6 +1,7 @@
 package be.howest.ti.alhambra.logic;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -10,27 +11,27 @@ public class Location {
 
 
     @JsonCreator
-    public Location (@JsonProperty("row") int row,@JsonProperty("col") int col) {
+    public Location(@JsonProperty("row") int row, @JsonProperty("col") int col) {
         this.row = row;
         this.col = col;
     }
 
-    public static Location convertLocationToStaticLocation(Location location, int mapSize) { //turns the dynamic location/location based around fountain into location based on top left
+    public static Location convertLocationToStaticLocation(Location location, int mapSize) { //turns the dynamic location ( location based around fountain ) into static location (based on top left)
         int mapRadius = (mapSize - 1) / 2;
-        return new Location(location.getRow() + mapRadius,location.getCol() + mapRadius);
+        return new Location(location.getRow() + mapRadius, location.getCol() + mapRadius);
     }
 
-    public static Location convertStaticLocationToLocation(Location location, int mapSize) { //turns the static location on based on top left into dynamic location based on fountain position
-        int mapRadius = (mapSize - 1) / 2;
-        return new Location(location.getRow() - mapRadius,location.getCol() - mapRadius);
+    public int getRow() {
+        return row;
     }
 
     public int getCol() {
         return col;
     }
 
-    public int getRow() {
-        return row;
+    public static Location convertStaticLocationToLocation(Location location, int mapSize) { //turns the static location ( based on top left ) into dynamic location (based on fountain position)
+        int mapRadius = (mapSize - 1) / 2;
+        return new Location(location.getRow() - mapRadius, location.getCol() - mapRadius);
     }
 
     @Override
@@ -48,6 +49,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return String.format("(%d;%d)",row, col);
+        return String.format("(%d;%d)", row, col);
     }
 }
