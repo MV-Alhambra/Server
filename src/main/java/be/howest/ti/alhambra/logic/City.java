@@ -60,6 +60,7 @@ public class City {
      * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that aren outside the map -> IOB ),
      *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
      * then checks the surroundings of that location (walls match)
+     * checks if the placed building wont create a hole(empty space surrounded with buildings)
      * remove duplicates
      */
     public List<Location> getAvailableLocations(Map<String, Boolean> walls) {
@@ -112,26 +113,33 @@ public class City {
         buildings = newBuildings;
     }
 
+    //check if isn't going to outside the map, check if no walls are in the way, check if the walls match and check if the location hasn't been used yet
     private boolean checkAvailableLocation(Map<String, Boolean> walls, String wall, String oppositeWall, int row, int col, Location staticLocation) {
-        return checkNotIOB(staticLocation) && !walls.get(wall) && !buildings[row][col].getWall(oppositeWall) && buildings[staticLocation.getRow()][staticLocation.getCol()] == null && checkSurroundings(walls, staticLocation);
+        return checkNotIOB(staticLocation) && !walls.get(wall) && !buildings[row][col].getWall(oppositeWall) && buildings[staticLocation.getRow()][staticLocation.getCol()] == null && checkSurroundings(walls, staticLocation) && checkForEmptySpots(staticLocation);
     }
 
-    private boolean checkNotIOB(Location staticLocation) {
+    private boolean checkNotIOB(Location staticLocation) { //checks if the building isn't outside the map
         return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
     }
 
     private boolean checkSurroundings(Map<String, Boolean> walls, Location location) { //check if the surroundings have matching walls as the giving walls
-        boolean flag = true;
         Location left = new Location(location.getRow(), location.getCol() - 1);
         Location up = new Location(location.getRow() - 1, location.getCol());
         Location right = new Location(location.getRow(), location.getCol() + 1);
         Location down = new Location(location.getRow() + 1, location.getCol());
         //checks if there no IOB or NPE then continues to check if that location has both a wall or both no wall on the border between two locations
-        if (checkNotIOBorNPE(left) && getBuildingStatic(left).getWall(EAST) != walls.get(WEST)) flag = false;
-        else if (checkNotIOBorNPE(right) && getBuildingStatic(right).getWall(WEST) != walls.get(EAST)) flag = false;
-        else if (checkNotIOBorNPE(up) && getBuildingStatic(up).getWall(SOUTH) != walls.get(NORTH)) flag = false;
-        else if (checkNotIOBorNPE(down) && getBuildingStatic(down).getWall(NORTH) != walls.get(SOUTH)) flag = false;
-        return flag;
+        if (checkNotIOBorNPE(left) && getBuildingStatic(left).getWall(EAST) != walls.get(WEST)) return false;
+        else if (checkNotIOBorNPE(right) && getBuildingStatic(right).getWall(WEST) != walls.get(EAST)) return false;
+        else if (checkNotIOBorNPE(up) && getBuildingStatic(up).getWall(SOUTH) != walls.get(NORTH)) return false;
+        else if (checkNotIOBorNPE(down) && getBuildingStatic(down).getWall(NORTH) != walls.get(SOUTH)) return false;
+        return true;
+    }
+
+    private boolean checkForEmptySpots(Location staticLocation) {  // checks if there isn't gonna be an empty hole when you place that building (returns true if there is no blocking)
+        return Location.getSurroundingLocations(staticLocation).stream() //gets the locations around the current locations
+                .filter(location -> checkNotIOB(location) && getBuildingStatic(location) == null) //removes the locations around it that are buildings -> cuz it can only block an empty location
+                .map(Location::getSurroundingLocations) //for each location it gets all their surrounding locations and maps the old location to the new list of surrounding locations
+                .noneMatch(locations -> locations.stream().filter(subLocation -> checkNotIOB(subLocation) && getBuildingStatic(subLocation) != null).count() == 3); //if 3 locations around the sub location are buildings then it would block that location, if it cant find any then it doesnt block(returns true then, the building about to placed would be the fourth)
     }
 
     private boolean checkNotIOBorNPE(Location staticLocation) { //check if the giving location wouldn't throw a NPE (NullPointerException) or an IOB (IndexOutOfBounds)

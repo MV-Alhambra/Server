@@ -3,6 +3,8 @@ package be.howest.ti.alhambra.logic;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Location {
@@ -32,6 +34,15 @@ public class Location {
     public static Location convertStaticLocationToLocation(Location location, int mapSize) { //turns the static location ( based on top left ) into dynamic location (based on fountain position)
         int mapRadius = (mapSize - 1) / 2;
         return new Location(location.getRow() - mapRadius, location.getCol() - mapRadius);
+    }
+
+    public static List<Location> getSurroundingLocations(Location location) { //works with static locations too
+        List<Location> locations = new ArrayList<>();
+        locations.add(new Location(location.getRow(), location.getCol() - 1)); //left
+        locations.add(new Location(location.getRow() - 1, location.getCol())); //up
+        locations.add(new Location(location.getRow(), location.getCol() + 1)); //right
+        locations.add(new Location(location.getRow() + 1, location.getCol())); //down
+        return locations;
     }
 
     @Override
