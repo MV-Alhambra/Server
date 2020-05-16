@@ -53,25 +53,6 @@ public class City {
         checkMapSize();
     }
 
-    /*
-     * Available location is a location that is null, is next to a not null location ( so i had also i had to check that i dont try to check tiles that aren outside the map -> IOB ),
-     *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
-     * then checks the surroundings of that location (walls match)
-     * checks if the placed building wont create a hole(empty space surrounded with buildings)
-     * remove duplicates
-     */
-    public List<Location> getAvailableLocations(Map<CardinalDirection, Boolean> walls) {
-        List<Location> locations = new ArrayList<>();
-
-        for (int row = 0; row < mapSize; row++) {
-            for (int col = 0; col < mapSize; col++) {
-                if (buildings[row][col] != null) {
-                    logicAvailableLocations(walls, locations, row, col);
-                }
-            }
-        }
-        return locations.stream().distinct().collect(Collectors.toList()); // remove duplicates
-    }
 
     private void checkMapSize() { //checks if the city needs to be expanded
         for (int row = 0; row < buildings.length; row++) {
@@ -81,21 +62,6 @@ public class City {
                     return;// stop/exit
                 }
             }
-        }
-    }
-
-    private void logicAvailableLocations(Map<CardinalDirection, Boolean> walls, List<Location> locations, int row, int col) {
-        if (checkAvailableLocation(walls, SOUTH, row, col, new Location(row - 1, col))) { // check above the current location
-            locations.add(Location.convertStaticLocationToLocation(new Location(row - 1, col), mapSize));
-        }
-        if (checkAvailableLocation(walls, EAST, row, col, new Location(row, col - 1))) { // check left of the current location
-            locations.add(Location.convertStaticLocationToLocation(new Location(row, col - 1), mapSize));
-        }
-        if (checkAvailableLocation(walls, NORTH, row, col, new Location(row + 1, col))) { // check below the current location
-            locations.add(Location.convertStaticLocationToLocation(new Location(row + 1, col), mapSize));
-        }
-        if (checkAvailableLocation(walls, WEST, row, col, new Location(row, col + 1))) { // check right of the current location
-            locations.add(Location.convertStaticLocationToLocation(new Location(row, col + 1), mapSize));
         }
     }
 
@@ -110,28 +76,36 @@ public class City {
         buildings = newBuildings;
     }
 
-    //check if isn't going to outside the map, check if no walls are in the way, check if the walls match and check if the location hasn't been used yet
-    private boolean checkAvailableLocation(Map<CardinalDirection, Boolean> walls, CardinalDirection wall, int row, int col, Location staticLocation) {
-        return checkNotIOB(staticLocation) && !walls.get(wall) && !buildings[row][col].getWall(getOppositeCD(wall)) && buildings[staticLocation.getRow()][staticLocation.getCol()] == null && checkSurroundings(walls, staticLocation) && checkForEmptySpots(staticLocation);
-    }
+    /*
+     * Available location is a location that is null, is next to a not null location,
+     *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
+     * then checks the surroundings of that location (walls match)
+     * checks if the placed building wont create a hole(empty space surrounded with buildings)
+     * remove duplicates
+     */
+    public List<Location> getAvailableLocations(Map<CardinalDirection, Boolean> walls) {
+        List<Location> locations = new ArrayList<>();
 
-    private boolean checkNotIOB(Location staticLocation) { //checks if the building isn't outside the map
-        return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
-    }
-
-    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction, N->S W->E
-        switch (cardinalDirection) {
-            case NORTH:
-                return SOUTH;
-            case WEST:
-                return EAST;
-            case EAST:
-                return WEST;
-            case SOUTH:
-                return NORTH;
-            default:
-                return null;
+        for (int row = 0; row < mapSize; row++) {
+            for (int col = 0; col < mapSize; col++) {
+                if (buildings[row][col] != null) { //checks the available locations of each building
+                    logicAvailableLocations(walls, locations, row, col);
+                }
+            }
         }
+        return locations.stream().distinct().collect(Collectors.toList()); // remove duplicates
+    }
+
+    private void logicAvailableLocations(Map<CardinalDirection, Boolean> walls, List<Location> locations, int row, int col) {
+        Location.getSurroundingLocationsWithCD(new Location(row, col)).entrySet().stream() //gets the locations around the current location
+                .filter(entry -> checkAvailableLocation(walls, getOppositeCD(entry.getKey()), row, col, entry.getValue())) //checks if the location is available
+                .forEach(entry -> locations.add(Location.convertStaticLocationToLocation(entry.getValue(), mapSize))); //if so then add it the locations
+    }
+
+
+    // check if no walls are blocking ( from giving walls and from checked location's building), check if the walls match and check if the location hasn't been used yet
+    private boolean checkAvailableLocation(Map<CardinalDirection, Boolean> walls, CardinalDirection wall, int row, int col, Location staticLocation) {
+        return !walls.get(wall) && !buildings[row][col].getWall(getOppositeCD(wall)) && buildings[staticLocation.getRow()][staticLocation.getCol()] == null && checkSurroundings(walls, staticLocation) && checkForEmptySpots(staticLocation);
     }
 
     private boolean checkSurroundings(Map<CardinalDirection, Boolean> walls, Location staticLocation) { //check if the surroundings have matching walls as the giving walls
@@ -151,8 +125,8 @@ public class City {
         return checkNotIOB(staticLocation) && getBuildingStatic(staticLocation) != null;
     }
 
-    private Building getBuildingStatic(Location staticLocation) {
-        return buildings[staticLocation.getRow()][staticLocation.getCol()];
+    private boolean checkNotIOB(Location staticLocation) { //checks if the building isn't outside the map
+        return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
     }
 
     public Building removeBuilding(Location location) {
@@ -190,8 +164,27 @@ public class City {
                 ", mapSize=" + mapSize +
                 '}';
     }
+    private Building getBuildingStatic(Location staticLocation) {
+        return buildings[staticLocation.getRow()][staticLocation.getCol()];
+    }
 
     public Building getBuilding(Location location) {
         return getBuildingStatic(Location.convertLocationToStaticLocation(location, mapSize));
+    }
+
+
+    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction, N->S W->E
+        switch (cardinalDirection) {
+            case NORTH:
+                return SOUTH;
+            case WEST:
+                return EAST;
+            case EAST:
+                return WEST;
+            case SOUTH:
+                return NORTH;
+            default:
+                return null;
+        }
     }
 }
