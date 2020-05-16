@@ -100,7 +100,7 @@ public class AlhambraController {
         return findGame(gameId).buyBuilding(playerName, currency, coins);
     }
 
-    public List<Location> getAvailableBuildLocations(String gameId, String playerName, Map<String, Boolean> walls) {
+    public List<Location> getAvailableBuildLocations(String gameId, String playerName, Map<CardinalDirection, Boolean> walls) {
         return findGame(gameId).findPlayer(playerName).getCity().getAvailableLocations(walls);
     }
 

@@ -6,6 +6,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
@@ -34,11 +35,10 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object getAvailableBuildLocations(RoutingContext ctx) {
         LOGGER.info("getAvailableBuildLocations");
-        Map<String, Boolean> walls = Building.getDefaultWalls();
-        walls.put("north", Boolean.valueOf(ctx.request().getParam("north")));
-        walls.put("west", Boolean.valueOf(ctx.request().getParam("west")));
-        walls.put("east", Boolean.valueOf(ctx.request().getParam("east")));
-        walls.put("south", Boolean.valueOf(ctx.request().getParam("south")));
+        Map<CardinalDirection, Boolean> walls = Building.getDefaultWalls();
+        //fills the wall with the correct values from the request
+        Arrays.stream(CardinalDirection.values()).forEach( cardinalDirection -> walls.put(cardinalDirection, Boolean.valueOf(ctx.request().getParam(cardinalDirection.toString()))));
+
         return controller.getAvailableBuildLocations(getGameId(ctx), getPlayerName(ctx), walls);
     }
 

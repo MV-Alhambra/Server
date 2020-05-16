@@ -4,6 +4,7 @@ package be.howest.ti.alhambra.logic;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -12,7 +13,7 @@ public class Building {
 
     private final BuildingType type;
     private final int cost;
-    private final Map<String, Boolean> walls;
+    private final Map<CardinalDirection, Boolean> walls;
 
 
     public Building(BuildingType type, int cost) { //chaining
@@ -23,19 +24,16 @@ public class Building {
     public Building(
             @JsonProperty("type") BuildingType type,
             @JsonProperty("cost") int cost,
-            @JsonProperty("walls") Map<String, Boolean> walls
+            @JsonProperty("walls") Map<CardinalDirection, Boolean> walls
     ) {
         this.type = type;
         this.cost = cost;
         this.walls = walls;
     }
 
-    public static Map<String, Boolean> getDefaultWalls() {
-        Map<String, Boolean> tempWalls = new HashMap<>();
-        tempWalls.put("north", false);
-        tempWalls.put("east", false);
-        tempWalls.put("south", false);
-        tempWalls.put("west", false);
+    public static Map<CardinalDirection, Boolean> getDefaultWalls() {
+        Map<CardinalDirection, Boolean> tempWalls = new HashMap<>();
+        Arrays.stream(CardinalDirection.values()).forEach(cardinalDirection -> tempWalls.put(cardinalDirection, false));
         return tempWalls;
     }
 
@@ -47,12 +45,12 @@ public class Building {
         return cost;
     }
 
-    public Map<String, Boolean> getWalls() {
+    public Map<CardinalDirection, Boolean> getWalls() {
         return walls;
     }
 
-    public boolean getWall(String key) {
-        return walls.get(key);
+    public boolean getWall(CardinalDirection cardinalDirection) {
+        return walls.get(cardinalDirection);
     }
 
     @Override

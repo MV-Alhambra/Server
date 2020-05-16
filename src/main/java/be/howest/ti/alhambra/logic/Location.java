@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Location {
@@ -44,6 +45,10 @@ public class Location {
         locations.add(new Location(location.getRow() + 1, location.getCol())); //down
         return locations;
     }
+
+   /* public static Map<String,> getSurroundingLocationsWithCD(Location location){ //
+#todo do this
+    } */
 
     @Override
     public int hashCode() {

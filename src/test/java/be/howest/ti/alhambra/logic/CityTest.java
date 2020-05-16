@@ -46,11 +46,11 @@ public class CityTest {
     //@Test
     void availableLocations() {
         City city1 = new City();
-        Map<String, Boolean> walls = Building.getDefaultWalls();
+        Map<CardinalDirection, Boolean> walls = Building.getDefaultWalls();
         System.out.println(walls);
-        walls.put("north", true);
-        walls.put("west", true);
-        walls.put("east", true);
+        walls.put(CardinalDirection.NORTH, true);
+        walls.put(CardinalDirection.WEST, true);
+        walls.put(CardinalDirection.EAST, true);
 
         System.out.println(city1.getAvailableLocations(walls));
         city1.placeBuilding(new Building(BuildingType.ARCADES, 5, walls), new Location(-1, 0));
