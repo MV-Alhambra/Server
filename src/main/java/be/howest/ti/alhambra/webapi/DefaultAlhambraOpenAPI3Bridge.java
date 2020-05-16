@@ -16,6 +16,8 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAlhambraOpenAPI3Bridge.class);
     private static final AlhambraController controller = new AlhambraController();
+    private static final String LOCATION = "location";
+    private static final String BUILDING = "building";
 
 
     public boolean verifyAdminToken(String token) {
@@ -37,7 +39,7 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         LOGGER.info("getAvailableBuildLocations");
         Map<CardinalDirection, Boolean> walls = Building.getDefaultWalls();
         //fills the wall with the correct values from the request
-        Arrays.stream(CardinalDirection.values()).forEach( cardinalDirection -> walls.put(cardinalDirection, Boolean.valueOf(ctx.request().getParam(cardinalDirection.toString()))));
+        Arrays.stream(CardinalDirection.values()).forEach(cardinalDirection -> walls.put(cardinalDirection, Boolean.valueOf(ctx.request().getParam(cardinalDirection.toString()))));
 
         return controller.getAvailableBuildLocations(getGameId(ctx), getPlayerName(ctx), walls);
     }
@@ -108,15 +110,15 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
 
     public Object redesign(RoutingContext ctx) {
         LOGGER.info("redesign");
-        Location location = ctx.getBodyAsJson().containsKey("location") ? ctx.getBodyAsJson().getJsonObject("location").mapTo(Location.class) : null;
-        Building building = ctx.getBodyAsJson().containsKey("building") ? ctx.getBodyAsJson().getJsonObject("building").mapTo(Building.class) : null;
+        Location location = ctx.getBodyAsJson().containsKey(LOCATION) ? ctx.getBodyAsJson().getJsonObject(LOCATION).mapTo(Location.class) : null;
+        Building building = ctx.getBodyAsJson().containsKey(BUILDING) ? ctx.getBodyAsJson().getJsonObject(BUILDING).mapTo(Building.class) : null;
         return controller.redesign(getGameId(ctx), getPlayerName(ctx), building, location);
     }
 
     public Object build(RoutingContext ctx) {
         LOGGER.info("build");
-        Building building = ctx.getBodyAsJson().getJsonObject("building").mapTo(Building.class);
-        Location location = ctx.getBodyAsJson().getJsonObject("location") == null ? null : ctx.getBodyAsJson().getJsonObject("location").mapTo(Location.class);
+        Building building = ctx.getBodyAsJson().getJsonObject(BUILDING).mapTo(Building.class);
+        Location location = ctx.getBodyAsJson().getJsonObject(LOCATION) == null ? null : ctx.getBodyAsJson().getJsonObject(LOCATION).mapTo(Location.class);
         return controller.build(getGameId(ctx), getPlayerName(ctx), building, location);
     }
 
