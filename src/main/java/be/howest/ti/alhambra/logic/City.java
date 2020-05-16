@@ -119,7 +119,7 @@ public class City {
         return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
     }
 
-    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction N->S W->E
+    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction, N->S W->E
         switch (cardinalDirection) {
             case NORTH:
                 return SOUTH;
@@ -135,23 +135,9 @@ public class City {
     }
 
     private boolean checkSurroundings(Map<CardinalDirection, Boolean> walls, Location staticLocation) { //check if the surroundings have matching walls as the giving walls
-        Location left = new Location(staticLocation.getRow(), staticLocation.getCol() - 1);
-        Location up = new Location(staticLocation.getRow() - 1, staticLocation.getCol());
-        Location right = new Location(staticLocation.getRow(), staticLocation.getCol() + 1);
-        Location down = new Location(staticLocation.getRow() + 1, staticLocation.getCol());
-        //checks if there no IOB or NPE then continues to check if that location has both a wall or both no wall on the border between two locations
-        if (checkNotIOBorNPE(left) && getBuildingStatic(left).getWall(EAST) != walls.get(WEST)) return false;
-        else if (checkNotIOBorNPE(right) && getBuildingStatic(right).getWall(WEST) != walls.get(EAST)) return false;
-        else if (checkNotIOBorNPE(up) && getBuildingStatic(up).getWall(SOUTH) != walls.get(NORTH)) return false;
-        else if (checkNotIOBorNPE(down) && getBuildingStatic(down).getWall(NORTH) != walls.get(SOUTH)) return false;
-        return true;
-/*
-        return Location.getSurroundingLocations(staticLocation).stream()
-                .filter(this::checkNotIOBorNPE)
-                .noneMatch(location -> getBuildingStatic(location).getWall(EAST) != walls.get(WEST));
-*/
-        //#todo fix this
-
+        return Location.getSurroundingLocationsWithCD(staticLocation).entrySet().stream()
+                .filter(entry -> checkNotIOBorNPE(entry.getValue())) // filter outs locations that might give IOB or an NPE, more readable if separate checked else i would put it in the noneMatch too
+                .noneMatch(entry -> getBuildingStatic(entry.getValue()).getWall(getOppositeCD(entry.getKey())) != walls.get(entry.getKey())); //checks if the surrounding locations opposite wall not the same as given wall if they all the same it returns true
     }
 
     private boolean checkForEmptySpots(Location staticLocation) {  // checks if there isn't gonna be an empty hole when you place that building (returns true if there is no blocking)

@@ -3,10 +3,7 @@ package be.howest.ti.alhambra.logic;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Location {
     private final int row;
@@ -37,18 +34,18 @@ public class Location {
         return new Location(location.getRow() - mapRadius, location.getCol() - mapRadius);
     }
 
-    public static List<Location> getSurroundingLocations(Location location) { //works with static locations too
-        List<Location> locations = new ArrayList<>();
-        locations.add(new Location(location.getRow(), location.getCol() - 1)); //left
-        locations.add(new Location(location.getRow() - 1, location.getCol())); //up
-        locations.add(new Location(location.getRow(), location.getCol() + 1)); //right
-        locations.add(new Location(location.getRow() + 1, location.getCol())); //down
-        return locations;
+    public static List<Location> getSurroundingLocations(Location location) { //works with static locations too, gets the locations directly next to the given location
+        return new ArrayList<>(getSurroundingLocationsWithCD(location).values());
     }
 
-   /* public static Map<String,> getSurroundingLocationsWithCD(Location location){ //
-#todo do this
-    } */
+    public static Map<CardinalDirection, Location> getSurroundingLocationsWithCD(Location location) { //works with static locations too, gets the locations directly next to the given location and binds it to a CD
+        Map<CardinalDirection, Location> locations = new LinkedHashMap<>();
+        locations.put(CardinalDirection.NORTH, new Location(location.getRow() - 1, location.getCol())); //up
+        locations.put(CardinalDirection.EAST, new Location(location.getRow(), location.getCol() + 1)); //right
+        locations.put(CardinalDirection.SOUTH, new Location(location.getRow() + 1, location.getCol())); //down
+        locations.put(CardinalDirection.WEST, new Location(location.getRow(), location.getCol() - 1)); //left
+        return locations;
+    }
 
     @Override
     public int hashCode() {
