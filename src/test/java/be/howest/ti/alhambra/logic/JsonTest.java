@@ -21,6 +21,15 @@ class JsonTest {
     }
 
     @Test
+    void cardinalDirection(){
+        // Create a cardinalDirection ...
+        CardinalDirection cardinalDirection =  CardinalDirection.NORTH;
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(cardinalDirection, Json.decodeValue(Json.encode(cardinalDirection), CardinalDirection.class));
+    }
+
+    @Test
     void coin() {
         // Create a coin ...
         Coin coin = new Coin(Currency.ORANGE, 10);
