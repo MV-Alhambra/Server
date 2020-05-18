@@ -17,20 +17,34 @@ public class Lobby {
     private final int maxNumberOfPlayers;
     private final String id;
     private final String customNameLobby;
-    private List<PlayerInLobby> players;
+    private final List<PlayerInLobby> players;
     private int playerCount;
     private int readyCount;
+    @JsonIgnore
+    private final boolean autoStart; //for backwards compatible with previous server
 
-    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) {
-        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers);
+    public Lobby(String gameId, String customNameLobby) { // this constructor is also used in tests
+        this(gameId, new ArrayList<>(), customNameLobby, 6);
     }
 
     @JsonCreator
     public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby, @JsonProperty("maxNumberOfPlayers") int maxNumberOfPlayers) {
+        this(id, playersReady, customNameLobby, maxNumberOfPlayers, false);
+    }
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) { //this constructor is used in tests
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, false);
+    }
+
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers,boolean autoStart) { //used to create a new lobby
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, autoStart);
+    }
+
+    public Lobby(String id, List<PlayerInLobby> playersReady, String customNameLobby, int maxNumberOfPlayers, boolean autoStart) {
         this.id = id;
         this.players = playersReady;
         this.customNameLobby = customNameLobby;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
+        this.autoStart = autoStart;
         updatePlayerCount();
         updateReadyCount();
     }
@@ -51,10 +65,6 @@ public class Lobby {
         return (int) players.stream().filter(PlayerInLobby::isStatus).count();
     }
 
-
-    public Lobby(String gameId, String customNameLobby) {
-        this(gameId, new ArrayList<>(), customNameLobby, 6);
-    }
 
     public String getId() {
         return id;
@@ -150,5 +160,9 @@ public class Lobby {
                 Objects.equals(id, lobby.id) &&
                 Objects.equals(customNameLobby, lobby.customNameLobby) &&
                 Objects.equals(players, lobby.players);
+    }
+
+    public boolean isAutoStart() {
+        return autoStart;
     }
 }

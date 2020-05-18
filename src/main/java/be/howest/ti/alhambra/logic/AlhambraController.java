@@ -32,9 +32,9 @@ public class AlhambraController {
         return lobbies;
     }
 
-    public String addLobby(String customGameName, int maxPlayerCount) {
+    public String addLobby(String customGameName, int maxPlayerCount, boolean autoStart) {
         String gameId = String.format("%03d", id++); //001
-        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount));
+        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount,autoStart));
         return gameId;
     }
 
