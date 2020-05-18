@@ -64,9 +64,16 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return controller.getLobbies();
     }
 
-    public Object createGame(RoutingContext ctx) {
+    public Object createGame(RoutingContext ctx) { //added support for backwards compatible with previous server of DW
         LOGGER.info("createGame");
-        return controller.addLobby(ctx.getBodyAsJson().getValue("customGameName").toString(), ctx.getBodyAsJson().getInteger("maxNumberOfPlayers"));
+        if (!ctx.getBodyAsString().equals("")) { //if it has no body it cant be turned into JSON
+            final boolean customName = ctx.getBodyAsJson().containsKey("customGameName"); //check if contains those keys
+            final boolean customCap = ctx.getBodyAsJson().containsKey("maxNumberOfPlayers");
+            final String lobbyName = customName ? ctx.getBodyAsJson().getValue("customGameName").toString() : "Alhambra lobby";
+            final int playerCap = customCap ? ctx.getBodyAsJson().getInteger("maxNumberOfPlayers") : 6;
+            return controller.addLobby(lobbyName, playerCap, !customCap || !customName);
+        }
+        return controller.addLobby("Alhambra lobby", 6, true);
     }
 
     public Object clearGames(RoutingContext ctx) {

@@ -49,9 +49,9 @@ public class ScoringTable {
 
         AtomicInteger index = new AtomicInteger();
         for (int i = 1; i <= round; i++) { //fill them
-            int finalI = i;
+            int roundFinal = i;
             if (i == 3) index.getAndIncrement();
-            roundTable.forEach((key, value) -> value.add(0, index.getAndIncrement() + finalI)); //add round and index
+            roundTable.forEach((key, value) -> value.add(0, index.getAndIncrement() + roundFinal)); //add round and index
         }
         return roundTable;
     }

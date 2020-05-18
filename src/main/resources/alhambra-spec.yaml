@@ -300,8 +300,8 @@ paths:
       summary: Create a new game
       operationId: createGame
       requestBody:
-        required: true
-        description: Optional prefix for the new game id. This parameter is used to seperate game lobbies per group. When omitting, ensure that the request body content-type is also not set to application.json. Submitting an empty String value is a valid alternative in case of empty value
+        required: false
+        description: if no keys are given then it creates a game with autostart else it will have manual start (both keys required for that)
         content:
          application/json:
           schema:
@@ -317,9 +317,6 @@ paths:
                type: string
                example:
                 customGameName: "name"
-            required:
-             - maxNumberOfPlayers
-             - customGameName
       responses:
         '200':
           description: OK
