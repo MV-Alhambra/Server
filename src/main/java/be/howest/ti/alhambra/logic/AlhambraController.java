@@ -62,7 +62,7 @@ public class AlhambraController {
     }
 
     public boolean readyUp(String gameId, String playerName) {
-        return findLobby(gameId).readyUpPlayer(playerName);
+        return findLobby(gameId).readyUpPlayer(playerName,this);
 
     }
 

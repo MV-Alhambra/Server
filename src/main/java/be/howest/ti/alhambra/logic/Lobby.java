@@ -120,11 +120,22 @@ public class Lobby {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new IllegalArgumentException("player not in lobby"));
     }
 
-    public boolean readyUpPlayer(String name) {
+    public void readyUpPlayer(String name) {
         getPlayerClass(name).setStatus(true);
         updateReadyCount();
+    }
+
+    public boolean readyUpPlayer(String name,AlhambraController controller) {
+        getPlayerClass(name).setStatus(true);
+        updateReadyCount();
+
+        if (autoStart && readyCount == playerCount && countPlayer() >= MIN_PLAYER_COUNT){
+            controller.startLobby(id);
+        }
+
         return true;
     }
+
 
     public boolean unreadyPlayer(String name) {
         getPlayerClass(name).setStatus(false);
