@@ -25,7 +25,9 @@ public class GameTest
         game.removePlayer("Carol");
         assertThrows(AlhambraEntityNotFoundException.class, ()->game.findPlayer("Carol"));
 
-
+        //test endGame
+        game.removePlayer("Joe");
+        assertTrue(game.isEnded());
 
     }
 }
