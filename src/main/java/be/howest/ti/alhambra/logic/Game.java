@@ -60,7 +60,7 @@ public class Game {
     public void removePlayer(String name) {
         index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
         players.remove(findPlayer(name));
-        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
+        if (players.size() >= 2 && currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
         if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
         else if (players.size() == 1) endGame();
     }
