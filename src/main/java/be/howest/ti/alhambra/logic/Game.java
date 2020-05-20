@@ -22,6 +22,8 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    @JsonIgnore
+    private final Player dirk;
     private boolean ended;
     private String currentPlayer;
     @JsonIgnore
@@ -29,17 +31,19 @@ public class Game {
     @JsonIgnore
     private int round;
 
+
     public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? Game.getNameDirk(names) : null);
     }
 
     @JsonCreator
-    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market) {
+    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market, @JsonProperty("twoPlayerSystem") Player dirk) {
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
+        this.dirk = dirk;
         index = 0;
         round = 1;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
@@ -55,6 +59,18 @@ public class Game {
         List<Player> newPlayers = new ArrayList<>();
         allPlayers.forEach(player -> newPlayers.add(new Player(player.getName()).setToken(player.getToken())));
         return newPlayers;
+    }
+
+    private static Player getNameDirk(List<PlayerInLobby> names) {
+        return getNameDirk(names, "dirk");
+    }
+
+    private static Player getNameDirk(List<PlayerInLobby> names, String name) { // makes sure that the name isn't used already
+        if (names.contains(new PlayerInLobby(name))) {
+            return getNameDirk(names, name + "1");
+        } else {
+            return new Player(name);
+        }
     }
 
     public void removePlayer(String name) {
@@ -295,5 +311,9 @@ public class Game {
         } else {
             throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
         }
+    }
+
+    public Player getDirk() {
+        return dirk;
     }
 }
