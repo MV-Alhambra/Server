@@ -34,7 +34,7 @@ public class AlhambraController {
 
     public String addLobby(String customGameName, int maxPlayerCount, boolean autoStart) {
         String gameId = String.format("%03d", id++); //001
-        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount,autoStart));
+        lobbies.add(new Lobby(gameId, customGameName, maxPlayerCount, autoStart));
         return gameId;
     }
 
@@ -62,7 +62,7 @@ public class AlhambraController {
     }
 
     public boolean readyUp(String gameId, String playerName) {
-        return findLobby(gameId).readyUpPlayer(playerName,this);
+        return findLobby(gameId).readyUpPlayer(playerName, this);
 
     }
 
@@ -119,5 +119,9 @@ public class AlhambraController {
         } catch (AlhambraEntityNotFoundException e) {
             return findGame(gameId).getPlayers().stream().anyMatch(player -> player.getToken().equals(playerToken));
         }
+    }
+
+    public Boolean giveDirk(String gameId, String playerName, Building building) {
+        return findGame(gameId).giveBuildingToDirk(building, playerName);
     }
 }

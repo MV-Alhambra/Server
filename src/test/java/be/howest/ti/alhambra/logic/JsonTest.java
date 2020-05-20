@@ -253,13 +253,14 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject gameAsJsonObject = JsonObject.mapFrom(game);
-
+        System.out.println(gameAsJsonObject.encodePrettily());
         // Assert that this object has the expected properties
         assertTrue(gameAsJsonObject.containsKey("players"));
         assertTrue(gameAsJsonObject.containsKey("currentPlayer"));
         assertTrue(gameAsJsonObject.containsKey("ended"));
         assertTrue(gameAsJsonObject.containsKey("bank"));
         assertTrue(gameAsJsonObject.containsKey("market"));
+        assertTrue(gameAsJsonObject.containsKey("dirk"));
 
         // Assert that you can convert it back to the same game.
         assertEquals(game, gameAsJsonObject.mapTo(Game.class));

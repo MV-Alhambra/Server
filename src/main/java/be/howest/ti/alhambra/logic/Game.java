@@ -22,7 +22,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
-    @JsonIgnore
+    @JsonProperty
     private final Player dirk;
     private boolean ended;
     private String currentPlayer;
@@ -33,7 +33,7 @@ public class Game {
 
 
     public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk™") : null);
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
     }
 
     @JsonCreator
@@ -55,7 +55,7 @@ public class Game {
         nextPlayer();
         drawBuildingsDirk(6);
     }
-    // gives a building to dirk, it checks if its that players turn, if two player system is on, if that players has that building
+
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
@@ -63,9 +63,8 @@ public class Game {
         return newPlayers;
     }
 
-    public boolean giveBuildingToDirk(Building building, String playerName) {
+    public boolean giveBuildingToDirk(Building building, String playerName) {  // gives a building to dirk, check if two player system is on, if that players has that building
         if (dirk == null) throw new AlhambraGameRuleException("Dirk can solely be used when there is only two players!");
-        checkTurn(playerName);
         if (!findPlayer(playerName).getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building (" + building + ") in the hand of " + playerName);
         dirk.getReserve().addBuilding(building);
         return true;
@@ -125,8 +124,8 @@ public class Game {
     }
 
     private void addScoreRounds() {
-        int firstScore = new Random().nextInt(20) + 20; // so between 20 and 40
-        int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
+        int firstScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5; // so between 20 and 40
+        int secondScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5 * 3; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
     }
@@ -324,7 +323,4 @@ public class Game {
         }
     }
 
-    public Player getDirk() {
-        return dirk;
-    }
 }
