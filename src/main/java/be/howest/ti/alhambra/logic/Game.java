@@ -84,7 +84,7 @@ public class Game {
     }
 
     public void scoreRound() { // this function gets called when there is a score round
-        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
+        ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
             player.setScore(player.getScore() + score); //adds the new Score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });

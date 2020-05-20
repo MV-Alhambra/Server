@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,11 @@ public class Reserve {
         if (!buildings.remove(building)) {
             throw new IllegalArgumentException("Couldn't find the building in your reserve");
         }
+    }
+    public Integer countType(BuildingType type) {
+        return (int) buildings.stream()
+                .filter(building -> type.equals(building.getType())) //filter the types based on parameter
+                .count();
     }
 
     public Boolean contains(Building building){
