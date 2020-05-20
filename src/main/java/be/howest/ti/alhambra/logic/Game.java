@@ -33,7 +33,7 @@ public class Game {
 
 
     public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? Game.getNameDirk(names) : null);
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk™") : null);
     }
 
     @JsonCreator
@@ -47,12 +47,13 @@ public class Game {
         index = 0;
         round = 1;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
-        coins = Coin.allCoins();
+        coins = dirk == null ? Coin.allCoins() : Coin.allCoinsTwoPlayers(); // two playerSystem has only 72 coins
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();//must before all other methods that might remove Coins
         givePlayersStarterCoins();
         nextPlayer();
+        drawBuildingsDirk(6);
     }
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
@@ -61,15 +62,11 @@ public class Game {
         return newPlayers;
     }
 
-    private static Player getNameDirk(List<PlayerInLobby> names) {
-        return getNameDirk(names, "dirk");
-    }
-
-    private static Player getNameDirk(List<PlayerInLobby> names, String name) { // makes sure that the name isn't used already
-        if (names.contains(new PlayerInLobby(name))) {
-            return getNameDirk(names, name + "1");
-        } else {
-            return new Player(name);
+    private void drawBuildingsDirk(int amount) {
+        if (dirk != null) {
+            for (int i = 0; i < amount; i++) {
+                dirk.getReserve().addBuilding(this.removeBuilding());
+            }
         }
     }
 
@@ -81,28 +78,21 @@ public class Game {
         else if (players.size() == 1) endGame();
     }
 
-    public Player findPlayer(String name) {
-        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
-    }
-
-    private void nextPlayer() { // when called it sets the next current Player
-        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
-        bank.fillBank(this);
-        market.fillMarkets(this);
-        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
-        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
-    }
-
     private void endGame() { //end the game
         scoreRound(); // last score round
         ended = true;
     }
 
-    public void scoreRound() { //each time called it does an score round
+    public void scoreRound() { // this function gets called when there is a score round
         ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
             player.setScore(player.getScore() + score); //adds the new Score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });
+        if (round == 1) {
+            drawBuildingsDirk(6);
+        } else if (round == 2) {
+            drawBuildingsDirk(buildings.size() / 3);
+        }
     }
 
     private List<Building> loadFromFile() {
@@ -242,6 +232,18 @@ public class Game {
 
     private void checkTurn(String playerName) {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
+    }
+
+    public Player findPlayer(String name) {
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
+    }
+
+    private void nextPlayer() { // when called it sets the next current Player
+        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
+        bank.fillBank(this);
+        market.fillMarkets(this);
+        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
+        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
