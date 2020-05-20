@@ -8,7 +8,9 @@ public class AlhambraControllerTest {
 
     @Test
     void AlhambraCont() {
+        AlhambraController c = new AlhambraController();
 
+        assertEquals("001", c.addLobby("Test", 6, false));
 
     }
 }
