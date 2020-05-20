@@ -55,11 +55,28 @@ public class Game {
         nextPlayer();
         drawBuildingsDirk(6);
     }
+    // gives a building to dirk, it checks if its that players turn, if two player system is on, if that players has that building
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
         allPlayers.forEach(player -> newPlayers.add(new Player(player.getName()).setToken(player.getToken())));
         return newPlayers;
+    }
+
+    public boolean giveBuildingToDirk(Building building, String playerName) {
+        if (dirk == null) throw new AlhambraGameRuleException("Dirk can solely be used when there is only two players!");
+        checkTurn(playerName);
+        if (!findPlayer(playerName).getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building (" + building + ") in the hand of " + playerName);
+        dirk.getReserve().addBuilding(building);
+        return true;
+    }
+
+    private void checkTurn(String playerName) {
+        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
+    }
+
+    public Player findPlayer(String name) {
+        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
     private void drawBuildingsDirk(int amount) {
@@ -228,14 +245,6 @@ public class Game {
         }
 
         return this;
-    }
-
-    private void checkTurn(String playerName) {
-        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
-    }
-
-    public Player findPlayer(String name) {
-        return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
     private void nextPlayer() { // when called it sets the next current Player
