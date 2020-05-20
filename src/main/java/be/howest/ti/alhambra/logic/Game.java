@@ -23,7 +23,7 @@ public class Game {
     @JsonIgnore
     private final List<Coin> coins;
     @JsonProperty
-    private final Player dirk;
+    private Player dirk;
     private boolean ended;
     private String currentPlayer;
     @JsonIgnore
@@ -53,7 +53,7 @@ public class Game {
         addScoreRounds();//must before all other methods that might remove Coins
         givePlayersStarterCoins();
         nextPlayer();
-        drawBuildingsDirk(6);
+        giveBuildingsToDirk(6);
     }
 
 
@@ -78,8 +78,8 @@ public class Game {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
-    private void drawBuildingsDirk(int amount) {
-        if (dirk != null) {
+    private void giveBuildingsToDirk(int amount) {
+        if (dirk != null) { // dirk can be added at any time so it should only do it when dirk is added
             for (int i = 0; i < amount; i++) {
                 dirk.getReserve().addBuilding(this.removeBuilding());
             }
@@ -90,7 +90,7 @@ public class Game {
         index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
         players.remove(findPlayer(name));
         if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
-        if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
+        if (players.size() == 2) dirk = new Player("dirk\u2122");
         else if (players.size() == 1) endGame();
     }
 
@@ -105,9 +105,9 @@ public class Game {
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });
         if (round == 1) {
-            drawBuildingsDirk(6);
+            giveBuildingsToDirk(6);
         } else if (round == 2) {
-            drawBuildingsDirk(buildings.size() / 3);
+            giveBuildingsToDirk(buildings.size() / 3);
         }
     }
 
