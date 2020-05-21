@@ -152,41 +152,12 @@ public class City {
 
         for (int row = 1; row < walls.length - 1; row++) { //outer ring is always null
             for (int col = 1; col < walls.length - 1; col++) {
-                if (walls[row][col] !=null && checkNotInWallSection(wallSections,walls[row][col])){
-                    wallSections.add(getWallSection(walls,new Location(row, col)));
+                if (walls[row][col] != null && checkNotInWallSection(wallSections, walls[row][col])) {
+                    wallSections.add(getWallSection(walls, new Location(row, col)));
                 }
             }
         }
         return 0;
-    }
-
-    private List<Building> getWallSection(Building[][] walls, Location staticLocation) {
-        List<Building> wallSection = new ArrayList<>();
-        Queue<Location> processLocations = new LinkedList<>();
-        processLocations.add(staticLocation);
-
-        while(!processLocations.isEmpty()){
-            Location processed = processLocations.poll();
-            wallSection.add(getBuildingStatic(processed));
-            getValidWallNeighbors(walls,processed).stream()
-                    .filter(location -> !wallSection.contains(getBuildingStatic(location)) && !processLocations.contains(location)) // can't add location that is already added
-                    .forEach(processLocations::add);
-        }   
-
-
-
-        return wallSection;
-    }
-
-    private List<Location> getValidWallNeighbors(Building[][] walls, Location processed) {
-
-        return Collections.emptyList();
-    }
-
-    private boolean checkNotInWallSection(List<List<Building>> wallSections, Building building) { // checks if the building is not part of a wall section already
-        return wallSections.stream()
-                .flatMap(List::stream)
-                .noneMatch(building1 -> building1.equals(building));
     }
 
     private Building[][] getCityWithOnlyExteriorWalls() { // it returns a copy of the city with only pieces that have walls and internal walls are removed
@@ -207,9 +178,157 @@ public class City {
         return city;
     }
 
+    private boolean checkNotInWallSection(List<List<Building>> wallSections, Building building) { // checks if the building is not part of a wall section already
+        return wallSections.stream()
+                .flatMap(List::stream)
+                .noneMatch(building1 -> building1.equals(building));
+    }
+
+    private List<Building> getWallSection(Building[][] walls, Location staticLocation) {
+        List<Building> wallSection = new ArrayList<>();
+        Queue<Location> processLocations = new LinkedList<>();
+        processLocations.add(staticLocation);
+
+        while (!processLocations.isEmpty()) {
+            Location processed = processLocations.poll();
+            wallSection.add(getBuildingStatic(processed));
+            getValidWallNeighbors(walls, processed).stream()
+                    .filter(location -> !wallSection.contains(getBuildingStatic(location)) && !processLocations.contains(location)) // can't add location that is already added
+                    .forEach(processLocations::add);
+        }
+
+
+        return wallSection;
+    }
+
     private boolean hasWalls(Building building) { // checks if the given building has walls
         return building.getWalls().values().stream().anyMatch(wall -> wall);
 
+    }
+
+    private List<Location> getValidWallNeighbors(Building[][] walls, Location staticLocation) {
+        List<Location> validWalls = new ArrayList<>();
+
+        Building building = walls[staticLocation.getRow()][staticLocation.getCol()];
+        if (building.getWall(NORTH)) {
+            validWalls.addAll(getNorthWallNeighbor(walls, staticLocation));
+        }
+        if (building.getWall(EAST)) {
+            validWalls.addAll(getEastWallNeighbor(walls, staticLocation));
+        }
+        if (building.getWall(SOUTH)) {
+            validWalls.addAll(getSouthWallNeighbor(walls, staticLocation));
+        } 
+        if (building.getWall(WEST)) {
+            validWalls.addAll(getWestWallNeighbor(walls, staticLocation));
+        }
+
+        return validWalls;
+    }
+
+
+    private List<Location> getWestWallNeighbor(Building[][] walls, Location staticLocation) {
+        List<Location> neighbors = new ArrayList<>();
+        Location upLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol());
+        Building up = walls[upLoc.getRow()][upLoc.getCol()];
+        Location leftUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() - 1);
+        Building leftUp = walls[leftUpLoc.getRow()][leftUpLoc.getCol()];
+        Location downLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol());
+        Building down = walls[downLoc.getRow()][downLoc.getCol()];
+        Location leftDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() -1);
+        Building leftDown = walls[leftDownLoc.getRow()][leftDownLoc.getCol()];
+
+        if (up != null && up.getWall(WEST)) {
+            neighbors.add(upLoc);
+        }
+        if (leftUp != null && leftUp.getWall(SOUTH)) {
+            neighbors.add(leftUpLoc);
+        }
+        if (down != null && down.getWall(WEST)) {
+            neighbors.add(downLoc);
+        }
+        if (leftDown != null && leftDown.getWall(NORTH)) {
+            neighbors.add(leftDownLoc);
+        }
+        return neighbors;
+    }
+
+    private List<Location> getNorthWallNeighbor(Building[][] walls, Location staticLocation) {
+        List<Location> neighbors = new ArrayList<>();
+        Location leftLoc = new Location(staticLocation.getRow(), staticLocation.getCol() - 1);
+        Building left = walls[leftLoc.getRow()][leftLoc.getCol()];
+        Location leftUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() - 1);
+        Building leftUp = walls[leftUpLoc.getRow()][leftUpLoc.getCol()];
+        Location rightLoc = new Location(staticLocation.getRow(), staticLocation.getCol() + 1);
+        Building right = walls[rightLoc.getRow()][rightLoc.getCol()];
+        Location rightUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() + 1);
+        Building rightUp = walls[rightUpLoc.getRow()][rightUpLoc.getCol()];
+
+        if (left != null && left.getWall(NORTH)) {
+            neighbors.add(leftLoc);
+        }
+        if (leftUp != null && leftUp.getWall(EAST)) {
+            neighbors.add(leftUpLoc);
+        }
+        if (right != null && right.getWall(NORTH)) {
+            neighbors.add(rightLoc);
+        }
+        if (rightUp != null && rightUp.getWall(WEST)) {
+            neighbors.add(rightUpLoc);
+        }
+        return neighbors;
+    }
+
+    private List<Location> getEastWallNeighbor(Building[][] walls, Location staticLocation) {
+        List<Location> neighbors = new ArrayList<>();
+        Location upLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol());
+        Building up = walls[upLoc.getRow()][upLoc.getCol()];
+        Location rightUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() + 1);
+        Building rightUp = walls[rightUpLoc.getRow()][rightUpLoc.getCol()];
+        Location downLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol());
+        Building down = walls[downLoc.getRow()][downLoc.getCol()];
+        Location rightDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() + 1);
+        Building rightDown = walls[rightDownLoc.getRow()][rightDownLoc.getCol()];
+
+        if (up != null && up.getWall(EAST)) {
+            neighbors.add(upLoc);
+        }
+        if (rightUp != null && rightUp.getWall(SOUTH)) {
+            neighbors.add(rightUpLoc);
+        }
+        if (down != null && down.getWall(EAST)) {
+            neighbors.add(downLoc);
+        }
+        if (rightDown != null && rightDown.getWall(NORTH)) {
+            neighbors.add(rightDownLoc);
+        }
+        return neighbors;
+    }
+
+    private List<Location> getSouthWallNeighbor(Building[][] walls, Location staticLocation) {
+        List<Location> neighbors = new ArrayList<>();
+        Location leftLoc = new Location(staticLocation.getRow(), staticLocation.getCol() - 1);
+        Building left = walls[leftLoc.getRow()][leftLoc.getCol()];
+        Location leftDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() - 1);
+        Building leftDown = walls[leftDownLoc.getRow()][leftDownLoc.getCol()];
+        Location rightLoc = new Location(staticLocation.getRow(), staticLocation.getCol() + 1);
+        Building right = walls[rightLoc.getRow()][rightLoc.getCol()];
+        Location rightDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() + 1);
+        Building rightDown = walls[rightDownLoc.getRow()][rightDownLoc.getCol()];
+
+        if (left != null && left.getWall(SOUTH)) {
+            neighbors.add(leftLoc);
+        }
+        if (leftDown != null && leftDown.getWall(EAST)) {
+            neighbors.add(leftDownLoc);
+        }
+        if (right != null && right.getWall(SOUTH)) {
+            neighbors.add(rightLoc);
+        }
+        if (rightDown != null && rightDown.getWall(WEST)) {
+            neighbors.add(rightDownLoc);
+        }
+        return neighbors;
     }
 
     public Building removeBuilding(Location location) {
