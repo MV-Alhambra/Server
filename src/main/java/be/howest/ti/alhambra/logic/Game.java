@@ -70,10 +70,6 @@ public class Game {
         return true;
     }
 
-    private void checkTurn(String playerName) {
-        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
-    }
-
     public Player findPlayer(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
@@ -101,7 +97,7 @@ public class Game {
 
     public void scoreRound() { // this function gets called when there is a score round
         ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
-            player.setScore(player.getScore() + score); //adds the new Score to the old score
+            player.setScore(player.getScore() + score + player.getCity().calcScoreWall()); //adds the new score of buildings and wall score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });
         if (round == 1) {
@@ -244,6 +240,10 @@ public class Game {
         }
 
         return this;
+    }
+
+    private void checkTurn(String playerName) {
+        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
     }
 
     private void nextPlayer() { // when called it sets the next current Player
