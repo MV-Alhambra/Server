@@ -53,29 +53,6 @@ public class City {
         checkMapSize();
     }
 
-
-    private void checkMapSize() { //checks if the city needs to be expanded
-        for (int row = 0; row < buildings.length; row++) {
-            for (int col = 0; col < buildings.length; col++) {
-                if (buildings[row][col] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
-                    updateMapSize();
-                    return;// stop/exit
-                }
-            }
-        }
-    }
-
-    private void updateMapSize() { //expands the city
-        mapSize += 2;
-
-        Building[][] newBuildings = new Building[mapSize][mapSize];
-
-        for (int row = 0; row < buildings.length; row++) {
-            System.arraycopy(buildings[row], 0, newBuildings[row + 1], 1, buildings.length); //basically copies a complete row and puts in the new array with one offset so its in the middle
-        }
-        buildings = newBuildings;
-    }
-
     /*
      * Available location is a location that is null, is next to a not null location,
      *  check if walls allow it: check if giving walls allow it and check walls of the building next to it allow it
@@ -96,16 +73,52 @@ public class City {
         return locations.stream().distinct().collect(Collectors.toList()); // remove duplicates
     }
 
+    private void checkMapSize() { //checks if the city needs to be expanded
+        for (int row = 0; row < buildings.length; row++) {
+            for (int col = 0; col < buildings.length; col++) {
+                if (buildings[row][col] != null && ((row == 0 || row == mapSize - 1) || (col == 0 || col == mapSize - 1))) { //checks if there is a building on the outer ring
+                    updateMapSize();
+                    return;// stop/exit
+                }
+            }
+        }
+    }
+
     private void logicAvailableLocations(Map<CardinalDirection, Boolean> walls, List<Location> locations, int row, int col) {
         Location.getSurroundingLocationsWithCD(new Location(row, col)).entrySet().stream() //gets the locations around the current location
                 .filter(entry -> checkAvailableLocation(walls, getOppositeCD(entry.getKey()), row, col, entry.getValue())) //checks if the location is available
                 .forEach(entry -> locations.add(Location.convertStaticLocationToLocation(entry.getValue(), mapSize))); //if so then add it the locations
     }
 
+    private void updateMapSize() { //expands the city
+        mapSize += 2;
+
+        Building[][] newBuildings = new Building[mapSize][mapSize];
+
+        for (int row = 0; row < buildings.length; row++) {
+            System.arraycopy(buildings[row], 0, newBuildings[row + 1], 1, buildings.length); //basically copies a complete row and puts in the new array with one offset so its in the middle
+        }
+        buildings = newBuildings;
+    }
 
     // check if no walls are blocking ( from giving walls and from checked location's building), check if the walls match and check if the location hasn't been used yet
     private boolean checkAvailableLocation(Map<CardinalDirection, Boolean> walls, CardinalDirection wall, int row, int col, Location staticLocation) {
         return !walls.get(wall) && !buildings[row][col].getWall(getOppositeCD(wall)) && buildings[staticLocation.getRow()][staticLocation.getCol()] == null && checkSurroundings(walls, staticLocation) && checkForEmptySpots(staticLocation);
+    }
+
+    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction, N->S W->E
+        switch (cardinalDirection) {
+            case NORTH:
+                return SOUTH;
+            case WEST:
+                return EAST;
+            case EAST:
+                return WEST;
+            case SOUTH:
+                return NORTH;
+            default:
+                return null;
+        }
     }
 
     private boolean checkSurroundings(Map<CardinalDirection, Boolean> walls, Location staticLocation) { //check if the surroundings have matching walls as the giving walls
@@ -125,8 +138,78 @@ public class City {
         return checkNotIOB(staticLocation) && getBuildingStatic(staticLocation) != null;
     }
 
+    private Building getBuildingStatic(Location staticLocation) {
+        return buildings[staticLocation.getRow()][staticLocation.getCol()];
+    }
+
     private boolean checkNotIOB(Location staticLocation) { //checks if the building isn't outside the map
         return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
+    }
+
+    public int calcWallScore() {
+        Building[][] walls = getCityWithOnlyExteriorWalls();
+        List<List<Building>> wallSections = new ArrayList<>();
+
+        for (int row = 1; row < walls.length - 1; row++) { //outer ring is always null
+            for (int col = 1; col < walls.length - 1; col++) {
+                if (walls[row][col] !=null && checkNotInWallSection(wallSections,walls[row][col])){
+                    wallSections.add(getWallSection(walls,new Location(row, col)));
+                }
+            }
+        }
+        return 0;
+    }
+
+    private List<Building> getWallSection(Building[][] walls, Location staticLocation) {
+        List<Building> wallSection = new ArrayList<>();
+        Queue<Location> processLocations = new LinkedList<>();
+        processLocations.add(staticLocation);
+
+        while(!processLocations.isEmpty()){
+            Location processed = processLocations.poll();
+            wallSection.add(getBuildingStatic(processed));
+            getValidWallNeighbors(walls,processed).stream()
+                    .filter(location -> !wallSection.contains(getBuildingStatic(location)) && !processLocations.contains(location)) // can't add location that is already added
+                    .forEach(processLocations::add);
+        }   
+
+
+
+        return wallSection;
+    }
+
+    private List<Location> getValidWallNeighbors(Building[][] walls, Location processed) {
+
+        return Collections.emptyList();
+    }
+
+    private boolean checkNotInWallSection(List<List<Building>> wallSections, Building building) { // checks if the building is not part of a wall section already
+        return wallSections.stream()
+                .flatMap(List::stream)
+                .noneMatch(building1 -> building1.equals(building));
+    }
+
+    private Building[][] getCityWithOnlyExteriorWalls() { // it returns a copy of the city with only pieces that have walls and internal walls are removed
+        Building[][] city = buildings.clone();
+        for (int row = 1; row < city.length - 1; row++) { //outer ring is always null
+            for (int col = 1; col < city.length - 1; col++) {
+                if (city[row][col] != null && !hasWalls(city[row][col])) { // removes wall less buildings
+                    city[row][col] = null;
+                } else if (city[row][col] != null && city[row - 1][col] != null && city[row - 1][col].getWall(SOUTH) && city[row - 1][col].getWall(SOUTH) == city[row][col].getWall(NORTH)) { // removes north and south internal walls
+                    city[row - 1][col].getWalls().put(SOUTH, false);
+                    city[row][col].getWalls().put(NORTH, false);
+                } else if (city[row][col] != null && city[row][col - 1] != null && city[row][col - 1].getWall(EAST) && city[row - 1][col].getWall(EAST) == city[row][col].getWall(WEST)) { // removes EAST and WEST internal walls
+                    city[row - 1][col].getWalls().put(EAST, false);
+                    city[row][col].getWalls().put(WEST, false);
+                }
+            }
+        }
+        return city;
+    }
+
+    private boolean hasWalls(Building building) { // checks if the given building has walls
+        return building.getWalls().values().stream().anyMatch(wall -> wall);
+
     }
 
     public Building removeBuilding(Location location) {
@@ -164,27 +247,8 @@ public class City {
                 ", mapSize=" + mapSize +
                 '}';
     }
-    private Building getBuildingStatic(Location staticLocation) {
-        return buildings[staticLocation.getRow()][staticLocation.getCol()];
-    }
 
     public Building getBuilding(Location location) {
         return getBuildingStatic(Location.convertLocationToStaticLocation(location, mapSize));
-    }
-
-
-    public static CardinalDirection getOppositeCD(CardinalDirection cardinalDirection) { //get the opposite cardinal direction, N->S W->E
-        switch (cardinalDirection) {
-            case NORTH:
-                return SOUTH;
-            case WEST:
-                return EAST;
-            case EAST:
-                return WEST;
-            case SOUTH:
-                return NORTH;
-            default:
-                return null;
-        }
     }
 }
