@@ -158,11 +158,11 @@ public class City {
             }
         }
 
-        return wallSections.stream() // basically i count for each list the amount of walls (so amount of true) and then get highest amount or if none present then 0
-                .map(wallSection-> (int) wallSection.stream()
+        return wallSections.stream() // basically i count for each list the amount of walls (so amount of trues) and then get highest amount or if none present then 0
+                .map(wallSection -> (int) wallSection.stream()
                         .map(building -> building.getWalls().values())
                         .flatMap(Collection::stream)
-                        .filter(wall-> wall)
+                        .filter(wall -> wall)
                         .count()
                 )
                 .max(Comparator.naturalOrder())
@@ -170,7 +170,7 @@ public class City {
     }
 
     private Building[][] getCityWithOnlyExteriorWalls() { // it returns a copy of the city with only pieces that have walls and internal walls are removed
-        Building[][] city = buildings.clone();
+        Building[][] city = deepClone2DimArray(buildings);
         for (int row = 1; row < city.length - 1; row++) { //outer ring is always null
             for (int col = 1; col < city.length - 1; col++) {
                 if (city[row][col] != null && !hasWalls(city[row][col])) { // removes wall less buildings
@@ -210,6 +210,15 @@ public class City {
         return wallSection;
     }
 
+    private Building[][] deepClone2DimArray(Building[][] copy) { // buildings.clone didnt work, probably bc it's 2 dim, and cloning each array individually didnt work either cuz it kept the reference of the buildings
+        return Arrays.stream(copy) // iterate of 1 dim array
+                .map(buildingsArray -> Arrays.stream(buildingsArray) //iterate over all elements
+                        .map(building -> building == null ? null : new Building(building)) //create a new instance of each new building
+                        .toArray(Building[]::new) //back to a 1 dim array, create a new instance
+                )
+                .toArray(Building[][]::new); //back to a 2 dim array, create a new instance
+    }
+
     private boolean hasWalls(Building building) { // checks if the given building has walls
         return building.getWalls().values().stream().anyMatch(wall -> wall);
 
@@ -227,39 +236,12 @@ public class City {
         }
         if (building.getWall(SOUTH)) {
             validWalls.addAll(getSouthWallNeighbor(walls, staticLocation));
-        } 
+        }
         if (building.getWall(WEST)) {
             validWalls.addAll(getWestWallNeighbor(walls, staticLocation));
         }
 
         return validWalls;
-    }
-
-
-    private List<Location> getWestWallNeighbor(Building[][] walls, Location staticLocation) {
-        List<Location> neighbors = new ArrayList<>();
-        Location upLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol());
-        Building up = walls[upLoc.getRow()][upLoc.getCol()];
-        Location leftUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() - 1);
-        Building leftUp = walls[leftUpLoc.getRow()][leftUpLoc.getCol()];
-        Location downLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol());
-        Building down = walls[downLoc.getRow()][downLoc.getCol()];
-        Location leftDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() -1);
-        Building leftDown = walls[leftDownLoc.getRow()][leftDownLoc.getCol()];
-
-        if (up != null && up.getWall(WEST)) {
-            neighbors.add(upLoc);
-        }
-        if (leftUp != null && leftUp.getWall(SOUTH)) {
-            neighbors.add(leftUpLoc);
-        }
-        if (down != null && down.getWall(WEST)) {
-            neighbors.add(downLoc);
-        }
-        if (leftDown != null && leftDown.getWall(NORTH)) {
-            neighbors.add(leftDownLoc);
-        }
-        return neighbors;
     }
 
     private List<Location> getNorthWallNeighbor(Building[][] walls, Location staticLocation) {
@@ -336,6 +318,32 @@ public class City {
         }
         if (rightDown != null && rightDown.getWall(WEST)) {
             neighbors.add(rightDownLoc);
+        }
+        return neighbors;
+    }
+
+    private List<Location> getWestWallNeighbor(Building[][] walls, Location staticLocation) {
+        List<Location> neighbors = new ArrayList<>();
+        Location upLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol());
+        Building up = walls[upLoc.getRow()][upLoc.getCol()];
+        Location leftUpLoc = new Location(staticLocation.getRow() - 1, staticLocation.getCol() - 1);
+        Building leftUp = walls[leftUpLoc.getRow()][leftUpLoc.getCol()];
+        Location downLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol());
+        Building down = walls[downLoc.getRow()][downLoc.getCol()];
+        Location leftDownLoc = new Location(staticLocation.getRow() + 1, staticLocation.getCol() - 1);
+        Building leftDown = walls[leftDownLoc.getRow()][leftDownLoc.getCol()];
+
+        if (up != null && up.getWall(WEST)) {
+            neighbors.add(upLoc);
+        }
+        if (leftUp != null && leftUp.getWall(SOUTH)) {
+            neighbors.add(leftUpLoc);
+        }
+        if (down != null && down.getWall(WEST)) {
+            neighbors.add(downLoc);
+        }
+        if (leftDown != null && leftDown.getWall(NORTH)) {
+            neighbors.add(leftDownLoc);
         }
         return neighbors;
     }

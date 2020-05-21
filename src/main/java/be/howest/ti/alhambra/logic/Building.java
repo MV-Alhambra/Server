@@ -37,16 +37,22 @@ public class Building {
         return tempWalls;
     }
 
+    public Building(Building building) { // constructor for my stream in city
+        this.type = building.type;
+        this.cost = building.cost;
+        this.walls = new HashMap<>(building.getWalls()); // no reference but copy
+    }
+
+    public Map<CardinalDirection, Boolean> getWalls() {
+        return walls;
+    }
+
     public BuildingType getType() {
         return type;
     }
 
     public int getCost() {
         return cost;
-    }
-
-    public Map<CardinalDirection, Boolean> getWalls() {
-        return walls;
     }
 
     public boolean getWall(CardinalDirection cardinalDirection) {
