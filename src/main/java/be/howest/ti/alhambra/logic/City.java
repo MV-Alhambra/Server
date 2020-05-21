@@ -147,8 +147,8 @@ public class City {
     }
 
     public int calcWallScore() {
-        Building[][] walls = getCityWithOnlyExteriorWalls();
         List<List<Building>> wallSections = new ArrayList<>();
+        Building[][] walls = getCityWithOnlyExteriorWalls();
 
         for (int row = 1; row < walls.length - 1; row++) { //outer ring is always null
             for (int col = 1; col < walls.length - 1; col++) {
@@ -157,7 +157,16 @@ public class City {
                 }
             }
         }
-        return 0;
+
+        return wallSections.stream() // basically i count for each list the amount of walls (so amount of true) and then get highest amount or if none present then 0
+                .map(wallSection-> (int) wallSection.stream()
+                        .map(building -> building.getWalls().values())
+                        .flatMap(Collection::stream)
+                        .filter(wall-> wall)
+                        .count()
+                )
+                .max(Comparator.naturalOrder())
+                .orElse(0);
     }
 
     private Building[][] getCityWithOnlyExteriorWalls() { // it returns a copy of the city with only pieces that have walls and internal walls are removed
