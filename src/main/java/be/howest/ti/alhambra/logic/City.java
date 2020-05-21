@@ -146,7 +146,7 @@ public class City {
         return staticLocation.getCol() < mapSize && staticLocation.getCol() >= 0 && staticLocation.getRow() < mapSize && staticLocation.getRow() >= 0;
     }
 
-    public int calcWallScore() {
+    public int calcScoreWall() {
         List<List<Building>> wallSections = new ArrayList<>();
         Building[][] walls = getCityWithOnlyExteriorWalls();
 
