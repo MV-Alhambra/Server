@@ -22,6 +22,8 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    @JsonProperty
+    private Player dirk;
     private boolean ended;
     private String currentPlayer;
     @JsonIgnore
@@ -29,27 +31,31 @@ public class Game {
     @JsonIgnore
     private int round;
 
+
     public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
     }
 
     @JsonCreator
-    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market) {
+    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market, @JsonProperty("twoPlayerSystem") Player dirk) {
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
+        this.dirk = dirk;
         index = 0;
         round = 1;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
-        coins = Coin.allCoins();
+        coins = dirk == null ? Coin.allCoins() : Coin.allCoinsTwoPlayers(); // two playerSystem has only 72 coins
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();//must before all other methods that might remove Coins
         givePlayersStarterCoins();
         nextPlayer();
+        giveBuildingsToDirk(6);
     }
+
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
@@ -57,24 +63,35 @@ public class Game {
         return newPlayers;
     }
 
-    public void removePlayer(String name) {
-        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
-        players.remove(findPlayer(name));
-        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
-        if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
-        else if (players.size() == 1) endGame();
+    public boolean giveBuildingToDirk(Building building, String playerName) {  // gives a building to dirk, check if two player system is on, if that players has that building
+        if (dirk == null) throw new AlhambraGameRuleException("Dirk can solely be used when there is only two players!");
+        if (!findPlayer(playerName).getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building (" + building + ") in the hand of " + playerName);
+        dirk.getReserve().addBuilding(building);
+        return true;
+    }
+
+    private void checkTurn(String playerName) {
+        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
     }
 
     public Player findPlayer(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
-    private void nextPlayer() { // when called it sets the next current Player
-        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
-        bank.fillBank(this);
-        market.fillMarkets(this);
-        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
-        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
+    private void giveBuildingsToDirk(int amount) {
+        if (dirk != null) { // dirk can be added at any time so it should only do it when dirk is added
+            for (int i = 0; i < amount; i++) {
+                dirk.getReserve().addBuilding(this.removeBuilding());
+            }
+        }
+    }
+
+    public void removePlayer(String name) {
+        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
+        players.remove(findPlayer(name));
+        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
+        if (players.size() == 2) dirk = new Player("dirk\u2122");
+        else if (players.size() == 1) endGame();
     }
 
     private void endGame() { //end the game
@@ -82,11 +99,16 @@ public class Game {
         ended = true;
     }
 
-    public void scoreRound() { //each time called it does an score round
-        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
+    public void scoreRound() { // this function gets called when there is a score round
+        ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
             player.setScore(player.getScore() + score); //adds the new Score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });
+        if (round == 1) {
+            giveBuildingsToDirk(6);
+        } else if (round == 2) {
+            giveBuildingsToDirk(buildings.size() / 3);
+        }
     }
 
     private List<Building> loadFromFile() {
@@ -102,8 +124,8 @@ public class Game {
     }
 
     private void addScoreRounds() {
-        int firstScore = new Random().nextInt(20) + 20; // so between 20 and 40
-        int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
+        int firstScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5; // so between 20 and 40
+        int secondScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5 * 3; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
     }
@@ -224,8 +246,12 @@ public class Game {
         return this;
     }
 
-    private void checkTurn(String playerName) {
-        if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
+    private void nextPlayer() { // when called it sets the next current Player
+        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
+        bank.fillBank(this);
+        market.fillMarkets(this);
+        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
+        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
     }
 
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
@@ -296,4 +322,5 @@ public class Game {
             throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
         }
     }
+
 }

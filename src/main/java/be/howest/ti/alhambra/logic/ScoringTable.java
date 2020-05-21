@@ -12,12 +12,21 @@ public class ScoringTable {
     } //bc you aren't allowed to make instances of utility classes
 
     public static Map<Player, Integer> calcScoreBuildings(List<Player> players, int round) {
+        return calcScoreBuildings(players, round, null);
+    }
+
+    public static Map<Player, Integer> calcScoreBuildings(List<Player> players, int round, Player dirk) {
         Map<BuildingType, Map<Player, Integer>> totalTypeEachPlayer = new LinkedHashMap<>();// map with for each type another map with key player and then how many they have of that type, linked bc order matters
+        Map<Player, Integer> scores = new HashMap<>();
 
         for (BuildingType type : BuildingType.values()) {
             totalTypeEachPlayer.put(type, new LinkedHashMap<>()); //order matters
 
             players.forEach(player -> totalTypeEachPlayer.get(type).put(player, player.getCity().countType(type)));//fill the map with players and count for each type
+            if (dirk != null) { // dirks also gets a score each score round
+                totalTypeEachPlayer.get(type).put(dirk, dirk.getReserve().countType(type));
+                scores.put(dirk, 0);
+            }
 
             totalTypeEachPlayer.put(type, totalTypeEachPlayer.get(type).entrySet().stream() //sort players by count of each type
                     .filter(k -> k.getValue() > 0) //ppl with no buildings for that type dont get points
@@ -26,8 +35,8 @@ public class ScoringTable {
                     .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new)) //back to map
             );
         }
-        Map<Player, Integer> scores = new HashMap<>();
-        players.forEach(player -> scores.put(player, 0)); //init values
+
+        players.forEach(player -> scores.put(player, 0)); //init values for scores
         Map<BuildingType, List<Integer>> roundTable = getRoundTable(round);
 
         for (Map.Entry<BuildingType, Map<Player, Integer>> type : totalTypeEachPlayer.entrySet()) {

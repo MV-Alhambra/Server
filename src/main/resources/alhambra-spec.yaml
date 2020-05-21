@@ -673,7 +673,49 @@ paths:
           description: Action not performed due to conflict with game rule.
         '422':
           description: Game or player does not exist
-
+  '/games/{gameId}/players/{playerName}/dirk':
+    parameters:
+      - name: gameId
+        description: Id of the game
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/gameId'
+      - name: playerName
+        description: Name of the player
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/playerName'
+    post:
+      summary: give a building tile to dirk
+      operationId: giveDirk
+      tags:
+        - game
+      security:
+        - playerToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                building:
+                  $ref: '#/components/schemas/building'
+              required:
+                - building
+      responses:
+        '200':
+          $ref: '#/components/responses/successfulGameOperation'
+        '401':
+          description: Absent or mallformed authentication
+        '403':
+          description: Forbidden because the player token does not grant access for this action.
+        '409':
+          description: Action not performed due to conflict with game rule.
+        '422':
+          description: Game or player does not exist
   '/games/{gameId}/players/{playerName}/city/locations':
     parameters:
       - name: gameId

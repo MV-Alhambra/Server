@@ -34,6 +34,11 @@ public class Reserve {
             throw new IllegalArgumentException("Couldn't find the building in your reserve");
         }
     }
+    public Integer countType(BuildingType type) {
+        return (int) buildings.stream()
+                .filter(building -> type.equals(building.getType())) //filter the types based on parameter
+                .count();
+    }
 
     public Boolean contains(Building building){
         return buildings.contains(building);
