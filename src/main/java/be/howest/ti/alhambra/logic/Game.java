@@ -102,6 +102,7 @@ public class Game {
         ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
             player.setScore(player.getScore() + score + player.getCity().calcScoreWall()); //adds the new score of buildings and wall score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
+            System.out.println(player.getName()+":"+player.getCity().calcScoreWall());
         });
         if (round == 1) {
             giveBuildingsToDirk(6);
