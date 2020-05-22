@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Player {
     private final String name;
@@ -14,6 +16,7 @@ public class Player {
     private final Reserve reserve;
     private final City city;
     private final List<Building> buildingsInHand;
+    private PlayerTitle title;
 
     private int score;
     private int virtualScore;
@@ -22,11 +25,11 @@ public class Player {
     private PlayerToken token;
 
     public Player(String name) {
-        this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0);
+        this(name, new ArrayList<>(), new ArrayList<>(), City.getDefaultCity(), new ArrayList<>(), 0, 0, null);
     }
 
     @JsonCreator
-    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore) {
+    public Player(@JsonProperty("name") String name, @JsonProperty("coins") List<Coin> coins, @JsonProperty("reserve") List<Building> reserve, @JsonProperty("city") Building[][] city, @JsonProperty("buildings-in-hand") List<Building> buildingsInHand, @JsonProperty("score") int score, @JsonProperty("virtual-score") int virtualScore, @JsonProperty("title") PlayerTitle title) {
         this.name = name;
         this.coins = new Coins(coins);
         this.reserve = new Reserve(reserve);
@@ -34,6 +37,7 @@ public class Player {
         this.buildingsInHand = buildingsInHand;
         this.score = score;
         this.virtualScore = virtualScore;
+        this.title = title;
     }
 
     public String getName() {
@@ -116,5 +120,13 @@ public class Player {
     public Player setToken(PlayerToken token) {
         this.token = token;
         return this;
+    }
+
+    public PlayerTitle getTitle() {
+        return title;
+    }
+
+    public void setTitle(PlayerTitle title) {
+        this.title = title;
     }
 }
