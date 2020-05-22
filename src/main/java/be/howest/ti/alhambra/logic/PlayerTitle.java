@@ -1,21 +1,30 @@
 package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class PlayerTitle {
+public class PlayerTitle implements Comparable<PlayerTitle> {
 
     private final String title;
     private final String description;
-    private String value;
+    @JsonIgnore
+    private int value;
+    @JsonProperty("value")
+    private String valueWithUnit;
 
     @JsonCreator
-    public PlayerTitle(@JsonProperty("title") String title,@JsonProperty("description") String description, @JsonProperty("value") String unit) {
+    public PlayerTitle(@JsonProperty("title") String title, @JsonProperty("description") String description, @JsonProperty("value") String unit) {
+        this(title, description, 0, unit);
+    }
+
+    public PlayerTitle(String title, String description, int value, String unit) {
         this.title = title;
         this.description = description;
-        this.value = "X " + unit;
+        this.value = value;
+        this.valueWithUnit = value + " " + unit;
     }
 
     public String getTitle() {
@@ -26,12 +35,18 @@ public class PlayerTitle {
         return description;
     }
 
-    public String getValue() {
-        return value;
+    @JsonProperty("value")
+    public String getValueWithUnit() {
+        return valueWithUnit;
     }
 
-    public void setValue(int value) {
-        this.value = this.value.replace("X", String.valueOf(value));
+    public void setValueWithUnit(String valueWithUnit) {
+        this.valueWithUnit = valueWithUnit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description);
     }
 
     @Override
@@ -44,7 +59,16 @@ public class PlayerTitle {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(title, description, value);
+    public int compareTo(PlayerTitle playerTitle) {
+        if (!this.equals(playerTitle)) throw new IllegalArgumentException("can only compare with equal titles");
+        return playerTitle.getValue() - this.value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }
