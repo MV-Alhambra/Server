@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PlayerTitle implements Comparable<PlayerTitle> {
@@ -46,16 +48,15 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description);
+        return Objects.hash(title);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { // title defines uniqueness
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerTitle that = (PlayerTitle) o;
-        return Objects.equals(title, that.title) &&
-                Objects.equals(description, that.description);
+        return Objects.equals(title, that.title);
     }
 
     @Override
@@ -70,5 +71,16 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public static List<PlayerTitle> getAllPlayerTitles(){
+        List<PlayerTitle> titles = new ArrayList<>();
+        titles.add(new PlayerTitle("The hoarder","Has the most value of coins left over","coin value"));
+        titles.add(new PlayerTitle("Richie Rich","Spent the most coins","value of coins"));
+        titles.add(new PlayerTitle("Bob the builder","Build the most buildings","buildings"));
+        titles.add(new PlayerTitle("The wall of China","Has the longest wall", "wall pieces"));
+        titles.add(new PlayerTitle("Mr. Perfect","Has the most redesigns","redesigns"));
+        titles.add(new PlayerTitle("The stalker","Viewed the most opponents cities","cities"));
+        return  titles;
     }
 }
