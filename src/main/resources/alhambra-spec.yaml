@@ -610,6 +610,24 @@ paths:
         required: true
         schema:
           $ref: '#/components/schemas/playerName'
+    get:
+      summary: Add 1 view town to this player
+      operationId: viewTown
+      tags:
+        - game
+      security:
+        - playerToken: []
+      responses:
+        '200':
+          $ref: '#/components/responses/successfulGameOperation'
+        '401':
+          description: Absent or mallformed authentication
+        '403':
+          description: Forbidden because the player token does not grant access for this action.
+        '409':
+          description: Action not performed due to conflict with game rule.
+        '422':
+          description: Game or player does not exist
     post:
       summary: Build a building
       operationId: build

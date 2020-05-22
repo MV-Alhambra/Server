@@ -32,7 +32,7 @@ public class Game {
     private int index;
     @JsonIgnore
     private int round;
-
+    private final Random rand = new Random();
 
     public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
@@ -136,9 +136,7 @@ public class Game {
 
         PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates each playersTitle with value for that player
             titles.put(title, new HashMap<>()); //order matters
-            players.forEach(player -> {
-                titles.get(title).put(player, calcPlayerTitle(player, title));
-            });
+            players.forEach(player -> titles.get(title).put(player, calcPlayerTitle(player, title)));
         });
 
         titles.replaceAll((title, map) -> titles.get(title).entrySet().stream() //sort the players for each playerTitle on playerTitle value
@@ -156,7 +154,6 @@ public class Game {
                 playerWithTitle.get(keys.get(0)).add(title);
             }
         });
-        Random rand = new Random();
         playerWithTitle.entrySet().stream()
                 .peek(entry -> {  //makes sure everyone gets a title
                     if (entry.getValue().isEmpty()) {
@@ -190,11 +187,13 @@ public class Game {
                 title.setValue(Coin.getSumCoins(player.getCoins().getSpentCoins().toArray(Coin[]::new)));
                 break;
             case "The stalker":
-                title.setValue(player.getViewTown() );
+                title.setValue(player.getViewTown());
                 break;
             case "Mr. Perfect":
                 title.setValue(player.getRedesigns());
                 break;
+            default:
+                throw new IllegalArgumentException("Given title is not supported");
         }
         return title;
     }

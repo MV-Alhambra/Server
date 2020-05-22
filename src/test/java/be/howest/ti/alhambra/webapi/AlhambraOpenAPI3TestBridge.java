@@ -133,4 +133,9 @@ class AlhambraOpenAPI3TestBridge implements AlhambraOpenAPI3Bridge {
     public Object giveDirk(RoutingContext ctx) {
         return true;
     }
+
+    @Override
+    public Object viewTown(RoutingContext ctx) {
+        return true;
+    }
 }

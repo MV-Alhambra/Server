@@ -145,6 +145,12 @@ public class DefaultAlhambraOpenAPI3Bridge implements AlhambraOpenAPI3Bridge {
         return controller.giveDirk(getGameId(ctx), getPlayerName(ctx), ctx.getBodyAsJson().getJsonObject(BUILDING).mapTo(Building.class));
     }
 
+    @Override
+    public Object viewTown(RoutingContext ctx) {
+        LOGGER.info("viewTown");
+        return controller.viewTown(getGameId(ctx),getPlayerName(ctx));
+    }
+
     private String getGameId(RoutingContext ctx) {
         return ctx.request().getParam("gameId");
     }
