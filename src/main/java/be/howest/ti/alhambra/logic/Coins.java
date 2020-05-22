@@ -37,6 +37,10 @@ public class Coins {
         }
     }
 
+    public int getTotalValueCoins(){ // gets the sum of total value of coins
+        return coinsBag.stream().mapToInt(Coin::getAmount).sum();
+    }
+
     private void removeCoin(Coin coin) {
         if (!coinsBag.remove(coin)) throw new IllegalArgumentException("Couldn't find the coin in the coins bag, coin: " + coin.toString());
     }

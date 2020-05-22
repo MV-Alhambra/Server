@@ -15,7 +15,7 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
     @JsonIgnore
     private int value;
     @JsonProperty("value")
-    private String valueWithUnit;
+    private String unit;
 
     @JsonCreator
     public PlayerTitle(@JsonProperty("title") String title, @JsonProperty("description") String description, @JsonProperty("value") String unit) {
@@ -26,7 +26,22 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         this.title = title;
         this.description = description;
         this.value = value;
-        this.valueWithUnit = value + " " + unit;
+        this.unit = unit;
+    }
+
+    public static List<PlayerTitle> getAllPlayerTitles() {
+        List<PlayerTitle> titles = new ArrayList<>();
+        titles.add(new PlayerTitle("The hoarder", "Has the most value of coins left over", "coin value"));
+        //  titles.add(new PlayerTitle("Richie Rich","Spent the most coins","value of coins"));
+        // titles.add(new PlayerTitle("Bob the builder","Build the most buildings","buildings"));
+        titles.add(new PlayerTitle("The Great Wall of China", "Has the longest wall", "wall pieces"));
+        // titles.add(new PlayerTitle("Mr. Perfect","Has the most redesigns","redesigns"));
+        //   titles.add(new PlayerTitle("The stalker","Viewed the most opponents cities","cities"));
+        return titles;
+    }
+
+    public static PlayerTitle getDefault() {
+        return new PlayerTitle("Nothing Special", "A title is not everything", "");
     }
 
     public String getTitle() {
@@ -37,18 +52,28 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         return description;
     }
 
-    @JsonProperty("value")
-    public String getValueWithUnit() {
-        return valueWithUnit;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setValueWithUnit(String valueWithUnit) {
-        this.valueWithUnit = valueWithUnit;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    @JsonProperty("value")
+    public String getValueWithUnit() {
+        return value + " " + unit;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(title);
+    }
+
+    @Override
+    public int compareTo(PlayerTitle playerTitle) {
+        if (!this.equals(playerTitle)) throw new IllegalArgumentException("can only compare with equal titles");
+        return playerTitle.getValue() - this.value;
     }
 
     @Override
@@ -59,12 +84,6 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         return Objects.equals(title, that.title);
     }
 
-    @Override
-    public int compareTo(PlayerTitle playerTitle) {
-        if (!this.equals(playerTitle)) throw new IllegalArgumentException("can only compare with equal titles");
-        return playerTitle.getValue() - this.value;
-    }
-
     public int getValue() {
         return value;
     }
@@ -73,14 +92,11 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         this.value = value;
     }
 
-    public static List<PlayerTitle> getAllPlayerTitles(){
-        List<PlayerTitle> titles = new ArrayList<>();
-        titles.add(new PlayerTitle("The hoarder","Has the most value of coins left over","coin value"));
-        titles.add(new PlayerTitle("Richie Rich","Spent the most coins","value of coins"));
-        titles.add(new PlayerTitle("Bob the builder","Build the most buildings","buildings"));
-        titles.add(new PlayerTitle("The wall of China","Has the longest wall", "wall pieces"));
-        titles.add(new PlayerTitle("Mr. Perfect","Has the most redesigns","redesigns"));
-        titles.add(new PlayerTitle("The stalker","Viewed the most opponents cities","cities"));
-        return  titles;
+    @Override
+    public String toString() {
+        return "PlayerTitle{" +
+                "title='" + title + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

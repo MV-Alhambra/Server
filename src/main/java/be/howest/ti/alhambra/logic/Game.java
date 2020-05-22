@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.stream.Collectors.toMap;
+
 public class Game {
     private final List<Player> players;
     private final Bank bank;
@@ -92,8 +94,60 @@ public class Game {
 
     private void endGame() { //end the game
         scoreRound(); // last score round
+        givePlayersTitles();
         ended = true;
     }
+
+    private void givePlayersTitles() {
+        Map<PlayerTitle, Map<Player, PlayerTitle>> titles = new HashMap<>();
+        Map<Player, List<PlayerTitle>> playerWithTitle = new HashMap<>();
+
+        PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates each playersTitle with value for that player
+            titles.put(title, new HashMap<>()); //order matters
+            players.forEach(player -> {
+                titles.get(title).put(player, calcPlayerTitle(player, title));
+            });
+        });
+
+        titles.replaceAll((title, map) -> titles.get(title).entrySet().stream() //sort the players for each playerTitle on playerTitle value
+                .sorted(Map.Entry.comparingByValue())
+                .peek(entry -> System.out.println(entry.getValue()))
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new))
+        );
+
+        players.forEach(player -> playerWithTitle.put(player, new ArrayList<>())); // init values
+
+        titles.forEach((title, map) -> {  //only keep the highest title for each player, duplicate highest title and titles with values zero gets disregarded
+            List<PlayerTitle> values = new ArrayList<>(map.values());
+            List<Player> keys = new ArrayList<>(map.keySet());
+            if  (values.get(0).getValue() !=0 && (players.size() == 1 || (players.size() > 1 && values.get(0).getValue() > values.get(1).getValue()))) {
+                playerWithTitle.get(keys.get(0)).add(title);
+            }
+        });
+        Random rand = new Random();
+        playerWithTitle.entrySet().stream()
+                .peek(entry -> {  //makes sure everyone gets a title
+                    if (entry.getValue().isEmpty()) {
+                        entry.getValue().add(PlayerTitle.getDefault());
+                    }
+                })
+                .forEach(entry -> entry.getKey().setTitle(entry.getValue().get(rand.nextInt((entry.getValue().size()))))); // gives each player a random title out of list of titles they have
+
+        players.forEach(player -> System.out.println(player.getName() + ":" + player.getTitle()));
+    }
+
+    private PlayerTitle calcPlayerTitle(Player player, PlayerTitle title) { // sets the value for each player Title
+        switch (title.getTitle()) {
+            case "The hoarder":
+                title.setValue(player.getCoins().getTotalValueCoins());
+                break;
+            case "The Great Wall Of China":
+                title.setValue(player.getCity().calcScoreWall());
+                break;
+        }
+        return title;
+    }
+
 
     public void scoreRound() { // this function gets called when there is a score round
         ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
