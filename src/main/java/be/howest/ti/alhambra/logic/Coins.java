@@ -2,6 +2,7 @@ package be.howest.ti.alhambra.logic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -9,6 +10,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class Coins {
+
+    @JsonIgnore
+    private final List<Coin> spentCoins; //solely used for statistics with playerTitle
 
     private final List<Coin> coinsBag;
 
@@ -19,6 +23,7 @@ public class Coins {
     @JsonCreator
     public Coins(@JsonProperty("coins") List<Coin> coins) {
         this.coinsBag = coins;
+        this.spentCoins = new ArrayList<>();
     }
 
     public void addCoins(Coin[] coins) {
@@ -37,12 +42,9 @@ public class Coins {
         }
     }
 
-    public int getTotalValueCoins(){ // gets the sum of total value of coins
-        return coinsBag.stream().mapToInt(Coin::getAmount).sum();
-    }
-
     private void removeCoin(Coin coin) {
         if (!coinsBag.remove(coin)) throw new IllegalArgumentException("Couldn't find the coin in the coins bag, coin: " + coin.toString());
+        spentCoins.add(coin);
     }
 
     public boolean containsCoins(Coin[] coins) {
@@ -60,6 +62,10 @@ public class Coins {
     @JsonGetter("coins")
     public List<Coin> getCoinsBag() {
         return coinsBag;
+    }
+
+    public List<Coin> getSpentCoins() {
+        return spentCoins;
     }
 
     @Override

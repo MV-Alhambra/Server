@@ -21,6 +21,11 @@ public class Player {
     private int score;
     private int virtualScore;
 
+    @JsonIgnore //stats for playerTitle
+    private int redesigns;
+    @JsonIgnore
+    private int viewTown;
+
     @JsonIgnore
     private PlayerToken token;
 
@@ -38,6 +43,8 @@ public class Player {
         this.score = score;
         this.virtualScore = virtualScore;
         this.title = title;
+        redesigns = 0;
+        viewTown = 0;
     }
 
     public String getName() {
@@ -77,6 +84,22 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public int getRedesigns() {
+        return redesigns;
+    }
+
+    public int getViewTown() {
+        return viewTown;
+    }
+
+    public void incrRedesign() {
+        redesigns++;
+    }
+
+    public void incrViewTown() {
+        viewTown++;
     }
 
     @JsonGetter("virtual-score")
