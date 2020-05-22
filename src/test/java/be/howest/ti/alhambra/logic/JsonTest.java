@@ -254,7 +254,7 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject gameAsJsonObject = JsonObject.mapFrom(game);
-        System.out.println(gameAsJsonObject.encodePrettily());
+
         // Assert that this object has the expected properties
         assertTrue(gameAsJsonObject.containsKey("players"));
         assertTrue(gameAsJsonObject.containsKey("currentPlayer"));
@@ -296,7 +296,7 @@ class JsonTest {
         // Turn it into a JsonObject
         JsonObject tokenAsJsonObject = JsonObject.mapFrom(title);
         // Assert that this object has the expected properties
-        assertTrue(tokenAsJsonObject.containsKey("title"));
+        assertTrue(tokenAsJsonObject.containsKey("role"));
         assertTrue(tokenAsJsonObject.containsKey("description"));
         assertTrue(tokenAsJsonObject.containsKey("value"));
 

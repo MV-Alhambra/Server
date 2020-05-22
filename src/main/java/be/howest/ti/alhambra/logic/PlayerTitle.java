@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class PlayerTitle implements Comparable<PlayerTitle> {
 
-    private final String title;
+    private final String role;
     private final String description;
     @JsonIgnore
     private int value;
@@ -18,12 +18,12 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
     private String unit;
 
     @JsonCreator
-    public PlayerTitle(@JsonProperty("title") String title, @JsonProperty("description") String description, @JsonProperty("value") String unit) {
-        this(title, description, 0, unit);
+    public PlayerTitle(@JsonProperty("role") String role, @JsonProperty("description") String description, @JsonProperty("value") String unit) {
+        this(role, description, 0, unit);
     }
 
-    public PlayerTitle(String title, String description, int value, String unit) {
-        this.title = title;
+    public PlayerTitle(String role, String description, int value, String unit) {
+        this.role = role;
         this.description = description;
         this.value = value;
         this.unit = unit;
@@ -42,11 +42,11 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
     }
 
     public static PlayerTitle getDefault() {
-        return new PlayerTitle("Nothing Special", "A title is not everything", "");
+        return new PlayerTitle("Nothing special", "A title is not everything", "");
     }
 
-    public String getTitle() {
-        return title;
+    public String getRole() {
+        return role;
     }
 
     public String getDescription() {
@@ -68,7 +68,7 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title);
+        return Objects.hash(role);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerTitle that = (PlayerTitle) o;
-        return Objects.equals(title, that.title);
+        return Objects.equals(role, that.role);
     }
 
     public int getValue() {
@@ -96,7 +96,7 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
     @Override
     public String toString() {
         return "PlayerTitle{" +
-                "title='" + title + '\'' +
+                "title='" + role + '\'' +
                 ", value=" + value +
                 '}';
     }

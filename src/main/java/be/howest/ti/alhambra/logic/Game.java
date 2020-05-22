@@ -24,6 +24,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    private final Random rand = new Random();
     @JsonProperty
     private Player dirk;
     private boolean ended;
@@ -32,7 +33,6 @@ public class Game {
     private int index;
     @JsonIgnore
     private int round;
-    private final Random rand = new Random();
 
     public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
@@ -166,11 +166,11 @@ public class Game {
     }
 
     private PlayerTitle calcPlayerTitle(Player player, PlayerTitle title) { // sets the value for each player Title
-        switch (title.getTitle()) {
+        switch (title.getRole()) {
             case "The hoarder":
                 title.setValue(Coin.getSumCoins(player.getCoins().getCoinsBag().toArray(Coin[]::new)));
                 break;
-            case "The Great Wall Of China":
+            case "The Great Wall of China":
                 title.setValue(player.getCity().calcScoreWall());
                 break;
             case "The Collector":
@@ -192,8 +192,10 @@ public class Game {
             case "Mr. Perfect":
                 title.setValue(player.getRedesigns());
                 break;
+            case "Nothing special":
+                break;
             default:
-                throw new IllegalArgumentException("Given title is not supported");
+                throw new IllegalArgumentException("Given title is not supported: " +title);
         }
         return title;
     }

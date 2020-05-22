@@ -178,7 +178,7 @@ public class City {
                 } else if (city[row][col] != null && city[row - 1][col] != null && city[row - 1][col].getWall(SOUTH) && city[row - 1][col].getWall(SOUTH) == city[row][col].getWall(NORTH)) { // removes north and south internal walls
                     city[row - 1][col].getWalls().put(SOUTH, false);
                     city[row][col].getWalls().put(NORTH, false);
-                } else if (city[row][col] != null && city[row][col - 1] != null && city[row][col - 1].getWall(EAST) && city[row - 1][col].getWall(EAST) == city[row][col].getWall(WEST)) { // removes EAST and WEST internal walls
+                } else if (city[row][col] != null && city[row][col - 1] != null && city[row][col - 1].getWall(EAST) && city[row][col -1].getWall(EAST) == city[row][col].getWall(WEST)) { // removes EAST and WEST internal walls
                     city[row - 1][col].getWalls().put(EAST, false);
                     city[row][col].getWalls().put(WEST, false);
                 }
