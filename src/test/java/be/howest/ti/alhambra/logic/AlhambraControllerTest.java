@@ -36,6 +36,13 @@ public class AlhambraControllerTest {
                 }
                 );
         assertEquals("player not in lobby", exception.getMessage());
+        c.joinLobby("001", "test1");
+        c.joinLobby("001", "test2");
+        c.readyUp("001", "test1");
+        c.readyUp("001", "test2");
+        c.readyDown("001", "test1");
+        c.readyUp("001", "test1");
+        assertTrue(c.startLobby("001"));
 
 
     }
