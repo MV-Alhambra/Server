@@ -180,7 +180,7 @@ public class City {
                     city[row - 1][col].getWalls().put(SOUTH, false);
                     city[row][col].getWalls().put(NORTH, false);
                 } else if (city[row][col] != null && city[row][col - 1] != null && city[row][col - 1].getWall(EAST) && city[row][col -1].getWall(EAST) == city[row][col].getWall(WEST)) { // removes EAST and WEST internal walls
-                    city[row - 1][col].getWalls().put(EAST, false);
+                    city[row][col-1].getWalls().put(EAST, false);
                     city[row][col].getWalls().put(WEST, false);
                 }
             }

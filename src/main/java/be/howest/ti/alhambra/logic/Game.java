@@ -102,7 +102,6 @@ public class Game {
         ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
             player.setScore(player.getScore() + score + player.getCity().calcScoreWall()); //adds the new score of buildings and wall score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
-            System.out.println(player.getName()+":"+player.getCity().calcScoreWall());
         });
         if (round == 1) {
             giveBuildingsToDirk(6);
@@ -132,76 +131,56 @@ public class Game {
 
 
     private void givePlayersTitles() {
-        System.out.println("+ give players titles+");
-        Map<PlayerTitle, Map<Player, PlayerTitle>> titles = new HashMap<>();
+        Map<PlayerTitle, Player> titles = new HashMap<>();
         Map<Player, List<PlayerTitle>> playerWithTitle = new HashMap<>();
 
-        PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates each playersTitle with value for that player
-            titles.put(title, new HashMap<>()); //order matters
-            players.forEach(player -> titles.get(title).put(player, calcPlayerTitle(player, new PlayerTitle(title))));
-        });
-        titles.forEach((key1, value1) -> value1.forEach((key, value) -> System.out.println(key1.toString() + key.toString() + value)));
-        System.out.println("+ sort the players+");
-
-        titles.replaceAll((title, map) -> titles.get(title).entrySet().stream() //sort the players for each playerTitle on playerTitle value
-                .sorted(Map.Entry.comparingByValue())
-                .peek(entry -> System.out.println(entry.getValue()))
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new))
-        );
-
         players.forEach(player -> playerWithTitle.put(player, new ArrayList<>())); // init values
+        PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates that players his score for that title and if its higher than previous then replace it else if equal then null
+            players.forEach(player -> {
+                int playerValue = calcPlayerTitleValue(player, title);
+                if (title.getValue() < playerValue) {
+                    title.setValue(playerValue);
+                    titles.put(title, player);
+                } else if (title.getValue() == playerValue) { //only keep the highest title for each player, duplicate highest title and titles with values zero gets disregarded
+                    titles.put(title, null);
+                }
+            });
+            if (titles.get(title) !=null) playerWithTitle.get(titles.get(title)).add(title); //adds that title to the list of title that person has
 
-        titles.forEach((title, map) -> {  //only keep the highest title for each player, duplicate highest title and titles with values zero gets disregarded
-            List<PlayerTitle> values = new ArrayList<>(map.values());
-            List<Player> keys = new ArrayList<>(map.keySet());
-            if (values.get(0).getValue() != 0 && (players.size() == 1 || (players.size() > 1 && values.get(0).getValue() > values.get(1).getValue()))) {
-                playerWithTitle.get(keys.get(0)).add(values.get(0));
-            }
         });
-        playerWithTitle.entrySet().stream()
-                .peek(entry -> {  //makes sure everyone gets a title
-                    if (entry.getValue().isEmpty()) {
-                        entry.getValue().add(PlayerTitle.getDefault());
-                    }
-                })
-                .forEach(entry -> entry.getKey().setTitle(entry.getValue().get(rand.nextInt((entry.getValue().size()))))); // gives each player a random title out of list of titles they have
-        System.out.println("+ results+");
-        players.forEach(player -> System.out.println(player.getName() + ":" + player.getTitle()));
+
+        playerWithTitle.forEach((player, titleList) -> { // gives each player a random title out of list of titles they have
+            if (titleList.isEmpty()) { //makes sure each player has at least one title
+                titleList.add(PlayerTitle.getDefault());
+            }
+            player.setTitle(titleList.get(rand.nextInt(titleList.size())));
+        });
     }
 
-    private PlayerTitle calcPlayerTitle(Player player, PlayerTitle title) { // sets the value for each player Title
+    private int calcPlayerTitleValue(Player player, PlayerTitle title) { // sets the value for each player Title
         switch (title.getRole()) {
             case "The hoarder":
-                title.setValue(Coin.getSumCoins(player.getCoins().getCoinsBag().toArray(Coin[]::new)));
-                break;
+                return Coin.getSumCoins(player.getCoins().getCoinsBag().toArray(Coin[]::new));
             case "The Great Wall of China":
-                title.setValue(player.getCity().calcScoreWall());
-                break;
+                return player.getCity().calcScoreWall();
             case "The Collector":
-                title.setValue(player.getReserve().getBuildings().size());
-                break;
+                return player.getReserve().getBuildings().size();
             case "Bob the builder":
-                title.setValue((int) Arrays.stream(player.getCity().getBuildings())
+                return (int) Arrays.stream(player.getCity().getBuildings())
                         .flatMap(Arrays::stream)
                         .filter(building -> building != null && building.getType() != null)
-                        .count()
-                );
-                break;
+                        .count();
             case "Richie Rich":
-                title.setValue(Coin.getSumCoins(player.getCoins().getSpentCoins().toArray(Coin[]::new)));
-                break;
+                return Coin.getSumCoins(player.getCoins().getSpentCoins().toArray(Coin[]::new));
             case "The stalker":
-                title.setValue(player.getViewTown());
-                break;
+                return player.getViewTown();
             case "Mr. Perfect":
-                title.setValue(player.getRedesigns());
-                break;
+                return player.getRedesigns();
             case "Nothing special":
-                break;
+                return 0;
             default:
-                throw new IllegalArgumentException("Given title is not supported: " +title);
+                throw new IllegalArgumentException("Given title is not supported: " + title);
         }
-        return title;
     }
 
     public boolean isEnded() {
