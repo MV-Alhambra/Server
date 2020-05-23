@@ -25,9 +25,17 @@ public class AlhambraControllerTest {
         assertEquals(lobbylist, c.getLobbies());
         c.joinLobby("001", "mitch");
 
-        assertEquals(l, c.getGame("001"));
+        //assertEquals(l, c.getGame("001"));
 
+        assertTrue(c.leaveLobby("001", "mitch"));
 
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
+                    AlhambraController c1 = new AlhambraController();
+                    c1.addLobby("Test", 6, false);
+                    c1.leaveLobby("001", "test");
+                }
+                );
+        assertEquals("player not in lobby", exception.getMessage());
 
 
     }
