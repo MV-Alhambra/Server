@@ -23,6 +23,10 @@ public class AlhambraControllerTest {
         lobbylist.add(l);
 
         assertEquals(lobbylist, c.getLobbies());
+        c.joinLobby("001", "mitch");
+
+        assertEquals(l, c.getGame("001"));
+
 
 
 
