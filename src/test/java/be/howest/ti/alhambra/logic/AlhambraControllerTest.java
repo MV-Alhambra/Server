@@ -43,7 +43,8 @@ public class AlhambraControllerTest {
         c.readyDown("001", "test1");
         c.readyUp("001", "test1");
         assertTrue(c.startLobby("001"));
-
+        assertFalse(c.startLobby("001"));
+        
 
     }
 }
