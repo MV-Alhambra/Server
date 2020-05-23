@@ -76,6 +76,9 @@ public class CityTest {
         walls1.put(CardinalDirection.SOUTH, true);
         Map<CardinalDirection, Boolean> walls2 = Building.getDefaultWalls();
         walls2.put(CardinalDirection.NORTH, true);
+        Map<CardinalDirection, Boolean> walls3 = Building.getDefaultWalls();
+        walls3.put(CardinalDirection.EAST, true);
+
         //placing buildings
         city.placeBuilding(new Building(BuildingType.ARCADES, 5, walls2), new Location(-1, 0));
         city.placeBuilding(new Building(BuildingType.CHAMBERS, 5, walls2), new Location(-1, 1));
@@ -89,5 +92,29 @@ public class CityTest {
         //test if the score is correct
         assertEquals(5, city.calcScoreWall());
 
+        // the walls wil be like this, so score of 5
+        //       ___ ___ ___ (gap)
+        //       |               |
+        //       ___
+
+        city.placeBuilding(new Building(BuildingType.SERAGLIO, 5, walls3), new Location(-1, 2));
+
+        assertEquals(5, city.calcScoreWall());
+
+        city.removeBuilding(new Location(-1, 2));
+        city.removeBuilding(new Location(-1, 1));
+        city.removeBuilding(new Location(-1, 0));
+
+        city.placeBuilding(new Building(BuildingType.TOWER, 7), new Location(-1, 0));
+        city.placeBuilding(new Building(BuildingType.SERAGLIO, 5, walls3), new Location(-1, 1));
+
+        // the walls wil be like this, so score of 3
+        //       ___ (gap)(gap)
+        //       |            |
+        //       ___
+
+        assertEquals(3, city.calcScoreWall());
     }
+
+
 }
