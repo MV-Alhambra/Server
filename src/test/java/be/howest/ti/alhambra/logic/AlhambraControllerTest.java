@@ -44,7 +44,16 @@ public class AlhambraControllerTest {
         c.readyUp("001", "test1");
         assertTrue(c.startLobby("001"));
         assertFalse(c.startLobby("001"));
-        
+    }
 
+    @Test
+    void currencies(){
+        AlhambraController c = new AlhambraController();
+        assertArrayEquals(Currency.values(),c.getCurrencies());
+    }
+    @Test
+    void buildingTypes(){
+        AlhambraController c = new AlhambraController();
+        assertArrayEquals(BuildingType.values(),c.getBuildingTypes());
     }
 }

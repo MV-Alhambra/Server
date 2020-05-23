@@ -22,7 +22,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
-    private final Random rand = new Random();
+    private final Random rand;
     @JsonProperty
     private Player dirk;
     private boolean ended;
@@ -38,6 +38,7 @@ public class Game {
 
     @JsonCreator
     public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market, @JsonProperty("twoPlayerSystem") Player dirk) {
+        rand = new Random();
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
@@ -242,17 +243,6 @@ public class Game {
                 Objects.equals(players, game.players) &&
                 Objects.equals(bank, game.bank) &&
                 Objects.equals(market, game.market);
-    }
-
-    @Override
-    public String toString() {
-        return "Game{" +
-                "ended=" + ended +
-                ", CurrentPlayer='" + currentPlayer + '\'' +
-                ", players=" + players +
-                ", bank=" + bank +
-                ", market=" + market +
-                '}';
     }
 
     public List<Building> getBuildings() {
