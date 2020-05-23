@@ -15,7 +15,7 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
     @JsonIgnore
     private int value;
     @JsonProperty("value")
-    private String unit;
+    private final String unit;
 
     @JsonCreator
     public PlayerTitle(@JsonProperty("role") String role, @JsonProperty("description") String description, @JsonProperty("value") String unit) {
@@ -27,13 +27,6 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         this.description = description;
         this.value = value;
         this.unit = unit;
-    }
-
-    public PlayerTitle(PlayerTitle title) {
-        role = title.getRole();
-        description = title.getDescription();
-        value = title.getValue();
-        unit = title.getUnit();
     }
 
     public String getRole() {
@@ -50,10 +43,6 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
 
     public String getUnit() {
         return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public void setValue(int value) {
@@ -98,13 +87,5 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         if (o == null || getClass() != o.getClass()) return false;
         PlayerTitle that = (PlayerTitle) o;
         return Objects.equals(role, that.role);
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerTitle{" +
-                "title='" + role + '\'' +
-                ", value=" + value +
-                '}';
     }
 }
