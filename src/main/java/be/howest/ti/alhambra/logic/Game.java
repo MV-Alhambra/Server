@@ -14,8 +14,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.stream.Collectors.toMap;
-
 public class Game {
     private final List<Player> players;
     private final Bank bank;
@@ -65,14 +63,6 @@ public class Game {
         return newPlayers;
     }
 
-    public void removePlayer(String name) {
-        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
-        players.remove(findPlayer(name));
-        if (players.size() >= 2 && currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
-        if (players.size() == 2) /*activate two Player system, so add dirk*/ ;
-        else if (players.size() == 1) endGame();
-    }
-
     public boolean giveBuildingToDirk(Building building, String playerName) {  // gives a building to dirk, check if two player system is on, if that players has that building
         if (dirk == null) throw new AlhambraGameRuleException("Dirk can solely be used when there is only two players!");
         if (!findPlayer(playerName).getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building (" + building + ") in the hand of " + playerName);
@@ -95,7 +85,7 @@ public class Game {
     public void removePlayer(String name) {
         index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
         players.remove(findPlayer(name));
-        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
+        if (players.size() > 1 && currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
         if (players.size() == 2) dirk = new Player("dirk\u2122");
         else if (players.size() == 1) endGame();
     }
@@ -153,7 +143,7 @@ public class Game {
                     titles.put(title, null);
                 }
             });
-            if (titles.get(title) !=null) playerWithTitle.get(titles.get(title)).add(title); //adds that title to the list of title that person has
+            if (titles.get(title) != null) playerWithTitle.get(titles.get(title)).add(title); //adds that title to the list of title that person has
 
         });
 
