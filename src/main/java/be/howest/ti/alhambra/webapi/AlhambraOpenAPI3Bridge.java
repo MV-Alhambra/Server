@@ -48,4 +48,6 @@ interface AlhambraOpenAPI3Bridge {
 
     Object giveDirk(RoutingContext ctx);
 
+    Object viewTown(RoutingContext ctx);
+
 }

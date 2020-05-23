@@ -192,6 +192,7 @@ class JsonTest {
         assertTrue(playerAsJsonObject.containsKey("buildings-in-hand"));
         assertTrue(playerAsJsonObject.containsKey("virtual-score"));
         assertTrue(playerAsJsonObject.containsKey("score"));
+        assertTrue(playerAsJsonObject.containsKey("title"));
 
         // Assert that you can convert it back to the same player.
         assertEquals(player, playerAsJsonObject.mapTo(Player.class));
@@ -253,7 +254,7 @@ class JsonTest {
 
         // Turn it into a JsonObject
         JsonObject gameAsJsonObject = JsonObject.mapFrom(game);
-        System.out.println(gameAsJsonObject.encodePrettily());
+
         // Assert that this object has the expected properties
         assertTrue(gameAsJsonObject.containsKey("players"));
         assertTrue(gameAsJsonObject.containsKey("currentPlayer"));
@@ -285,6 +286,25 @@ class JsonTest {
         // Assert that you can go back and forth between Java-objects and Json (strings)
         assertEquals(token, Json.decodeValue(Json.encode(token), PlayerToken.class));
 
+    }
+
+    @Test
+    void playerTitle(){
+        // Create token
+        PlayerTitle title = new PlayerTitle("Creed","May the force be with you","force");
+
+        // Turn it into a JsonObject
+        JsonObject tokenAsJsonObject = JsonObject.mapFrom(title);
+        // Assert that this object has the expected properties
+        assertTrue(tokenAsJsonObject.containsKey("role"));
+        assertTrue(tokenAsJsonObject.containsKey("description"));
+        assertTrue(tokenAsJsonObject.containsKey("value"));
+
+        // Assert that you can convert it back to the same token.
+        assertEquals(title, tokenAsJsonObject.mapTo(PlayerTitle.class));
+
+        // Assert that you can go back and forth between Java-objects and Json (strings)
+        assertEquals(title, Json.decodeValue(Json.encode(title), PlayerTitle.class));
     }
 
 }

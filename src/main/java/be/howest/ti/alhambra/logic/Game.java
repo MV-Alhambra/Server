@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.stream.Collectors.toMap;
+
 public class Game {
     private final List<Player> players;
     private final Bank bank;
@@ -22,6 +24,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    private final Random rand = new Random();
     @JsonProperty
     private Player dirk;
     private boolean ended;
@@ -30,7 +33,6 @@ public class Game {
     private int index;
     @JsonIgnore
     private int round;
-
 
     public Game(List<PlayerInLobby> names) {
         this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
@@ -92,6 +94,7 @@ public class Game {
 
     private void endGame() { //end the game
         scoreRound(); // last score round
+        givePlayersTitles();
         ended = true;
     }
 
@@ -124,6 +127,60 @@ public class Game {
         int secondScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5 * 3; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
+    }
+
+
+    private void givePlayersTitles() {
+        Map<PlayerTitle, Player> titles = new HashMap<>();
+        Map<Player, List<PlayerTitle>> playerWithTitle = new HashMap<>();
+
+        players.forEach(player -> playerWithTitle.put(player, new ArrayList<>())); // init values
+        PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates that players his score for that title and if its higher than previous then replace it else if equal then null
+            players.forEach(player -> {
+                int playerValue = calcPlayerTitleValue(player, title);
+                if (title.getValue() < playerValue) {
+                    title.setValue(playerValue);
+                    titles.put(title, player);
+                } else if (title.getValue() == playerValue) { //only keep the highest title for each player, duplicate highest title and titles with values zero gets disregarded
+                    titles.put(title, null);
+                }
+            });
+            if (titles.get(title) !=null) playerWithTitle.get(titles.get(title)).add(title); //adds that title to the list of title that person has
+
+        });
+
+        playerWithTitle.forEach((player, titleList) -> { // gives each player a random title out of list of titles they have
+            if (titleList.isEmpty()) { //makes sure each player has at least one title
+                titleList.add(PlayerTitle.getDefault());
+            }
+            player.setTitle(titleList.get(rand.nextInt(titleList.size())));
+        });
+    }
+
+    private int calcPlayerTitleValue(Player player, PlayerTitle title) { // sets the value for each player Title
+        switch (title.getRole()) {
+            case "The hoarder":
+                return Coin.getSumCoins(player.getCoins().getCoinsBag().toArray(Coin[]::new));
+            case "The Great Wall of China":
+                return player.getCity().calcScoreWall();
+            case "The Collector":
+                return player.getReserve().getBuildings().size();
+            case "Bob the builder":
+                return (int) Arrays.stream(player.getCity().getBuildings())
+                        .flatMap(Arrays::stream)
+                        .filter(building -> building != null && building.getType() != null)
+                        .count();
+            case "Richie Rich":
+                return Coin.getSumCoins(player.getCoins().getSpentCoins().toArray(Coin[]::new));
+            case "The stalker":
+                return player.getViewTown();
+            case "Mr. Perfect":
+                return player.getRedesigns();
+            case "Nothing special":
+                return 0;
+            default:
+                throw new IllegalArgumentException("Given title is not supported: " + title);
+        }
     }
 
     public boolean isEnded() {
@@ -310,6 +367,7 @@ public class Game {
             throw new AlhambraGameRuleException("Incorrect usage of redesign api");
         }
         nextPlayer();
+        player.incrRedesign(); // stats for playerTitle
         return this;
     }
 

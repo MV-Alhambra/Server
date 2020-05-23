@@ -124,4 +124,9 @@ public class AlhambraController {
     public Boolean giveDirk(String gameId, String playerName, Building building) {
         return findGame(gameId).giveBuildingToDirk(building, playerName);
     }
+
+    public Boolean viewTown(String gameId, String playerName) {
+        findGame(gameId).findPlayer(playerName).incrViewTown();
+        return true;
+    }
 }
