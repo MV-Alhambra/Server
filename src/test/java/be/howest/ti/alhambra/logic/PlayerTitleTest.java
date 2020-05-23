@@ -10,19 +10,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlayerTitleTest {
 
     @Test
-    void getValue() {
-    }
-
-    @Test
     void getUnit() {
+        PlayerTitle test =new PlayerTitle("Nothing special", "A title is not everything", "");
+        assertEquals("",test.getUnit());
     }
 
-    @Test
-    void setUnit() {
-    }
 
     @Test
     void setValue() {
+        PlayerTitle test =new PlayerTitle("Nothing special", "A title is not everything", "");
+        test.setValue(5);
+        assertEquals(5, test.getValue());
     }
 
     @Test
@@ -44,16 +42,20 @@ class PlayerTitleTest {
     }
 
     @Test
-    void getValueWithUnit() {
-    }
-
-    @Test
     void compareTo() {
+        PlayerTitle test0 =new PlayerTitle("Nothing special", "A title is not everything", "");
+        PlayerTitle test1 =new PlayerTitle("Very special", "A title is not everything", "");
+        PlayerTitle test2 =new PlayerTitle("Very special", "A title is not everything", 1,"");
+        assertThrows(IllegalArgumentException.class,()->test0.compareTo(test1));
+        assertEquals(1,test1.compareTo(test2));
+
     }
 
     @Test
     void testEquals() {
         PlayerTitle test =new PlayerTitle("Nothing special", "A title is not everything", "");
         assertEquals(test, test);
+        assertFalse(test.equals(null));
+        assertFalse(test.equals(new Player("")));
     }
 }
