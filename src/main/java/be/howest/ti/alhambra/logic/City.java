@@ -375,13 +375,6 @@ public class City {
                 Arrays.deepEquals(buildings, city.buildings); //fk i just wasted two hours of my time on this. why does Arrays.equals not properly work with 2 dim arrays
     }
 
-    @Override
-    public String toString() {
-        return "City{" +
-                "buildings=" + Arrays.deepToString(buildings) +
-                ", mapSize=" + mapSize +
-                '}';
-    }
 
     public Building getBuilding(Location location) {
         return getBuildingStatic(Location.convertLocationToStaticLocation(location, mapSize));
