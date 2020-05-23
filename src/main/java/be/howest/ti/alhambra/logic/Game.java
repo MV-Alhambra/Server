@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.stream.Collectors.toMap;
+
 public class Game {
     private final List<Player> players;
     private final Bank bank;
@@ -22,6 +24,9 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
+    private final Random rand = new Random();
+    @JsonProperty
+    private Player dirk;
     private boolean ended;
     private String currentPlayer;
     @JsonIgnore
@@ -30,26 +35,29 @@ public class Game {
     private int round;
 
     public Game(List<PlayerInLobby> names) {
-        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>());
+        this(false, "", convertNamesIntoPlayers(names), new Coin[4], new HashMap<>(), names.size() == 2 ? new Player("dirk\u2122") : null);
     }
 
     @JsonCreator
-    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market) {
+    public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market, @JsonProperty("twoPlayerSystem") Player dirk) {
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
         this.bank = new Bank(bank);
         this.market = new Market(market);
+        this.dirk = dirk;
         index = 0;
         round = 1;
         buildings = new ArrayList<>(loadFromFile()); //loadFromFile returns a fixed size list
-        coins = Coin.allCoins();
+        coins = dirk == null ? Coin.allCoins() : Coin.allCoinsTwoPlayers(); // two playerSystem has only 72 coins
         Collections.shuffle(buildings);
         Collections.shuffle(coins);
         addScoreRounds();//must before all other methods that might remove Coins
         givePlayersStarterCoins();
         nextPlayer();
+        giveBuildingsToDirk(6);
     }
+
 
     public static List<Player> convertNamesIntoPlayers(List<PlayerInLobby> allPlayers) {
         List<Player> newPlayers = new ArrayList<>();
@@ -65,28 +73,49 @@ public class Game {
         else if (players.size() == 1) endGame();
     }
 
+    public boolean giveBuildingToDirk(Building building, String playerName) {  // gives a building to dirk, check if two player system is on, if that players has that building
+        if (dirk == null) throw new AlhambraGameRuleException("Dirk can solely be used when there is only two players!");
+        if (!findPlayer(playerName).getBuildingsInHand().remove(building)) throw new AlhambraEntityNotFoundException("Couldn't find that building (" + building + ") in the hand of " + playerName);
+        dirk.getReserve().addBuilding(building);
+        return true;
+    }
+
     public Player findPlayer(String name) {
         return players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new AlhambraEntityNotFoundException("Couldn't find that player: " + name));
     }
 
-    private void nextPlayer() { // when called it sets the next current Player
-        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
-        bank.fillBank(this);
-        market.fillMarkets(this);
-        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
-        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
+    private void giveBuildingsToDirk(int amount) {
+        if (dirk != null) { // dirk can be added at any time so it should only do it when dirk is added
+            for (int i = 0; i < amount; i++) {
+                dirk.getReserve().addBuilding(this.removeBuilding());
+            }
+        }
+    }
+
+    public void removePlayer(String name) {
+        index = players.size() - 1 == index ? 0 : index; // reset index to prevent IOB when nextPlayer is called
+        players.remove(findPlayer(name));
+        if (currentPlayer.equals(name)) nextPlayer(); // cant have a person that left as current Player
+        if (players.size() == 2) dirk = new Player("dirk\u2122");
+        else if (players.size() == 1) endGame();
     }
 
     private void endGame() { //end the game
         scoreRound(); // last score round
+        givePlayersTitles();
         ended = true;
     }
 
-    public void scoreRound() { //each time called it does an score round
-        ScoringTable.calcScoreBuildings(players, round++).forEach((player, score) -> {
-            player.setScore(player.getScore() + score); //adds the new Score to the old score
+    public void scoreRound() { // this function gets called when there is a score round
+        ScoringTable.calcScoreBuildings(players, round++, dirk).forEach((player, score) -> {
+            player.setScore(player.getScore() + score + player.getCity().calcScoreWall()); //adds the new score of buildings and wall score to the old score
             player.setVirtualScore(0); // set the virtual score to zero so that the market Counter may sense that there is a new round
         });
+        if (round == 1) {
+            giveBuildingsToDirk(6);
+        } else if (round == 2) {
+            giveBuildingsToDirk(buildings.size() / 3);
+        }
     }
 
     private List<Building> loadFromFile() {
@@ -102,10 +131,64 @@ public class Game {
     }
 
     private void addScoreRounds() {
-        int firstScore = new Random().nextInt(20) + 20; // so between 20 and 40
-        int secondScore = new Random().nextInt(20) + 60; // so between 60 and 80
+        int firstScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5; // so between 20 and 40
+        int secondScore = new Random().nextInt(coins.size() / 5) + coins.size() / 5 * 3; // so between 60 and 80
         coins.add(firstScore, new Coin(null, 0));
         coins.add(secondScore, new Coin(null, 0));
+    }
+
+
+    private void givePlayersTitles() {
+        Map<PlayerTitle, Player> titles = new HashMap<>();
+        Map<Player, List<PlayerTitle>> playerWithTitle = new HashMap<>();
+
+        players.forEach(player -> playerWithTitle.put(player, new ArrayList<>())); // init values
+        PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates that players his score for that title and if its higher than previous then replace it else if equal then null
+            players.forEach(player -> {
+                int playerValue = calcPlayerTitleValue(player, title);
+                if (title.getValue() < playerValue) {
+                    title.setValue(playerValue);
+                    titles.put(title, player);
+                } else if (title.getValue() == playerValue) { //only keep the highest title for each player, duplicate highest title and titles with values zero gets disregarded
+                    titles.put(title, null);
+                }
+            });
+            if (titles.get(title) !=null) playerWithTitle.get(titles.get(title)).add(title); //adds that title to the list of title that person has
+
+        });
+
+        playerWithTitle.forEach((player, titleList) -> { // gives each player a random title out of list of titles they have
+            if (titleList.isEmpty()) { //makes sure each player has at least one title
+                titleList.add(PlayerTitle.getDefault());
+            }
+            player.setTitle(titleList.get(rand.nextInt(titleList.size())));
+        });
+    }
+
+    private int calcPlayerTitleValue(Player player, PlayerTitle title) { // sets the value for each player Title
+        switch (title.getRole()) {
+            case "The hoarder":
+                return Coin.getSumCoins(player.getCoins().getCoinsBag().toArray(Coin[]::new));
+            case "The Great Wall of China":
+                return player.getCity().calcScoreWall();
+            case "The Collector":
+                return player.getReserve().getBuildings().size();
+            case "Bob the builder":
+                return (int) Arrays.stream(player.getCity().getBuildings())
+                        .flatMap(Arrays::stream)
+                        .filter(building -> building != null && building.getType() != null)
+                        .count();
+            case "Richie Rich":
+                return Coin.getSumCoins(player.getCoins().getSpentCoins().toArray(Coin[]::new));
+            case "The stalker":
+                return player.getViewTown();
+            case "Mr. Perfect":
+                return player.getRedesigns();
+            case "Nothing special":
+                return 0;
+            default:
+                throw new IllegalArgumentException("Given title is not supported: " + title);
+        }
     }
 
     public boolean isEnded() {
@@ -228,6 +311,14 @@ public class Game {
         if (!currentPlayer.equals(playerName)) throw new AlhambraGameRuleException("It's not your turn");
     }
 
+    private void nextPlayer() { // when called it sets the next current Player
+        ScoringTable.calcScoreBuildings(players, round).forEach(Player::setVirtualScore); // set the virtual score
+        bank.fillBank(this);
+        market.fillMarkets(this);
+        currentPlayer = players.get(index).getName(); // gets the name of the currentPlayer
+        if (++index >= players.size()) index = 0; // add one to the index and set it to zero when max is reached
+    }
+
     /* Checks if the turn of this person, all coins are same currency,the sum of coins is enough
      * and then either changes the turn or not depending on same cost as sum
      * Then moves that building from market to buildingsInHand and removes the coins from the player */
@@ -284,6 +375,7 @@ public class Game {
             throw new AlhambraGameRuleException("Incorrect usage of redesign api");
         }
         nextPlayer();
+        player.incrRedesign(); // stats for playerTitle
         return this;
     }
 
@@ -296,4 +388,5 @@ public class Game {
             throw new AlhambraEntityNotFoundException("Wrong location given for city to reserve " + location);
         }
     }
+
 }

@@ -46,4 +46,8 @@ interface AlhambraOpenAPI3Bridge {
 
     Object startGame(RoutingContext ctx);
 
+    Object giveDirk(RoutingContext ctx);
+
+    Object viewTown(RoutingContext ctx);
+
 }

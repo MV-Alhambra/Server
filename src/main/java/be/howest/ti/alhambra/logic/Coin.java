@@ -23,7 +23,14 @@ public class Coin {
         return Stream.of(Currency.values())//create a stream of each currency value
                 .flatMap(currency -> IntStream.rangeClosed(1, 9).mapToObj(value -> new Coin(currency, value))) // foreach currency create 9 coins from 1 to 9
                 .flatMap(coin -> Stream.of(coin, coin, coin)) // triples the amount of coins
-                .collect(Collectors.toList()); //returns a list of 108 coins (1->9->27)*4(for each currency)
+                .collect(Collectors.toList()); //returns a list of 108 coins (1->9*3->27)*4(for each currency)
+    }
+
+    static List<Coin> allCoinsTwoPlayers() {
+        return Stream.of(Currency.values())//create a stream of each currency value
+                .flatMap(currency -> IntStream.rangeClosed(1, 9).mapToObj(value -> new Coin(currency, value))) // foreach currency create 9 coins from 1 to 9
+                .flatMap(coin -> Stream.of( coin, coin)) // doubles the amount of coins
+                .collect(Collectors.toList()); //returns a list of 72 coins (1->9*2->18)*4(for each currency)
     }
 
     public static boolean coinsSameCurrency(Coin[] coins) { //checks if the coins are all the same currency
