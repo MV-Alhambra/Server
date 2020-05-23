@@ -8,7 +8,6 @@ class AlhambraExceptionTest {
 
     @Test
     void exception(){
-
         assertThrows(AlhambraException.class, this::error);
     }
 
