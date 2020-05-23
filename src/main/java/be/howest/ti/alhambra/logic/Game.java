@@ -132,13 +132,16 @@ public class Game {
 
 
     private void givePlayersTitles() {
+        System.out.println("+ give players titles+");
         Map<PlayerTitle, Map<Player, PlayerTitle>> titles = new HashMap<>();
         Map<Player, List<PlayerTitle>> playerWithTitle = new HashMap<>();
 
         PlayerTitle.getAllPlayerTitles().forEach(title -> { //for each title it calculates each playersTitle with value for that player
             titles.put(title, new HashMap<>()); //order matters
-            players.forEach(player -> titles.get(title).put(player, calcPlayerTitle(player, title)));
+            players.forEach(player -> titles.get(title).put(player, calcPlayerTitle(player, new PlayerTitle(title))));
         });
+        titles.forEach((key1, value1) -> value1.forEach((key, value) -> System.out.println(key1.toString() + key.toString() + value)));
+        System.out.println("+ sort the players+");
 
         titles.replaceAll((title, map) -> titles.get(title).entrySet().stream() //sort the players for each playerTitle on playerTitle value
                 .sorted(Map.Entry.comparingByValue())
@@ -152,7 +155,7 @@ public class Game {
             List<PlayerTitle> values = new ArrayList<>(map.values());
             List<Player> keys = new ArrayList<>(map.keySet());
             if (values.get(0).getValue() != 0 && (players.size() == 1 || (players.size() > 1 && values.get(0).getValue() > values.get(1).getValue()))) {
-                playerWithTitle.get(keys.get(0)).add(title);
+                playerWithTitle.get(keys.get(0)).add(values.get(0));
             }
         });
         playerWithTitle.entrySet().stream()
@@ -162,7 +165,7 @@ public class Game {
                     }
                 })
                 .forEach(entry -> entry.getKey().setTitle(entry.getValue().get(rand.nextInt((entry.getValue().size()))))); // gives each player a random title out of list of titles they have
-
+        System.out.println("+ results+");
         players.forEach(player -> System.out.println(player.getName() + ":" + player.getTitle()));
     }
 

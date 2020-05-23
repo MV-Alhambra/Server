@@ -29,6 +29,37 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         this.unit = unit;
     }
 
+    public PlayerTitle(PlayerTitle title) {
+        role = title.getRole();
+        description = title.getDescription();
+        value = title.getValue();
+        unit = title.getUnit();
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
     public static List<PlayerTitle> getAllPlayerTitles() {
         List<PlayerTitle> titles = new ArrayList<>();
         titles.add(new PlayerTitle("The hoarder", "Has the most value of coins left over", "coin value"));
@@ -43,22 +74,6 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
 
     public static PlayerTitle getDefault() {
         return new PlayerTitle("Nothing special", "A title is not everything", "");
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     @JsonProperty("value")
@@ -83,14 +98,6 @@ public class PlayerTitle implements Comparable<PlayerTitle> {
         if (o == null || getClass() != o.getClass()) return false;
         PlayerTitle that = (PlayerTitle) o;
         return Objects.equals(role, that.role);
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
     @Override

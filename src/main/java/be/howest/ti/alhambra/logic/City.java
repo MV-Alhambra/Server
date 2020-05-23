@@ -202,7 +202,7 @@ public class City {
             Location processed = processLocations.poll();
             wallSection.add(walls[processed.getRow()][processed.getCol()]);
             getValidWallNeighbors(walls, processed).stream()
-                    .filter(location -> !wallSection.contains(getBuildingStatic(location)) && !processLocations.contains(location)) // can't add location that is already added
+                    .filter(location -> !wallSection.contains(walls[location.getRow()][location.getCol()]) && !processLocations.contains(location)) // can't add location that is already added
                     .forEach(processLocations::add);
         }
 
