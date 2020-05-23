@@ -147,26 +147,27 @@ public class City {
     }
 
     public int calcScoreWall() {
-        List<List<Building>> wallSections = new ArrayList<>();
+        List<List<Location>> wallSections = new ArrayList<>();
         Building[][] walls = getCityWithOnlyExteriorWalls();
 
         for (int row = 1; row < walls.length - 1; row++) { //outer ring is always null
             for (int col = 1; col < walls.length - 1; col++) {
-                if (walls[row][col] != null && checkNotInWallSection(wallSections, walls[row][col])) {
+                if (walls[row][col] != null && checkNotInWallSection(wallSections,new Location(row,col))) {
                     wallSections.add(getWallSection(walls, new Location(row, col)));
                 }
             }
         }
 
-        return wallSections.stream() // basically i count for each list the amount of walls (so amount of trues) and then get highest amount or if none present then 0
+        return wallSections.stream() // basically i convert the locations into buildings then i count for each list of buildings the amount of walls (so amount of trues) and then get highest amount or if none present then 0
                 .map(wallSection -> (int) wallSection.stream()
+                        .map(location -> walls[location.getRow()][location.getCol()])
                         .map(building -> building.getWalls().values())
                         .flatMap(Collection::stream)
                         .filter(wall -> wall)
-                        .count()
+                        .count() //so i get now a list of ints (each int is the length of a wall section)
                 )
-                .max(Comparator.naturalOrder())
-                .orElse(0);
+                .max(Comparator.naturalOrder()) //get the highest
+                .orElse(0); //if none present
     }
 
     private Building[][] getCityWithOnlyExteriorWalls() { // it returns a copy of the city with only pieces that have walls and internal walls are removed
@@ -187,26 +188,24 @@ public class City {
         return city;
     }
 
-    private boolean checkNotInWallSection(List<List<Building>> wallSections, Building building) { // checks if the building is not part of a wall section already
+    private boolean checkNotInWallSection(List<List<Location>> wallSections, Location location) { // checks if the building is not part of a wall section already
         return wallSections.stream()
                 .flatMap(List::stream)
-                .noneMatch(building1 -> building1.equals(building));
+                .noneMatch(loc -> loc.equals(location));
     }
 
-    private List<Building> getWallSection(Building[][] walls, Location staticLocation) {
-        List<Building> wallSection = new ArrayList<>();
+    private List<Location> getWallSection(Building[][] walls, Location staticLocation) {
+        List<Location> wallSection = new ArrayList<>();
         Queue<Location> processLocations = new LinkedList<>();
         processLocations.add(staticLocation);
 
         while (!processLocations.isEmpty()) {
             Location processed = processLocations.poll();
-            wallSection.add(walls[processed.getRow()][processed.getCol()]);
+            wallSection.add(processed);
             getValidWallNeighbors(walls, processed).stream()
-                    .filter(location -> !wallSection.contains(walls[location.getRow()][location.getCol()]) && !processLocations.contains(location)) // can't add location that is already added
+                    .filter(location -> !wallSection.contains(location) && !processLocations.contains(location)) // can't add location that is already added
                     .forEach(processLocations::add);
         }
-
-
         return wallSection;
     }
 
