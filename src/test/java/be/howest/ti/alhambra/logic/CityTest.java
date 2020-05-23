@@ -65,4 +65,29 @@ public class CityTest {
         //test to check if there is no building on the location you want to place the building
         assertThrows(AlhambraGameRuleException.class, () -> city1.placeBuilding(new Building(BuildingType.ARCADES, 5), new Location(-1, 0)));
     }
+
+    @Test
+    void calcWallScore(){
+        //setup
+        City city = new City();
+        Map<CardinalDirection, Boolean> walls1 = Building.getDefaultWalls();
+        walls1.put(CardinalDirection.NORTH, true);
+        walls1.put(CardinalDirection.WEST, true);
+        walls1.put(CardinalDirection.SOUTH, true);
+        Map<CardinalDirection, Boolean> walls2 = Building.getDefaultWalls();
+        walls2.put(CardinalDirection.NORTH, true);
+        //placing buildings
+        city.placeBuilding(new Building(BuildingType.ARCADES, 5, walls2), new Location(-1, 0));
+        city.placeBuilding(new Building(BuildingType.CHAMBERS, 5, walls2), new Location(-1, 1));
+        city.placeBuilding(new Building(BuildingType.GARDEN, 5, walls1), new Location(-1, -1));
+
+        // the walls wil be like this, so score of 5
+        //       ___ ___ ___
+        //       |
+        //       ___
+
+        //test if the score is correct
+        assertEquals(5, city.calcScoreWall());
+
+    }
 }
