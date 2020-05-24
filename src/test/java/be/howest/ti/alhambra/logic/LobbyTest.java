@@ -3,8 +3,7 @@ package be.howest.ti.alhambra.logic;
 import be.howest.ti.alhambra.logic.exceptions.AlhambraGameRuleException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LobbyTest {
 
@@ -66,6 +65,8 @@ class LobbyTest {
         //checks if player can unready
         lobby.unreadyPlayer("Joe");
         assertEquals(2, lobby.countReady());
+
+        assertFalse(lobby.isAutoStart());
 
     }
 

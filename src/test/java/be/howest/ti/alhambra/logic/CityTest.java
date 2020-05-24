@@ -116,5 +116,4 @@ public class CityTest {
         assertEquals(3, city.calcScoreWall());
     }
 
-
 }

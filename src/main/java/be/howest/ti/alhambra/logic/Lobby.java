@@ -18,10 +18,10 @@ public class Lobby {
     private final String id;
     private final String customNameLobby;
     private final List<PlayerInLobby> players;
-    private int playerCount;
-    private int readyCount;
     @JsonIgnore
     private final boolean autoStart; //for backwards compatible with previous server
+    private int playerCount;
+    private int readyCount;
 
     public Lobby(String gameId, String customNameLobby) { // this constructor is also used in tests
         this(gameId, new ArrayList<>(), customNameLobby, 6);
@@ -30,13 +30,6 @@ public class Lobby {
     @JsonCreator
     public Lobby(@JsonProperty("id") String id, @JsonProperty("players") List<PlayerInLobby> playersReady, @JsonProperty("customNameLobby") String customNameLobby, @JsonProperty("maxNumberOfPlayers") int maxNumberOfPlayers) {
         this(id, playersReady, customNameLobby, maxNumberOfPlayers, false);
-    }
-    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) { //this constructor is used in tests
-        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, false);
-    }
-
-    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers,boolean autoStart) { //used to create a new lobby
-        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, autoStart);
     }
 
     public Lobby(String id, List<PlayerInLobby> playersReady, String customNameLobby, int maxNumberOfPlayers, boolean autoStart) {
@@ -65,6 +58,13 @@ public class Lobby {
         return (int) players.stream().filter(PlayerInLobby::isStatus).count();
     }
 
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers) { //this constructor is used in tests
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, false);
+    }
+
+    public Lobby(String gameId, String customNameLobby, int maxNumberOfPlayers, boolean autoStart) { //used to create a new lobby
+        this(gameId, new ArrayList<>(), customNameLobby, maxNumberOfPlayers, autoStart);
+    }
 
     public String getId() {
         return id;
@@ -125,11 +125,11 @@ public class Lobby {
         updateReadyCount();
     }
 
-    public boolean readyUpPlayer(String name,AlhambraController controller) {
+    public boolean readyUpPlayer(String name, AlhambraController controller) {
         getPlayerClass(name).setStatus(true);
         updateReadyCount();
 
-        if (autoStart && readyCount == playerCount && countPlayer() >= MIN_PLAYER_COUNT){
+        if (autoStart && readyCount == playerCount && countPlayer() >= MIN_PLAYER_COUNT) {
             controller.startLobby(id);
         }
 
@@ -165,12 +165,8 @@ public class Lobby {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lobby lobby = (Lobby) o;
-        return maxNumberOfPlayers == lobby.maxNumberOfPlayers &&
-                playerCount == lobby.playerCount &&
-                readyCount == lobby.readyCount &&
-                Objects.equals(id, lobby.id) &&
-                Objects.equals(customNameLobby, lobby.customNameLobby) &&
-                Objects.equals(players, lobby.players);
+        return  Objects.equals(id, lobby.id);
+
     }
 
     public boolean isAutoStart() {

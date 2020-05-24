@@ -42,6 +42,8 @@ public class GameTest
 
         Game game2 = new Game(names);
 
+        assertThrows(AlhambraGameRuleException.class,()->  game2.buyBuilding("Joe",Currency.ORANGE,new Coin[]{new Coin(Currency.ORANGE,48)}));
+
        Building building = new Building(BuildingType.GARDEN,5);
         while (building !=null){
            building = game2.removeBuilding();
