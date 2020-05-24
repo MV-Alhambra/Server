@@ -42,6 +42,14 @@ public class CoinsTest {
         //test error on removing coin that doesnt exist
         assertThrows(IllegalArgumentException.class,()->coins.removeCoins(new Coin[]{coin2}));
 
+        assertTrue(coins.equals(coins));
+        assertFalse(coins.equals(null));
+        Coin[] newCoins = new Coin[2];
+        newCoins[0] = new Coin(Currency.GREEN,9);
+        newCoins[1] = new Coin(Currency.ORANGE,2);
+      assertFalse( coins.containsCoins(newCoins));
+      assertTrue(coins.containsCoins(new Coin[]{coin1}));
+
 
     }
 }
