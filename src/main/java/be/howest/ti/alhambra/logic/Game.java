@@ -22,7 +22,7 @@ public class Game {
     private final List<Building> buildings;
     @JsonIgnore
     private final List<Coin> coins;
-    private final Random rand = new Random();
+    private final Random rand;
     @JsonProperty
     private Player dirk;
     private boolean ended;
@@ -38,6 +38,7 @@ public class Game {
 
     @JsonCreator
     public Game(@JsonProperty("ended") boolean ended, @JsonProperty("currentPlayer") String currentPlayer, @JsonProperty("players") List<Player> players, @JsonProperty("bank") Coin[] bank, @JsonProperty("market") Map<Currency, Building> market, @JsonProperty("twoPlayerSystem") Player dirk) {
+        rand = new Random();
         this.ended = ended;
         this.currentPlayer = currentPlayer;
         this.players = players;
@@ -211,7 +212,6 @@ public class Game {
             return coin;
         } catch (IndexOutOfBoundsException e) {
             // game ends when no buildings are left
-            // might also keep going and only stop game when buildings are gone
             // this shouldn't throw an error since bank.fillBank works with nulls
             return null;
         }
@@ -244,17 +244,6 @@ public class Game {
                 Objects.equals(market, game.market);
     }
 
-    @Override
-    public String toString() {
-        return "Game{" +
-                "ended=" + ended +
-                ", CurrentPlayer='" + currentPlayer + '\'' +
-                ", players=" + players +
-                ", bank=" + bank +
-                ", market=" + market +
-                '}';
-    }
-
     public List<Building> getBuildings() {
         return buildings;
     }
@@ -264,7 +253,6 @@ public class Game {
             return buildings.remove(0);
         } catch (IndexOutOfBoundsException e) {
             // end game bc game is over, used up all the buildings
-            // game might also end when coins are up, depends on implementation
             endGame();
             return null;
         }
