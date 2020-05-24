@@ -67,8 +67,15 @@ public class AlhambraControllerTest {
 
         assertThrows(AlhambraGameRuleException.class, () -> c.buyBuilding("001", "test1", Currency.GREEN, arrayC));
         assertThrows(AlhambraEntityNotFoundException.class, () -> c.build("001", "test1", b1, new Location(0, 1)));
+        game.findPlayer("test1").getBuildingsInHand().add(b1);
+        assertEquals(game,c.build("001", "test1", b1, new Location(0, 1)));
         assertThrows(AlhambraGameRuleException.class, () -> c.redesign("001", "test1", b1, new Location(0, 1)));
         assertThrows(AlhambraEntityNotFoundException.class, () -> c.redesign("001", "test2", b1, new Location(0, 1)));
+        game.findPlayer("test2").getCity().placeBuilding(b1, new Location(0,1));
+        assertEquals(game,c.redesign("001","test2",null,new Location(0,1)));
+
+        assertTrue(c.leaveLobby("001","test2"));
+        assertThrows(AlhambraEntityNotFoundException.class,()->c.buyBuilding("004","henk",Currency.GREEN,arrayC));
     }
 
     @Test

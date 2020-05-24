@@ -212,7 +212,6 @@ public class Game {
             return coin;
         } catch (IndexOutOfBoundsException e) {
             // game ends when no buildings are left
-            // might also keep going and only stop game when buildings are gone
             // this shouldn't throw an error since bank.fillBank works with nulls
             return null;
         }
@@ -254,7 +253,6 @@ public class Game {
             return buildings.remove(0);
         } catch (IndexOutOfBoundsException e) {
             // end game bc game is over, used up all the buildings
-            // game might also end when coins are up, depends on implementation
             endGame();
             return null;
         }
